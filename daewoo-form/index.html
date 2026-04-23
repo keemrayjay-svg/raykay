@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>대우능력개발원 입학원서</title>
+<script>
+// 최우선 디버그 인프라 — 다른 모든 스크립트보다 먼저 실행
+window.__dbgLines = ['[0] head 스크립트 실행됨'];
+window.__dbg = function(msg) {
+  window.__dbgLines.push(msg);
+  if (window.__dbgLines.length > 10) window.__dbgLines.shift();
+  var el = document.getElementById('sigDebug');
+  if (el) el.textContent = window.__dbgLines.join('\n');
+};
+window.addEventListener('error', function(e) {
+  window.__dbg('[X] ERROR: ' + (e.message || '?') + ' @ ' + (e.filename || '?').split('/').pop() + ':' + (e.lineno || '?'));
+  return false;
+});
+window.addEventListener('DOMContentLoaded', function() {
+  window.__dbg('[1] DOMContentLoaded');
+  var el = document.getElementById('sigDebug');
+  if (el) el.textContent = window.__dbgLines.join('\n');
+});
+window.addEventListener('load', function() {
+  window.__dbg('[2] window load');
+});
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; color: #111; font-size: 14px; }
+.wrap { max-width: 860px; margin: 2rem auto; background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 2rem; }
+.hdr { text-align: center; border-bottom: 2px solid #111; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+.hdr .org { font-size: 12px; color: #666; letter-spacing: 3px; margin-bottom: 4px; }
+.hdr h1 { font-size: 28px; font-weight: 600; letter-spacing: 6px; }
+.hdr p { font-size: 13px; color: #888; margin-top: 4px; }
+.sec { margin-bottom: 1.5rem; }
+.sec-t { font-size: 13px; font-weight: 600; color: #555; background: #f7f7f7; padding: 6px 12px; border-left: 3px solid #111; margin-bottom: 10px; letter-spacing: 1px; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+.f { display: flex; flex-direction: column; gap: 4px; }
+.f label { font-size: 12px; color: #666; }
+.f input, .f select, .f textarea {
+  border: 1px solid #ccc; border-radius: 8px;
+  padding: 8px 10px; font-size: 14px; font-family: inherit;
+  color: #111; background: #fff; outline: none; width: 100%;
+  transition: border-color 0.15s;
+}
+.f input:focus, .f select:focus, .f textarea:focus { border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.12); }
+.f textarea { resize: vertical; min-height: 70px; line-height: 1.6; }
+.top-row { display: flex; gap: 16px; align-items: flex-start; }
+.top-fields { flex: 1; }
+.photo-box {
+  width: 105px; height: 135px; border: 1px dashed #bbb; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  gap: 6px; cursor: pointer; background: #fafafa; font-size: 12px; color: #999;
+  transition: border-color 0.15s;
+}
+.photo-box:hover { border-color: #378ADD; color: #378ADD; }
+.photo-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 7px; }
+.addr-row { display: flex; gap: 6px; margin-bottom: 6px; }
+.addr-btn { padding: 8px 14px; border: 1px solid #ccc; border-radius: 8px; background: #f5f5f5; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.addr-btn:hover { background: #eee; }
+.divider { border: none; border-top: 1px solid #eee; margin: 1.5rem 0; }
+.add-btn { font-size: 13px; color: #378ADD; background: none; border: 1px dashed #378ADD; border-radius: 8px; padding: 8px 16px; cursor: pointer; width: 100%; transition: background 0.15s; }
+.add-btn:hover { background: #f0f7ff; }
+.career-item, .cert-item { border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 8px; position: relative; }
+.remove-btn { position: absolute; top: 10px; right: 10px; font-size: 12px; color: #e24b4a; background: none; border: 1px solid #e24b4a; border-radius: 6px; padding: 3px 8px; cursor: pointer; }
+.remove-btn:hover { background: #fff0f0; }
+.consent-box { border: 1px solid #eee; border-radius: 12px; padding: 1rem 1.25rem; font-size: 13px; color: #666; line-height: 1.7; background: #fafafa; margin-bottom: 8px; }
+.consent-box h3 { font-size: 13px; font-weight: 600; color: #111; margin-bottom: 6px; }
+.c-check { display: flex; align-items: flex-start; gap: 8px; margin-top: 10px; font-size: 13px; color: #111; }
+.c-check input[type=checkbox] { margin-top: 2px; flex-shrink: 0; width: 15px; height: 15px; cursor: pointer; }
+ 
+/* 전자서명 */
+.sig-section { border: 1px solid #ccc; border-radius: 12px; overflow: hidden; }
+.sig-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f7f7f7; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 8px; }
+.sig-header span { font-size: 13px; color: #666; }
+.sig-actions { display: flex; gap: 8px; }
+.sig-btn { font-size: 12px; padding: 6px 14px; border: 1px solid #ccc; border-radius: 8px; background: #fff; color: #555; cursor: pointer; }
+.sig-btn:hover { background: #f5f5f5; }
+.sig-btn.danger { border-color: #e24b4a; color: #e24b4a; }
+.sig-btn.danger:hover { background: #fff0f0; }
+.sig-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: #fff;
+  touch-action: none;
+  -ms-touch-action: none;
+  overscroll-behavior: contain;
+}
+#sigDebug {
+  font-family: monospace;
+  font-size: 11px;
+  background: #1a1a1a;
+  color: #0f0;
+  padding: 8px 12px;
+  border-bottom: 1px solid #333;
+  min-height: 80px;
+  max-height: 150px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.5;
+}
+#sigDebug {
+  font-family: monospace;
+  font-size: 11px;
+  background: #1a1a1a;
+  color: #0f0;
+  padding: 8px 12px;
+  border-bottom: 1px solid #333;
+  min-height: 60px;
+  max-height: 120px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.4;
+}
+#sigPad {
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  cursor: crosshair;
+  touch-action: none;
+  -ms-touch-action: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.sig-status { font-size: 12px; color: #999; padding: 7px 14px; border-top: 1px solid #eee; background: #fafafa; display: flex; align-items: center; gap: 6px; }
+.sig-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; display: inline-block; flex-shrink: 0; }
+.sig-dot.signed { background: #1D9E75; }
+.sig-dot.pending { background: #EF9F27; }
+#sig-preview { display: none; margin-top: 10px; border: 1px solid #1D9E75; border-radius: 8px; padding: 10px 14px; background: #f0fdf8; }
+#sig-preview p { font-size: 12px; color: #1D9E75; margin-bottom: 6px; font-weight: 600; }
+#sig-preview img { max-height: 80px; display: block; border: 1px solid #ddd; border-radius: 6px; background: #fff; padding: 4px; }
+ 
+.submit-btn { width: 100%; padding: 15px; background: #111; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; letter-spacing: 3px; margin-top: 1.5rem; transition: opacity 0.15s; }
+.submit-btn:hover { opacity: 0.82; }
+.pdf-btn { width: 100%; padding: 13px; background: #fff; color: #111; border: 1.5px solid #111; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; letter-spacing: 2px; margin-top: 10px; transition: all 0.15s; }
+.pdf-btn:hover { background: #111; color: #fff; }
+.pdf-btn:disabled { opacity: 0.5; cursor: wait; }
+.note { font-size: 11px; color: #aaa; text-align: center; margin-top: 8px; }
+
+/* PDF 생성 모드: 입력 필드 테두리/배경 유지, 인터랙션 요소 숨김 */
+.pdf-mode { background: #fff !important; }
+.pdf-mode .wrap { margin: 0 !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
+.pdf-mode .submit-btn,
+.pdf-mode .pdf-btn,
+.pdf-mode .add-btn,
+.pdf-mode .remove-btn,
+.pdf-mode .addr-btn,
+.pdf-mode .sig-actions,
+.pdf-mode .note { display: none !important; }
+.pdf-mode .f input,
+.pdf-mode .f select,
+.pdf-mode .f textarea { box-shadow: none !important; border-color: #bbb !important; }
+.pdf-mode .photo-box { border-style: solid !important; }
+.pdf-mode .sig-header span { width: 100%; }
+.pdf-mode .sig-status { display: none !important; }
+ 
+@media (max-width: 620px) {
+  .wrap { margin: 0; border-radius: 0; padding: 1.2rem; }
+  .g2, .g3, .g4 { grid-template-columns: 1fr 1fr; }
+  .g4 { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div class="org">대우능력개발원</div>
+    <h1>입 학 원 서</h1>
+    <p>Application for Admission · 2025</p>
+  </div>
+ 
+  <!-- 훈련과정 -->
+  <div class="sec">
+    <div class="sec-t">▪ 훈련과정 정보</div>
+    <div class="g2">
+      <div class="f"><label>훈련과정명</label><input type="text" placeholder="훈련과정을 입력하세요" /></div>
+      <div class="f"><label>훈련기간</label>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input type="date" style="flex:1;" />
+          <span style="color:#aaa;font-size:13px;">~</span>
+          <input type="date" style="flex:1;" />
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- 인적사항 -->
+  <div class="sec">
+    <div class="sec-t">▪ 기본 인적사항</div>
+    <div class="top-row">
+      <div class="top-fields">
+        <div class="g3" style="margin-bottom:10px;">
+          <div class="f" style="grid-column:span 2;"><label>성명 (한글)</label><input type="text" placeholder="홍길동" /></div>
+          <div class="f"><label>성명 (영문)</label><input type="text" placeholder="HONG GIL DONG" /></div>
+        </div>
+        <div class="g3" style="margin-bottom:10px;">
+          <div class="f"><label>생년월일</label><input type="date" /></div>
+          <div class="f"><label>성별</label><select><option value="">선택</option><option>남</option><option>여</option></select></div>
+          <div class="f"><label>국적</label><input type="text" value="대한민국" /></div>
+        </div>
+        <div class="g2">
+          <div class="f"><label>휴대전화</label><input type="tel" placeholder="010-0000-0000" /></div>
+          <div class="f"><label>이메일</label><input type="email" placeholder="example@email.com" /></div>
+        </div>
+      </div>
+      <div>
+        <div class="photo-box" id="photo-box" onclick="document.getElementById('photo-upload').click()" title="클릭하여 사진 첨부">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M6 21c0-3.314 2.686-6 6-6s6 2.686 6 6"/></svg>
+          <span>사진 첨부</span>
+          <span style="font-size:10px;">3×4cm</span>
+        </div>
+        <input type="file" id="photo-upload" accept="image/*" style="display:none;" onchange="previewPhoto(event)" />
+      </div>
+    </div>
+    <div class="f" style="margin-top:10px;">
+      <label>주소</label>
+      <div class="addr-row">
+        <input type="text" id="postcode" placeholder="우편번호" style="width:140px;" />
+        <button class="addr-btn" onclick="alert('우편번호 검색 API 연동 필요')">우편번호 검색</button>
+      </div>
+      <input type="text" placeholder="기본주소" style="margin-bottom:6px;" />
+      <input type="text" placeholder="상세주소 (동/호수 등)" />
+    </div>
+  </div>
+ 
+  <!-- 학력 -->
+  <div class="sec">
+    <div class="sec-t">▪ 학력사항</div>
+    <div class="g4">
+      <div class="f"><label>최종학력</label><select><option value="">선택</option><option>중졸</option><option>고졸</option><option>전문대졸</option><option>대졸</option><option>대학원 이상</option></select></div>
+      <div class="f" style="grid-column:span 2;"><label>학교명</label><input type="text" placeholder="학교명을 입력하세요" /></div>
+      <div class="f"><label>전공</label><input type="text" placeholder="전공명" /></div>
+    </div>
+    <div class="g2" style="margin-top:10px;">
+      <div class="f"><label>졸업연도</label><input type="text" placeholder="예: 2020년 2월" /></div>
+      <div class="f"><label>졸업상태</label><select><option value="">선택</option><option>졸업</option><option>재학</option><option>중퇴</option><option>수료</option></select></div>
+    </div>
+  </div>
+ 
+  <!-- 경력 -->
+  <div class="sec">
+    <div class="sec-t">▪ 경력사항</div>
+    <div id="career-list">
+      <div class="career-item">
+        <div class="g3" style="margin-bottom:8px;">
+          <div class="f" style="grid-column:span 2;"><label>회사명</label><input type="text" placeholder="회사명" /></div>
+          <div class="f"><label>직종</label><input type="text" placeholder="관련/타직종" /></div>
+        </div>
+        <div class="g3">
+          <div class="f"><label>근무기간</label><input type="text" placeholder="2020.03~2022.06" /></div>
+          <div class="f"><label>직위/직급</label><input type="text" placeholder="직위" /></div>
+          <div class="f"><label>퇴직사유</label><input type="text" placeholder="퇴직사유" /></div>
+        </div>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addCareer()">+ 경력 추가</button>
+  </div>
+ 
+  <!-- 자격증 -->
+  <div class="sec">
+    <div class="sec-t">▪ 자격증 및 어학</div>
+    <div id="cert-list">
+      <div class="cert-item">
+        <div class="g3">
+          <div class="f"><label>자격증명</label><input type="text" placeholder="자격증명" /></div>
+          <div class="f"><label>발급기관</label><input type="text" placeholder="발급기관" /></div>
+          <div class="f"><label>취득일</label><input type="date" /></div>
+        </div>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addCert()">+ 자격증 추가</button>
+  </div>
+ 
+  <!-- 훈련참여 -->
+  <div class="sec">
+    <div class="sec-t">▪ 훈련 참여 정보</div>
+    <div class="g2">
+      <div class="f"><label>훈련 참여 횟수</label><select><option value="">선택</option><option>1회차 (처음)</option><option>2회차</option><option>3회차 이상</option></select></div>
+      <div class="f"><label>국민내일배움카드 보유 여부</label><select><option value="">선택</option><option>보유</option><option>미보유 (신청 예정)</option><option>미보유</option></select></div>
+    </div>
+    <div class="f" style="margin-top:10px;">
+      <label>훈련 지원 동기 및 목표</label>
+      <textarea placeholder="훈련과정에 지원하게 된 동기와 수료 후 목표를 작성해주세요"></textarea>
+    </div>
+  </div>
+ 
+  <!-- 건강상태 -->
+  <div class="sec">
+    <div class="sec-t">▪ 건강상태</div>
+    <div class="g2">
+      <div class="f"><label>건강상태</label><select><option value="">선택</option><option>양호</option><option>보통</option><option>정기적 치료/약 복용 필요</option></select></div>
+      <div class="f"><label>특이사항 (해당 시)</label><input type="text" placeholder="해당 시 기재" /></div>
+    </div>
+  </div>
+ 
+  <hr class="divider" />
+ 
+  <!-- 개인정보 동의 -->
+  <div class="sec">
+    <div class="sec-t">▪ 개인정보 수집·이용 동의</div>
+    <div class="consent-box">
+      <h3>출결시스템을 통한 출결관리 (필수)</h3>
+      <p>훈련비 지원을 위한 출결정보 관리 목적으로 성명, 생년월일을 수집합니다. (보유기간: 훈련종료 후 3년)</p>
+      <div class="c-check"><input type="checkbox" id="c1" /><label for="c1">위 개인정보 수집·이용에 동의합니다. (필수)</label></div>
+    </div>
+    <div class="consent-box">
+      <h3>취업지원 및 공지사항 전달 (선택)</h3>
+      <p>수강관리, 취업상담, SMS 공지 목적으로 전화번호·이메일·주소를 수집합니다. (보유기간: 훈련종료 후 6개월)</p>
+      <div class="c-check"><input type="checkbox" id="c2" /><label for="c2">위 개인정보 수집·이용에 동의합니다. (선택)</label></div>
+    </div>
+    <div class="consent-box">
+      <h3>개인정보 처리방침 전체 안내 (필수)</h3>
+      <p>홈페이지 회원가입, 훈련생 재해보험 가입, CCTV 운영 등 처리방침 전반에 동의합니다. (보유기간: 훈련종료 후 5년)</p>
+      <div class="c-check"><input type="checkbox" id="c3" /><label for="c3">개인정보 처리방침에 동의합니다. (필수)</label></div>
+    </div>
+  </div>
+ 
+  <!-- 전자서명 -->
+  <div class="sec">
+    <div class="sec-t">▪ 전자서명</div>
+    <div class="g3" style="margin-bottom:12px;">
+      <div class="f"><label>작성일</label><input type="date" id="today-date" /></div>
+      <div class="f"><label>성명</label><input type="text" id="sig-name" placeholder="성명을 입력하세요" /></div>
+      <div class="f"><label>생년월일 확인</label><input type="date" id="sig-birth" /></div>
+    </div>
+    <p style="font-size:13px;color:#777;margin-bottom:10px;line-height:1.6;">
+      아래 서명란에 마우스 또는 터치로 서명해 주세요. 본인은 위 기재사항이 모두 사실임을 확인하며, 귀교의 선발 규정에 이의를 제기하지 않겠습니다.
+    </p>
+    <div class="sig-section">
+      <div class="sig-header">
+        <span>서명란 — 마우스 또는 손가락으로 서명하세요</span>
+        <div class="sig-actions">
+          <button class="sig-btn danger" onclick="clearSig()">지우기</button>
+          <button class="sig-btn" onclick="saveSig()">서명 저장</button>
+        </div>
+      </div>
+      <div id="sigDebug">[디버그] 로딩 중...</div>
+      <div class="sig-canvas-wrap">
+        <canvas id="sigPad"></canvas>
+      </div>
+      <div class="sig-status">
+        <span class="sig-dot" id="sigDot"></span>
+        <span id="sigStatusText">서명을 입력해 주세요</span>
+      </div>
+    </div>
+    <div id="sig-preview">
+      <p>✓ 서명이 저장되었습니다.</p>
+      <img id="sig-img" alt="전자서명" />
+    </div>
+  </div>
+ 
+  <button class="submit-btn" onclick="handleSubmit()">원 서 제 출</button>
+  <button class="pdf-btn" id="pdfBtn" onclick="saveAsPDF()">📄 PDF로 저장</button>
+  <p class="note">* 제출 전 모든 필수 항목과 전자서명을 확인해 주세요.</p>
+</div>
+ 
+<script>
+window.__dbg('[3] body script 시작');
+
+// 날짜 초기화 (안전하게)
+(function() {
+  var initDate = function() {
+    var el = document.getElementById('today-date');
+    if (el) el.value = new Date().toISOString().split('T')[0];
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDate);
+  } else {
+    initDate();
+  }
+})();
+ 
+// 사진 미리보기
+function previewPhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const box = document.getElementById('photo-box');
+    box.innerHTML = '<img src="' + ev.target.result + '" alt="사진" />';
+  };
+  reader.readAsDataURL(file);
+}
+ 
+// 경력 추가
+function addCareer() {
+  const list = document.getElementById('career-list');
+  const div = document.createElement('div');
+  div.className = 'career-item';
+  div.innerHTML = `
+    <button class="remove-btn" onclick="this.parentElement.remove()">삭제</button>
+    <div class="g3" style="margin-bottom:8px;">
+      <div class="f" style="grid-column:span 2;"><label>회사명</label><input type="text" placeholder="회사명" /></div>
+      <div class="f"><label>직종</label><input type="text" placeholder="관련/타직종" /></div>
+    </div>
+    <div class="g3">
+      <div class="f"><label>근무기간</label><input type="text" placeholder="2020.03~2022.06" /></div>
+      <div class="f"><label>직위/직급</label><input type="text" placeholder="직위" /></div>
+      <div class="f"><label>퇴직사유</label><input type="text" placeholder="퇴직사유" /></div>
+    </div>`;
+  list.appendChild(div);
+}
+ 
+// 자격증 추가
+function addCert() {
+  const list = document.getElementById('cert-list');
+  const div = document.createElement('div');
+  div.className = 'cert-item';
+  div.innerHTML = `
+    <button class="remove-btn" onclick="this.parentElement.remove()">삭제</button>
+    <div class="g3">
+      <div class="f"><label>자격증명</label><input type="text" placeholder="자격증명" /></div>
+      <div class="f"><label>발급기관</label><input type="text" placeholder="발급기관" /></div>
+      <div class="f"><label>취득일</label><input type="date" /></div>
+    </div>`;
+  list.appendChild(div);
+}
+ 
+// 전자서명 캔버스 (iOS Safari 호환 + 디버그)
+window.__dbg('[4] 서명 코드 진입');
+
+var canvas, ctx;
+var drawing = false;
+var hasSig = false;
+var sigSaved = false;
+var lastX = 0, lastY = 0;
+
+function dbg(msg) { window.__dbg(msg); }
+
+function initSignature() {
+  try {
+    dbg('[5] initSignature 호출');
+    canvas = document.getElementById('sigPad');
+    if (!canvas) { dbg('[X] canvas 요소 없음'); return; }
+    dbg('[6] canvas OK');
+    ctx = canvas.getContext('2d');
+    if (!ctx) { dbg('[X] context 없음'); return; }
+    dbg('[7] context OK');
+
+    function setStrokeStyle() {
+      ctx.strokeStyle = '#111';
+      ctx.fillStyle = '#111';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    }
+
+    window.resizeCanvas = function() {
+      var dpr = window.devicePixelRatio || 1;
+      var rect = canvas.getBoundingClientRect();
+      dbg('resize: rect=' + Math.round(rect.width) + 'x' + Math.round(rect.height) + ' dpr=' + dpr);
+      if (rect.width === 0) { dbg('resize 스킵 (width=0)'); return; }
+      var prev = null;
+      if (hasSig && canvas.width > 0 && canvas.height > 0) {
+        prev = document.createElement('canvas');
+        prev.width = canvas.width;
+        prev.height = canvas.height;
+        prev.getContext('2d').drawImage(canvas, 0, 0);
+      }
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      setStrokeStyle();
+      if (prev) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(prev, 0, 0);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      dbg('canvas ' + canvas.width + 'x' + canvas.height);
+    };
+
+    function getPos(e) {
+      var r = canvas.getBoundingClientRect();
+      var clientX, clientY;
+      if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else if (e.changedTouches && e.changedTouches.length > 0) {
+        clientX = e.changedTouches[0].clientX;
+        clientY = e.changedTouches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      return { x: clientX - r.left, y: clientY - r.top };
+    }
+
+    function startDraw(e) {
+      if (e.cancelable) e.preventDefault();
+      drawing = true;
+      sigSaved = false;
+      var p = getPos(e);
+      lastX = p.x; lastY = p.y;
+      dbg(e.type + ' @ ' + Math.round(p.x) + ',' + Math.round(p.y));
+      // 점 찍기 (arc + fill)
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      hasSig = true;
+      updateStatus(false);
+    }
+
+    function moveDraw(e) {
+      if (!drawing) return;
+      if (e.cancelable) e.preventDefault();
+      var p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      lastX = p.x; lastY = p.y;
+      hasSig = true;
+    }
+
+    function endDraw(e) {
+      if (!drawing) return;
+      dbg(e.type + ' 종료');
+      drawing = false;
+    }
+
+    // 터치 이벤트
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', moveDraw, { passive: false });
+    canvas.addEventListener('touchend', endDraw, { passive: false });
+    canvas.addEventListener('touchcancel', endDraw, { passive: false });
+    dbg('touch 리스너 등록됨');
+
+    // 마우스 이벤트
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', moveDraw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+
+    // 제스처 차단
+    canvas.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+    canvas.addEventListener('gesturechange', function(e) { e.preventDefault(); });
+    canvas.addEventListener('gestureend', function(e) { e.preventDefault(); });
+
+    // 초기 크기 설정
+    resizeCanvas();
+    setTimeout(resizeCanvas, 300);
+    setTimeout(resizeCanvas, 800);
+
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('orientationchange', function() {
+      setTimeout(resizeCanvas, 300);
+    });
+
+    dbg('[8] init 완료 — 터치하세요');
+  } catch (err) {
+    dbg('[X] EXCEPTION: ' + err.message);
+  }
+}
+
+// DOM 로드 완료 후 초기화
+dbg('[4.5] readyState=' + document.readyState);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSignature);
+} else {
+  initSignature();
+}
+ 
+function updateStatus(saved) {
+  var dot = document.getElementById('sigDot');
+  var txt = document.getElementById('sigStatusText');
+  if (saved) {
+    dot.className = 'sig-dot signed'; txt.textContent = '서명이 저장되었습니다';
+  } else if (hasSig) {
+    dot.className = 'sig-dot pending'; txt.textContent = '서명 후 [서명 저장] 버튼을 눌러주세요';
+  } else {
+    dot.className = 'sig-dot'; txt.textContent = '서명을 입력해 주세요';
+  }
+}
+ 
+function clearSig() {
+  // transform이 걸려있을 수 있으므로 원본 픽셀 단위로 지움
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
+  hasSig = false; sigSaved = false;
+  document.getElementById('sig-preview').style.display = 'none';
+  updateStatus(false);
+}
+ 
+function saveSig() {
+  if (!hasSig) { alert('서명을 먼저 입력해 주세요.'); return; }
+  const dataUrl = canvas.toDataURL('image/png');
+  document.getElementById('sig-img').src = dataUrl;
+  document.getElementById('sig-preview').style.display = 'block';
+  sigSaved = true;
+  updateStatus(true);
+}
+ 
+function handleSubmit() {
+  if (!document.getElementById('c1').checked || !document.getElementById('c3').checked) {
+    alert('필수 개인정보 동의 항목을 확인해주세요.'); return;
+  }
+  if (!sigSaved) { alert('전자서명을 입력하고 [서명 저장] 버튼을 눌러주세요.'); return; }
+  const name = document.getElementById('sig-name').value.trim();
+  if (!name) { alert('서명란의 성명을 입력해주세요.'); return; }
+  alert('입학원서가 제출되었습니다.\n성명: ' + name + '\n전자서명이 정상적으로 저장되었습니다.\n담당자가 검토 후 연락드리겠습니다.');
+}
+
+// PDF 저장
+// html2canvas가 <input>/<select>/<textarea>의 현재 값을 렌더링하지 못하므로
+// value를 실제 텍스트 노드로 일시 교체한 뒤 PDF 생성, 이후 원복
+async function saveAsPDF() {
+  const btn = document.getElementById('pdfBtn');
+  const wrap = document.querySelector('.wrap');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'PDF 생성 중...';
+
+  // 1) 입력 요소 값을 표시용 div로 임시 교체
+  const replacements = [];
+  const inputs = wrap.querySelectorAll('input, select, textarea');
+  inputs.forEach(el => {
+    let displayText = '';
+    if (el.tagName === 'SELECT') {
+      displayText = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+      if (!el.value) displayText = '';
+    } else if (el.type === 'checkbox') {
+      // 체크박스는 그대로 두고 checked 속성만 고정
+      if (el.checked) el.setAttribute('checked', 'checked');
+      else el.removeAttribute('checked');
+      return;
+    } else if (el.type === 'date') {
+      displayText = el.value || '';
+    } else {
+      displayText = el.value || '';
+    }
+
+    // 값이 없으면 placeholder를 회색으로 표시
+    const isEmpty = !displayText;
+    if (isEmpty) displayText = el.placeholder || '';
+
+    const span = document.createElement('div');
+    const cs = getComputedStyle(el);
+    span.textContent = displayText;
+    span.style.cssText = `
+      border: ${cs.border};
+      border-radius: ${cs.borderRadius};
+      padding: ${cs.padding};
+      font-size: ${cs.fontSize};
+      font-family: ${cs.fontFamily};
+      color: ${isEmpty ? '#bbb' : '#111'};
+      background: #fff;
+      width: 100%;
+      min-height: ${cs.height};
+      line-height: 1.4;
+      white-space: ${el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap'};
+      overflow: hidden;
+      box-sizing: border-box;
+    `;
+    // 기존 inline style의 width/flex 등 유지를 위해 부모 맥락의 스타일 속성 복사
+    if (el.style.width) span.style.width = el.style.width;
+    if (el.style.flex) span.style.flex = el.style.flex;
+    if (el.style.gridColumn) span.style.gridColumn = el.style.gridColumn;
+
+    el.style.display = 'none';
+    el.parentNode.insertBefore(span, el.nextSibling);
+    replacements.push({ el, span });
+  });
+
+  // 2) PDF 모드 클래스 추가 (버튼 숨김 등)
+  document.body.classList.add('pdf-mode');
+
+  // 3) 잠시 대기 (레이아웃 반영)
+  await new Promise(r => setTimeout(r, 100));
+
+  try {
+    const opt = {
+      margin: [8, 8, 8, 8],
+      filename: '입학원서_대우능력개발원.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        windowWidth: wrap.scrollWidth
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+    await html2pdf().set(opt).from(wrap).save();
+  } catch (err) {
+    console.error(err);
+    alert('PDF 생성 중 오류가 발생했습니다: ' + err.message);
+  } finally {
+    // 4) 원복
+    replacements.forEach(({ el, span }) => {
+      span.remove();
+      el.style.display = '';
+    });
+    document.body.classList.remove('pdf-mode');
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+ 
+</script>
+</body>
+</html>
+ 
