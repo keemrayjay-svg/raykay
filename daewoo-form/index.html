@@ -4,28 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>대우능력개발원 입학원서</title>
-<script>
-// 최우선 디버그 인프라 — 다른 모든 스크립트보다 먼저 실행
-window.__dbgLines = ['[0] head 스크립트 실행됨'];
-window.__dbg = function(msg) {
-  window.__dbgLines.push(msg);
-  if (window.__dbgLines.length > 10) window.__dbgLines.shift();
-  var el = document.getElementById('sigDebug');
-  if (el) el.textContent = window.__dbgLines.join('\n');
-};
-window.addEventListener('error', function(e) {
-  window.__dbg('[X] ERROR: ' + (e.message || '?') + ' @ ' + (e.filename || '?').split('/').pop() + ':' + (e.lineno || '?'));
-  return false;
-});
-window.addEventListener('DOMContentLoaded', function() {
-  window.__dbg('[1] DOMContentLoaded');
-  var el = document.getElementById('sigDebug');
-  if (el) el.textContent = window.__dbgLines.join('\n');
-});
-window.addEventListener('load', function() {
-  window.__dbg('[2] window load');
-});
-</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -91,20 +69,6 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
   touch-action: none;
   -ms-touch-action: none;
   overscroll-behavior: contain;
-}
-#sigDebug {
-  font-family: monospace;
-  font-size: 11px;
-  background: #1a1a1a;
-  color: #0f0;
-  padding: 8px 12px;
-  border-bottom: 1px solid #333;
-  min-height: 80px;
-  max-height: 150px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  word-break: break-all;
-  line-height: 1.5;
 }
 #sigDebug {
   font-family: monospace;
@@ -347,7 +311,6 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
           <button class="sig-btn" onclick="saveSig()">서명 저장</button>
         </div>
       </div>
-      <div id="sigDebug">[디버그] 로딩 중...</div>
       <div class="sig-canvas-wrap">
         <canvas id="sigPad"></canvas>
       </div>
@@ -368,8 +331,6 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
 </div>
  
 <script>
-window.__dbg('[3] body script 시작');
-
 // 날짜 초기화 (안전하게)
 (function() {
   var initDate = function() {
@@ -429,26 +390,19 @@ function addCert() {
   list.appendChild(div);
 }
  
-// 전자서명 캔버스 (iOS Safari 호환 + 디버그)
-window.__dbg('[4] 서명 코드 진입');
-
+// 전자서명 캔버스 (iOS Safari 호환)
 var canvas, ctx;
 var drawing = false;
 var hasSig = false;
 var sigSaved = false;
 var lastX = 0, lastY = 0;
 
-function dbg(msg) { window.__dbg(msg); }
-
 function initSignature() {
   try {
-    dbg('[5] initSignature 호출');
     canvas = document.getElementById('sigPad');
-    if (!canvas) { dbg('[X] canvas 요소 없음'); return; }
-    dbg('[6] canvas OK');
+    if (!canvas) return;
     ctx = canvas.getContext('2d');
-    if (!ctx) { dbg('[X] context 없음'); return; }
-    dbg('[7] context OK');
+    if (!ctx) return;
 
     function setStrokeStyle() {
       ctx.strokeStyle = '#111';
@@ -461,8 +415,8 @@ function initSignature() {
     window.resizeCanvas = function() {
       var dpr = window.devicePixelRatio || 1;
       var rect = canvas.getBoundingClientRect();
-      dbg('resize: rect=' + Math.round(rect.width) + 'x' + Math.round(rect.height) + ' dpr=' + dpr);
-      if (rect.width === 0) { dbg('resize 스킵 (width=0)'); return; }
+
+      if (rect.width === 0) { return; }
       var prev = null;
       if (hasSig && canvas.width > 0 && canvas.height > 0) {
         prev = document.createElement('canvas');
@@ -479,7 +433,6 @@ function initSignature() {
         ctx.drawImage(prev, 0, 0);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
-      dbg('canvas ' + canvas.width + 'x' + canvas.height);
     };
 
     function getPos(e) {
@@ -504,7 +457,7 @@ function initSignature() {
       sigSaved = false;
       var p = getPos(e);
       lastX = p.x; lastY = p.y;
-      dbg(e.type + ' @ ' + Math.round(p.x) + ',' + Math.round(p.y));
+
       // 점 찍기 (arc + fill)
       ctx.beginPath();
       ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
@@ -527,7 +480,6 @@ function initSignature() {
 
     function endDraw(e) {
       if (!drawing) return;
-      dbg(e.type + ' 종료');
       drawing = false;
     }
 
@@ -536,8 +488,6 @@ function initSignature() {
     canvas.addEventListener('touchmove', moveDraw, { passive: false });
     canvas.addEventListener('touchend', endDraw, { passive: false });
     canvas.addEventListener('touchcancel', endDraw, { passive: false });
-    dbg('touch 리스너 등록됨');
-
     // 마우스 이벤트
     canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', moveDraw);
@@ -558,15 +508,11 @@ function initSignature() {
     window.addEventListener('orientationchange', function() {
       setTimeout(resizeCanvas, 300);
     });
-
-    dbg('[8] init 완료 — 터치하세요');
   } catch (err) {
-    dbg('[X] EXCEPTION: ' + err.message);
   }
 }
 
 // DOM 로드 완료 후 초기화
-dbg('[4.5] readyState=' + document.readyState);
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initSignature);
 } else {
@@ -605,14 +551,148 @@ function saveSig() {
   updateStatus(true);
 }
  
-function handleSubmit() {
+async function handleSubmit() {
   if (!document.getElementById('c1').checked || !document.getElementById('c3').checked) {
     alert('필수 개인정보 동의 항목을 확인해주세요.'); return;
   }
   if (!sigSaved) { alert('전자서명을 입력하고 [서명 저장] 버튼을 눌러주세요.'); return; }
   const name = document.getElementById('sig-name').value.trim();
   if (!name) { alert('서명란의 성명을 입력해주세요.'); return; }
-  alert('입학원서가 제출되었습니다.\n성명: ' + name + '\n전자서명이 정상적으로 저장되었습니다.\n담당자가 검토 후 연락드리겠습니다.');
+
+  // 제출 버튼 비활성화 + 상태 표시
+  const submitBtn = document.querySelector('.submit-btn');
+  const originalText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'PDF 생성 중...';
+  submitBtn.style.opacity = '0.6';
+
+  try {
+    // 1) PDF를 Base64로 생성
+    const pdfBase64 = await generatePDFBase64();
+    submitBtn.textContent = '이메일 전송 중...';
+
+    // 2) 서버로 전송
+    const res = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        pdfBase64: pdfBase64,
+        applicantName: name
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || '서버 오류');
+    }
+
+    alert('✓ 입학원서가 정상적으로 제출되었습니다.\n성명: ' + name + '\n담당자가 검토 후 연락드리겠습니다.');
+  } catch (err) {
+    console.error(err);
+    alert('제출 중 오류가 발생했습니다:\n' + err.message + '\n\n다시 시도해 주세요.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+    submitBtn.style.opacity = '';
+  }
+}
+
+// PDF를 Base64 문자열로 반환 (파일 다운로드 없이)
+async function generatePDFBase64() {
+  const wrap = document.querySelector('.wrap');
+
+  // input 값을 div로 교체 (기존 saveAsPDF와 동일 로직)
+  const replacements = [];
+  const inputs = wrap.querySelectorAll('input, select, textarea');
+  inputs.forEach(el => {
+    let displayText = '';
+    if (el.tagName === 'SELECT') {
+      displayText = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+      if (!el.value) displayText = '';
+    } else if (el.type === 'checkbox') {
+      if (el.checked) el.setAttribute('checked', 'checked');
+      else el.removeAttribute('checked');
+      return;
+    } else {
+      displayText = el.value || '';
+    }
+
+    const isEmpty = !displayText;
+    if (isEmpty) displayText = el.placeholder || '';
+
+    const span = document.createElement('div');
+    const cs = getComputedStyle(el);
+    span.textContent = displayText;
+    span.style.cssText = `
+      border: ${cs.border};
+      border-radius: ${cs.borderRadius};
+      padding: ${cs.padding};
+      font-size: ${cs.fontSize};
+      font-family: ${cs.fontFamily};
+      color: ${isEmpty ? '#bbb' : '#111'};
+      background: #fff;
+      width: 100%;
+      min-height: ${cs.height};
+      line-height: 1.4;
+      white-space: ${el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap'};
+      overflow: hidden;
+      box-sizing: border-box;
+    `;
+    if (el.style.width) span.style.width = el.style.width;
+    if (el.style.flex) span.style.flex = el.style.flex;
+    if (el.style.gridColumn) span.style.gridColumn = el.style.gridColumn;
+
+    el.style.display = 'none';
+    el.parentNode.insertBefore(span, el.nextSibling);
+    replacements.push({ el, span });
+  });
+
+  document.body.classList.add('pdf-mode');
+  await new Promise(r => setTimeout(r, 100));
+
+  try {
+    const opt = {
+      margin: [8, 8, 8, 8],
+      filename: '입학원서.pdf',
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        windowWidth: wrap.scrollWidth
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    // PDF를 Blob으로 받아서 Base64로 변환
+    const pdfBlob = await html2pdf().set(opt).from(wrap).outputPdf('blob');
+    const base64 = await blobToBase64(pdfBlob);
+    return base64;
+  } finally {
+    // 원복
+    replacements.forEach(({ el, span }) => {
+      span.remove();
+      el.style.display = '';
+    });
+    document.body.classList.remove('pdf-mode');
+  }
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // "data:application/pdf;base64,..." 형식에서 base64 부분만 추출
+      const result = reader.result;
+      const base64 = result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 }
 
 // PDF 저장
