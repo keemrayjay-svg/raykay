@@ -114,16 +114,52 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
 .pdf-btn:disabled { opacity: 0.5; cursor: wait; }
 .note { font-size: 11px; color: #aaa; text-align: center; margin-top: 8px; }
 
-/* CSS 맨 아래에 있는 .pdf-mode 영역을 이것으로 교체 */
-.pdf-mode { background: #fff !important; }
-.pdf-mode .wrap { margin: 0 auto !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; padding: 1rem !important; }
+.pdf-mode { 
+  background: #ffffff !important; 
+  padding: 0 !important; 
+  margin: 0 !important; 
+}
+.pdf-mode .wrap { 
+  margin: 0 auto !important; 
+  border: none !important; 
+  border-radius: 0 !important; 
+  box-shadow: none !important; 
+  padding: 0px 10px !important; /* 위아래 여백을 대폭 줄여 밀림 방지 */
+  max-width: 820px !important;
+  width: 820px !important;
+}
+
+/* 인쇄 시 그리드와 플렉스가 세로로 늘어나는 버그 수정 */
+.pdf-mode .g2, .pdf-mode .g3, .pdf-mode .g4, .pdf-mode .top-row {
+  display: table !important;
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: separate !important;
+  border-spacing: 8px 0px !important;
+  margin-top: 4px !important;
+}
+
+.pdf-mode .g2 > div, .pdf-mode .g3 > div, .pdf-mode .g4 > div, .pdf-mode .top-fields {
+  display: table-cell !important;
+  vertical-align: top !important;
+  float: none !important;
+}
+
+/* 탑 로우(인적사항+사진) 레이아웃 보정 */
+.pdf-mode .top-fields { width: 85% !important; }
+.pdf-mode .top-row > div:last-child { display: table-cell !important; width: 15% !important; vertical-align: top !important; }
+.pdf-mode .photo-box { width: 105px !important; height: 135px !important; margin-left: auto !important; }
+
+/* 불필요한 요소 숨기기 */
 .pdf-mode .submit-btn,
 .pdf-mode .pdf-btn,
 .pdf-mode .add-btn,
 .pdf-mode .remove-btn,
 .pdf-mode .addr-btn,
 .pdf-mode .sig-actions,
-.pdf-mode .note { display: none !important; }
+.pdf-mode .note { 
+  display: none !important; 
+}
 .pdf-mode .photo-box { border-style: solid !important; border-color: #ccc !important; }
 .pdf-mode .sig-header span { width: 100%; }
 .pdf-mode .sig-status { display: none !important; }
