@@ -114,9 +114,9 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
 .pdf-btn:disabled { opacity: 0.5; cursor: wait; }
 .note { font-size: 11px; color: #aaa; text-align: center; margin-top: 8px; }
 
-/* PDF 생성 모드: 입력 필드 테두리/배경 유지, 인터랙션 요소 숨김 */
+/* CSS 맨 아래에 있는 .pdf-mode 영역을 이것으로 교체 */
 .pdf-mode { background: #fff !important; }
-.pdf-mode .wrap { margin: 0 !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; }
+.pdf-mode .wrap { margin: 0 auto !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; padding: 1rem !important; }
 .pdf-mode .submit-btn,
 .pdf-mode .pdf-btn,
 .pdf-mode .add-btn,
@@ -124,10 +124,7 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
 .pdf-mode .addr-btn,
 .pdf-mode .sig-actions,
 .pdf-mode .note { display: none !important; }
-.pdf-mode .f input,
-.pdf-mode .f select,
-.pdf-mode .f textarea { box-shadow: none !important; border-color: #bbb !important; }
-.pdf-mode .photo-box { border-style: solid !important; }
+.pdf-mode .photo-box { border-style: solid !important; border-color: #ccc !important; }
 .pdf-mode .sig-header span { width: 100%; }
 .pdf-mode .sig-status { display: none !important; }
  
