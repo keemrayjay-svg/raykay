@@ -119,15 +119,17 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
   padding: 0 !important; 
   margin: 0 !important; 
 }
+/* .pdf-mode .wrap 내부에 아래 속성이 잘 들어가 있는지 확인하고, 없으면 추가해 주세요 */
 .pdf-mode .wrap { 
   margin: 0 auto !important; 
   border: none !important; 
   border-radius: 0 !important; 
   box-shadow: none !important; 
-  padding: 15px !important; 
-  max-width: 780px !important; /* 우측 살짝 잘리는 현상 방지를 위해 가로폭 최적화 */
+  padding: 5px 10px !important; /* 위아래 내부 패딩을 최소화 */
+  max-width: 780px !important;
   width: 780px !important;
 }
+
 
 /* 인쇄 시 그리드와 플렉스가 세로로 늘어나는 버그 수정 및 가로 여백 확보 */
 .pdf-mode .g2, .pdf-mode .g3, .pdf-mode .g4, .pdf-mode .top-row {
@@ -146,8 +148,10 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
 }
 
 /* 훈련 참여 정보 영역이 페이지 경계선에 걸려 쪼개지지 않도록 강제 제어 */
+/* 각 섹션 간의 하단 마진을 줄여서 중간 빈 공간을 압축 */
 .pdf-mode .sec {
-  page-break-inside: avoid !important; /* 개별 섹션이 중간에 뚝 끊기는 것 방지 */
+  margin-bottom: 10px !important; 
+  page-break-inside: avoid !important;
 }
 
 /* 탑 로우(인적사항+사진) 레이아웃 보정 */
@@ -690,21 +694,25 @@ async function generatePDFBase64() {
   await new Promise(r => setTimeout(r, 100));
 
   try {
-    const opt = {
-      margin: [8, 8, 8, 8],
-      filename: '입학원서.pdf',
-      image: { type: 'jpeg', quality: 0.95 },
+   const opt = {
+      margin: [12, 12, 12, 12],
+      filename: '입학원서_대우능력개발원.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
         scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff',
         logging: false,
-        windowWidth: wrap.scrollWidth
+        width: 780,
+        windowWidth: 780,
+        scrollY: 0,
+        scrollX: 0,
+        offsetTop: 0
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      // 핵심 보정: 무조건 페이지를 쪼개는 구식 방식을 제외하고, 요소 안에서 쪼개짐만 방지(avoid)하도록 변경
+      pagebreak: { mode: ['avoid-all'], before: [], after: [] } 
     };
-
     // PDF를 Blob으로 받아서 Base64로 변환
     const pdfBlob = await html2pdf().set(opt).from(wrap).outputPdf('blob');
     const base64 = await blobToBase64(pdfBlob);
