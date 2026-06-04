@@ -702,33 +702,36 @@ async function saveAsPDF() {
   btn.disabled = true;
   btn.textContent = 'PDF 생성 중...';
 
-  // 1) 입력 요소 값을 표시용 div로 임시 교체
   const replacements = [];
   const inputs = wrap.querySelectorAll('input, select, textarea');
+  
   inputs.forEach(el => {
+    // 체크박스는 고유 형태를 유지해야 하므로 패스
+    if (el.type === 'checkbox') {
+      if (el.checked) el.setAttribute('checked', 'checked');
+      else el.removeAttribute('checked');
+      return;
+    }
+
     let displayText = '';
     if (el.tagName === 'SELECT') {
       displayText = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
       if (!el.value) displayText = '';
-    } else if (el.type === 'checkbox') {
-      // 체크박스는 그대로 두고 checked 속성만 고정
-      if (el.checked) el.setAttribute('checked', 'checked');
-      else el.removeAttribute('checked');
-      return;
-    } else if (el.type === 'date') {
-      displayText = el.value || '';
     } else {
       displayText = el.value || '';
     }
 
-    // 값이 없으면 placeholder를 회색으로 표시
     const isEmpty = !displayText;
     if (isEmpty) displayText = el.placeholder || '';
 
+    // 핵심 수정: 기존 너비와 스타일을 온전히 유지하는 방식의 대체 div 생성
     const span = document.createElement('div');
     const cs = getComputedStyle(el);
     span.textContent = displayText;
+    
+    // 원래 요소의 border, padding, font-size 등을 고스란히 복제하되 내부 텍스트로 채움
     span.style.cssText = `
+      box-sizing: border-box;
       border: ${cs.border};
       border-radius: ${cs.borderRadius};
       padding: ${cs.padding};
@@ -738,48 +741,43 @@ async function saveAsPDF() {
       background: #fff;
       width: 100%;
       min-height: ${cs.height};
-      line-height: 1.4;
+      line-height: ${cs.lineHeight || '1.4'};
       white-space: ${el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap'};
-      overflow: hidden;
-      box-sizing: border-box;
+      display: inline-block;
+      vertical-align: middle;
     `;
-    // 기존 inline style의 width/flex 등 유지를 위해 부모 맥락의 스타일 속성 복사
-    if (el.style.width) span.style.width = el.style.width;
-    if (el.style.flex) span.style.flex = el.style.flex;
-    if (el.style.gridColumn) span.style.gridColumn = el.style.gridColumn;
 
-    el.style.display = 'none';
+    // 원래 input을 숨기고 그 자리에 가짜 div(span)를 배치
+    el.style.setProperty('display', 'none', 'important');
     el.parentNode.insertBefore(span, el.nextSibling);
     replacements.push({ el, span });
   });
 
-  // 2) PDF 모드 클래스 추가 (버튼 숨김 등)
+  // PDF 모드 클래스 추가
   document.body.classList.add('pdf-mode');
-
-  // 3) 잠시 대기 (레이아웃 반영)
-  await new Promise(r => setTimeout(r, 100));
+  await new Promise(r => setTimeout(r, 200)); // 레이아웃 반영 대기 시간 연장
 
   try {
     const opt = {
-      margin: [8, 8, 8, 8],
+      margin: [10, 10, 10, 10], // 여백을 넉넉히 주어 잘림 방지
       filename: '입학원서_대우능력개발원.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
-        scale: 2,
+        scale: 2,           // 화질 선명하게
         useCORS: true,
         backgroundColor: '#ffffff',
         logging: false,
-        windowWidth: wrap.scrollWidth
+        windowWidth: 860     // 원본 wrap의 max-width에 고정하여 반응형 깨짐 방지
       },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
+    
     await html2pdf().set(opt).from(wrap).save();
   } catch (err) {
     console.error(err);
     alert('PDF 생성 중 오류가 발생했습니다: ' + err.message);
   } finally {
-    // 4) 원복
+    // 원상 복구
     replacements.forEach(({ el, span }) => {
       span.remove();
       el.style.display = '';
