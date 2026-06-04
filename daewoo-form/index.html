@@ -803,13 +803,13 @@ async function saveAsPDF() {
       margin: [12, 12, 12, 12], // 상, 좌, 하, 우 여백 확보
       filename: '입학원서_대우능력개발원.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: {
+     html2canvas: {
         scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff',
         logging: false,
-        width: 820,
-        windowWidth: 820,
+        width: 780,          // 820에서 780으로 수정 (오른쪽 짤림 방지)
+        windowWidth: 780,    // 820에서 780으로 수정
         scrollY: 0,
         scrollX: 0,
         offsetTop: 0
