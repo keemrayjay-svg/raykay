@@ -172,7 +172,33 @@ html:has(body.pdf-mode) {
           <div class="f"><label>성명 (영문)</label><input type="text" placeholder="HONG GIL DONG" /></div>
         </div>
         <div class="g3" style="margin-bottom:10px;">
-          <div class="f"><label>생년월일</label><input type="date" /></div>
+        <!-- 주민등록번호 -->
+<div class="field">
+  <label>주민등록번호</label>
+  <div style="display:flex; gap:6px; align-items:center;">
+    <input type="text" id="rrn-front" maxlength="6" inputmode="numeric"
+           placeholder="앞 6자리" style="flex:1;" />
+    <span>-</span>
+    <input type="text" id="rrn-back" maxlength="7" inputmode="numeric"
+           placeholder="뒤 7자리" style="flex:1;" />
+  </div>
+</div>
+
+<!-- 비상연락처 + 관계 -->
+<div class="grid grid-2">
+  <div class="field">
+    <label>비상연락처</label>
+    <input type="tel" id="emergency-phone" placeholder="010-0000-0000" />
+  </div>
+  <div class="field">
+    <label>관계</label>
+    <select id="emergency-relation">
+      <option value="">선택</option>
+      <option>부</option><option>모</option><option>배우자</option>
+      <option>형제자매</option><option>기타</option>
+    </select>
+  </div>
+</div>
           <div class="f"><label>성별</label><select><option value="">선택</option><option>남</option><option>여</option></select></div>
         </div>
         <div class="g2">
