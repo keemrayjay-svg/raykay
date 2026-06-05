@@ -703,12 +703,34 @@ async function handleSubmit() {
         useCORS: true,
         backgroundColor: '#ffffff',
         logging: false,
+          width: 780,
         windowWidth: 780,
         x: 0,
         y: 0,
         scrollX: 0,
-        scrollY: 0
+        scrollY: 0,
+        onclone: function (clonedDoc) {
+          if (clonedDoc.body) {
+            clonedDoc.body.style.setProperty('margin', '0', 'important');
+            clonedDoc.body.style.setProperty('width', '780px', 'important');
+          }
+          var w = clonedDoc.querySelector('.wrap');
+          if (w) {
+            w.style.setProperty('width', '780px', 'important');
+            w.style.setProperty('max-width', '780px', 'important');
+            w.style.setProperty('margin', '0', 'important');
+            w.style.setProperty('position', 'static', 'important');
+          }
+        }
       },
+(offsetTop: 0 줄을 지우고, x/y와 onclone 블록을 넣는 거예요.)
+
+정리: CSS 1곳 + html2canvas 2곳. 저장 → 커밋 → 재배포 → "📄 PDF로 저장" 버튼으로 테스트.
+
+핵심은 onclone이에요. 캡처할 때 폼을 강제로 780px·왼쪽 정렬로 고정해서 왼쪽 쏠림·잘림을 막아줍니다.
+
+
+
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
@@ -814,12 +836,34 @@ html2canvas: {
         useCORS: true,
         backgroundColor: '#ffffff',
         logging: false,
+      width: 780,
         windowWidth: 780,
         x: 0,
         y: 0,
         scrollX: 0,
-        scrollY: 0
+        scrollY: 0,
+        onclone: function (clonedDoc) {
+          if (clonedDoc.body) {
+            clonedDoc.body.style.setProperty('margin', '0', 'important');
+            clonedDoc.body.style.setProperty('width', '780px', 'important');
+          }
+          var w = clonedDoc.querySelector('.wrap');
+          if (w) {
+            w.style.setProperty('width', '780px', 'important');
+            w.style.setProperty('max-width', '780px', 'important');
+            w.style.setProperty('margin', '0', 'important');
+            w.style.setProperty('position', 'static', 'important');
+          }
+        }
       },
+(offsetTop: 0 줄을 지우고, x/y와 onclone 블록을 넣는 거예요.)
+
+정리: CSS 1곳 + html2canvas 2곳. 저장 → 커밋 → 재배포 → "📄 PDF로 저장" 버튼으로 테스트.
+
+핵심은 onclone이에요. 캡처할 때 폼을 강제로 780px·왼쪽 정렬로 고정해서 왼쪽 쏠림·잘림을 막아줍니다.
+
+
+
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // 항목 잘림 방지
     };
