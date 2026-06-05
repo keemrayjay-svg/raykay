@@ -70,20 +70,6 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
   -ms-touch-action: none;
   overscroll-behavior: contain;
 }
-#sigDebug {
-  font-family: monospace;
-  font-size: 11px;
-  background: #1a1a1a;
-  color: #0f0;
-  padding: 8px 12px;
-  border-bottom: 1px solid #333;
-  min-height: 60px;
-  max-height: 120px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  word-break: break-all;
-  line-height: 1.4;
-}
 #sigPad {
   display: block;
   position: absolute;
@@ -119,13 +105,13 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
   padding: 0 !important; 
   margin: 0 !important; 
 }
-/* .pdf-mode .wrap 내부에 아래 속성이 잘 들어가 있는지 확인하고, 없으면 추가해 주세요 */
+/* PDF 캡처 시: 가운데 정렬 제거(margin:0) + 너비 고정 */
 .pdf-mode .wrap { 
   margin: 0 !important; 
   border: none !important; 
   border-radius: 0 !important; 
   box-shadow: none !important; 
-  padding: 5px 10px !important; /* 위아래 내부 패딩을 최소화 */
+  padding: 5px 10px !important;
   max-width: 780px !important;
   width: 780px !important;
 }
@@ -592,6 +578,101 @@ function saveSig() {
   sigSaved = true;
   updateStatus(true);
 }
+
+// ★ PDF 생성 공통 옵션 (다운로드/이메일 둘 다 사용)
+// 핵심: onclone 에서 복제된 문서의 .wrap 을 강제로 780px·왼쪽정렬로 고정 →
+//       모바일/PC 어디서든 왼쪽 쏠림·잘림 없이 전체 폭을 채움
+function buildPdfOptions() {
+  return {
+    margin: [10, 10, 10, 10],
+    filename: '입학원서_대우능력개발원.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      width: 780,
+      windowWidth: 780,
+      x: 0,
+      y: 0,
+      scrollX: 0,
+      scrollY: 0,
+      onclone: function (clonedDoc) {
+        if (clonedDoc.body) {
+          clonedDoc.body.style.setProperty('margin', '0', 'important');
+          clonedDoc.body.style.setProperty('padding', '0', 'important');
+          clonedDoc.body.style.setProperty('width', '780px', 'important');
+          clonedDoc.body.style.setProperty('background', '#ffffff', 'important');
+        }
+        var w = clonedDoc.querySelector('.wrap');
+        if (w) {
+          w.style.setProperty('width', '780px', 'important');
+          w.style.setProperty('max-width', '780px', 'important');
+          w.style.setProperty('margin', '0', 'important');
+          w.style.setProperty('transform', 'none', 'important');
+          w.style.setProperty('left', '0', 'important');
+          w.style.setProperty('position', 'static', 'important');
+        }
+      }
+    },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+}
+
+// ★ 입력 요소(input/select/textarea)를 캡처용 div 로 교체 → 교체기록 반환
+function replaceInputsForCapture(wrap) {
+  const replacements = [];
+  const inputs = wrap.querySelectorAll('input, select, textarea');
+  inputs.forEach(el => {
+    if (el.type === 'checkbox') {
+      if (el.checked) el.setAttribute('checked', 'checked');
+      else el.removeAttribute('checked');
+      return;
+    }
+    let displayText = '';
+    if (el.tagName === 'SELECT') {
+      displayText = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+      if (!el.value) displayText = '';
+    } else {
+      displayText = el.value || '';
+    }
+    const isEmpty = !displayText;
+    if (isEmpty) displayText = el.placeholder || '';
+
+    const span = document.createElement('div');
+    const cs = getComputedStyle(el);
+    span.textContent = displayText;
+    span.style.cssText = `
+      box-sizing: border-box;
+      border: ${cs.border};
+      border-radius: ${cs.borderRadius};
+      padding: 6px 10px;
+      font-size: ${cs.fontSize};
+      font-family: ${cs.fontFamily};
+      color: ${isEmpty ? '#bbb' : '#111'};
+      background: #fff;
+      width: 100%;
+      min-height: 32px;
+      line-height: 1.2;
+      white-space: ${el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap'};
+      display: inline-block;
+      vertical-align: middle;
+    `;
+    el.style.setProperty('display', 'none', 'important');
+    el.parentNode.insertBefore(span, el.nextSibling);
+    replacements.push({ el, span });
+  });
+  return replacements;
+}
+
+function restoreInputs(replacements) {
+  replacements.forEach(({ el, span }) => {
+    span.remove();
+    el.style.display = '';
+  });
+}
  
 async function handleSubmit() {
   if (!document.getElementById('c1').checked || !document.getElementById('c3').checked) {
@@ -626,7 +707,7 @@ async function handleSubmit() {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.error || '서버 오류');
+      throw new Error((data.error || '서버 오류') + (data.detail ? ('\n상세: ' + JSON.stringify(data.detail)) : ''));
     }
 
     alert('✓ 입학원서가 정상적으로 제출되었습니다.\n성명: ' + name + '\n담당자가 검토 후 연락드리겠습니다.');
@@ -640,8 +721,8 @@ async function handleSubmit() {
   }
 }
 
-// PDF를 Base64 문자열로 반환 (파일 다운로드 없이)
- async function generatePDFBase64() {
+// PDF를 Base64 문자열로 반환 (파일 다운로드 없이) — 이메일 첨부용
+async function generatePDFBase64() {
   const wrap = document.querySelector('.wrap');
 
   // 캡처 전에 화면을 맨 위/왼쪽으로 (밀림·잘림 방지)
@@ -649,99 +730,17 @@ async function handleSubmit() {
   const origY = window.scrollY;
   window.scrollTo(0, 0);
 
-  const replacements = [];
-  const inputs = wrap.querySelectorAll('input, select, textarea');
-  inputs.forEach(el => {
-    if (el.type === 'checkbox') {
-      if (el.checked) el.setAttribute('checked', 'checked');
-      else el.removeAttribute('checked');
-      return;
-    }
-    let displayText = '';
-    if (el.tagName === 'SELECT') {
-      displayText = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
-      if (!el.value) displayText = '';
-    } else {
-      displayText = el.value || '';
-    }
-    const isEmpty = !displayText;
-    if (isEmpty) displayText = el.placeholder || '';
-    const span = document.createElement('div');
-    const cs = getComputedStyle(el);
-    span.textContent = displayText;
-    span.style.cssText = `
-      box-sizing: border-box;
-      border: ${cs.border};
-      border-radius: ${cs.borderRadius};
-      padding: 6px 10px;
-      font-size: ${cs.fontSize};
-      font-family: ${cs.fontFamily};
-      color: ${isEmpty ? '#bbb' : '#111'};
-      background: #fff;
-      width: 100%;
-      min-height: 32px;
-      line-height: 1.2;
-      white-space: ${el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap'};
-      display: inline-block;
-      vertical-align: middle;
-    `;
-    el.style.setProperty('display', 'none', 'important');
-    el.parentNode.insertBefore(span, el.nextSibling);
-    replacements.push({ el, span });
-  });
+  const replacements = replaceInputsForCapture(wrap);
 
   document.body.classList.add('pdf-mode');
   await new Promise(r => setTimeout(r, 250));
 
   try {
-    const opt = {
-      margin: [12, 12, 12, 12],
-      filename: '입학원서_대우능력개발원.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-   html2canvas: {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-          width: 780,
-        windowWidth: 780,
-        x: 0,
-        y: 0,
-        scrollX: 0,
-        scrollY: 0,
-        onclone: function (clonedDoc) {
-          if (clonedDoc.body) {
-            clonedDoc.body.style.setProperty('margin', '0', 'important');
-            clonedDoc.body.style.setProperty('width', '780px', 'important');
-          }
-          var w = clonedDoc.querySelector('.wrap');
-          if (w) {
-            w.style.setProperty('width', '780px', 'important');
-            w.style.setProperty('max-width', '780px', 'important');
-            w.style.setProperty('margin', '0', 'important');
-            w.style.setProperty('position', 'static', 'important');
-          }
-        }
-      },
-(offsetTop: 0 줄을 지우고, x/y와 onclone 블록을 넣는 거예요.)
-
-정리: CSS 1곳 + html2canvas 2곳. 저장 → 커밋 → 재배포 → "📄 PDF로 저장" 버튼으로 테스트.
-
-핵심은 onclone이에요. 캡처할 때 폼을 강제로 780px·왼쪽 정렬로 고정해서 왼쪽 쏠림·잘림을 막아줍니다.
-
-
-
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    };
-    const pdfBlob = await html2pdf().set(opt).from(wrap).outputPdf('blob');
+    const pdfBlob = await html2pdf().set(buildPdfOptions()).from(wrap).outputPdf('blob');
     const base64 = await blobToBase64(pdfBlob);
     return base64;
   } finally {
-    replacements.forEach(({ el, span }) => {
-      span.remove();
-      el.style.display = '';
-    });
+    restoreInputs(replacements);
     document.body.classList.remove('pdf-mode');
     window.scrollTo(origX, origY);
   }
@@ -761,9 +760,7 @@ function blobToBase64(blob) {
   });
 }
 
-// PDF 저장
-// html2canvas가 <input>/<select>/<textarea>의 현재 값을 렌더링하지 못하므로
-// value를 실제 텍스트 노드로 일시 교체한 뒤 PDF 생성, 이후 원복
+// PDF 저장 (다운로드 버튼)
 async function saveAsPDF() {
   const btn = document.getElementById('pdfBtn');
   const wrap = document.querySelector('.wrap');
@@ -776,108 +773,19 @@ async function saveAsPDF() {
   const origY = window.scrollY;
   window.scrollTo(0, 0);
 
-  // 1) 입력 요소를 가짜 div로 교체
-  const replacements = [];
-  const inputs = wrap.querySelectorAll('input, select, textarea');
-  inputs.forEach(el => {
-    if (el.type === 'checkbox') {
-      if (el.checked) el.setAttribute('checked', 'checked');
-      else el.removeAttribute('checked');
-      return;
-    }
-
-    let displayText = '';
-    if (el.tagName === 'SELECT') {
-      displayText = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
-      if (!el.value) displayText = '';
-    } else {
-      displayText = el.value || '';
-    }
-
-    const isEmpty = !displayText;
-    if (isEmpty) displayText = el.placeholder || '';
-
-    const span = document.createElement('div');
-    const cs = getComputedStyle(el);
-    span.textContent = displayText;
-    span.style.cssText = `
-      box-sizing: border-box;
-      border: ${cs.border};
-      border-radius: ${cs.borderRadius};
-      padding: 6px 10px;
-      font-size: ${cs.fontSize};
-      font-family: ${cs.fontFamily};
-      color: ${isEmpty ? '#bbb' : '#111'};
-      background: #fff;
-      width: 100%;
-      min-height: 32px;
-      line-height: 1.2;
-      white-space: ${el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap'};
-      display: inline-block;
-      vertical-align: middle;
-    `;
-
-    el.style.setProperty('display', 'none', 'important');
-    el.parentNode.insertBefore(span, el.nextSibling);
-    replacements.push({ el, span });
-  });
+  const replacements = replaceInputsForCapture(wrap);
 
   // PDF 모드 클래스 추가
   document.body.classList.add('pdf-mode');
   await new Promise(r => setTimeout(r, 250)); // 스타일 적용 대기
 
   try {
-    const opt = {
-      margin: [12, 12, 12, 12], // 상, 좌, 하, 우 여백 확보
-      filename: '입학원서_대우능력개발원.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-html2canvas: {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-      width: 780,
-        windowWidth: 780,
-        x: 0,
-        y: 0,
-        scrollX: 0,
-        scrollY: 0,
-        onclone: function (clonedDoc) {
-          if (clonedDoc.body) {
-            clonedDoc.body.style.setProperty('margin', '0', 'important');
-            clonedDoc.body.style.setProperty('width', '780px', 'important');
-          }
-          var w = clonedDoc.querySelector('.wrap');
-          if (w) {
-            w.style.setProperty('width', '780px', 'important');
-            w.style.setProperty('max-width', '780px', 'important');
-            w.style.setProperty('margin', '0', 'important');
-            w.style.setProperty('position', 'static', 'important');
-          }
-        }
-      },
-(offsetTop: 0 줄을 지우고, x/y와 onclone 블록을 넣는 거예요.)
-
-정리: CSS 1곳 + html2canvas 2곳. 저장 → 커밋 → 재배포 → "📄 PDF로 저장" 버튼으로 테스트.
-
-핵심은 onclone이에요. 캡처할 때 폼을 강제로 780px·왼쪽 정렬로 고정해서 왼쪽 쏠림·잘림을 막아줍니다.
-
-
-
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // 항목 잘림 방지
-    };
-
-    await html2pdf().set(opt).from(wrap).save();
+    await html2pdf().set(buildPdfOptions()).from(wrap).save();
   } catch (err) {
     console.error(err);
     alert('PDF 생성 중 오류가 발생했습니다: ' + err.message);
   } finally {
-    // 원상 복구 및 원래 스크롤 위치로 이동
-    replacements.forEach(({ el, span }) => {
-      span.remove();
-      el.style.display = '';
-    });
+    restoreInputs(replacements);
     document.body.classList.remove('pdf-mode');
     window.scrollTo(origX, origY);
     btn.disabled = false;
@@ -888,4 +796,3 @@ html2canvas: {
 </script>
 </body>
 </html>
- 
