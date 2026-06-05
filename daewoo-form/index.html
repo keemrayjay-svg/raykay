@@ -175,34 +175,32 @@ html:has(body.pdf-mode) {
          <div class="f"><label>성별</label><select><option value="">선택</option><option>남</option><option>여</option></select></div>
         </div>
         <div class="g2">
-          <!-- 주민등록번호 -->
-<div style="margin-bottom:14px;">
-  <label style="display:block; font-size:12px; color:#666; margin-bottom:4px;">주민등록번호</label>
-  <div style="display:flex; gap:8px; align-items:center; max-width:380px;">
-    <input type="text" id="rrn-front" maxlength="6" inputmode="numeric" placeholder="앞 6자리"
-      style="flex:1; border:1px solid #d0d0d0; border-radius:8px; padding:9px 11px; font-size:14px; box-sizing:border-box; outline:none;" />
-    <span style="color:#888;">-</span>
-    <input type="text" id="rrn-back" maxlength="7" inputmode="numeric" placeholder="뒤 7자리"
-      style="flex:1; border:1px solid #d0d0d0; border-radius:8px; padding:9px 11px; font-size:14px; box-sizing:border-box; outline:none;" />
+        <!-- 주민등록번호: 한 줄 통째로 -->
+<div class="f" style="margin-bottom:10px;">
+  <label>주민등록번호</label>
+  <div style="display:flex; gap:6px; align-items:center;">
+    <input type="text" id="rrn-front" maxlength="6" inputmode="numeric" placeholder="앞 6자리" style="flex:1;" />
+    <span style="color:#aaa;">-</span>
+    <input type="text" id="rrn-back" maxlength="7" inputmode="numeric" placeholder="뒤 7자리" style="flex:1;" />
   </div>
 </div>
 
-<!-- 비상연락처 + 관계 -->
-<div style="display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap;">
-  <div style="flex:1; min-width:180px;">
-    <label style="display:block; font-size:12px; color:#666; margin-bottom:4px;">비상연락처</label>
-    <input type="tel" id="emergency-phone" placeholder="010-0000-0000"
-      style="width:100%; border:1px solid #d0d0d0; border-radius:8px; padding:9px 11px; font-size:14px; box-sizing:border-box; outline:none;" />
-  </div>
-  <div style="flex:1; min-width:140px;">
-    <label style="display:block; font-size:12px; color:#666; margin-bottom:4px;">관계</label>
-    <select id="emergency-relation"
-      style="width:100%; border:1px solid #d0d0d0; border-radius:8px; padding:9px 11px; font-size:14px; box-sizing:border-box; outline:none; background:#fff;">
+<!-- 비상연락처 + 관계: 2칸 -->
+<div class="g2" style="margin-bottom:10px;">
+  <div class="f"><label>비상연락처</label><input type="tel" id="emergency-phone" placeholder="010-0000-0000" /></div>
+  <div class="f"><label>관계</label>
+    <select id="emergency-relation">
       <option value="">선택</option>
       <option>부</option><option>모</option><option>배우자</option>
       <option>형제자매</option><option>기타</option>
     </select>
   </div>
+</div>
+
+<!-- 휴대전화 + 이메일: 2칸 -->
+<div class="g2">
+  <div class="f"><label>휴대전화</label><input type="tel" placeholder="010-0000-0000" /></div>
+  <div class="f"><label>이메일</label><input type="email" placeholder="example@email.com" /></div>
 </div>
           <div class="f"><label>휴대전화</label><input type="tel" placeholder="010-0000-0000" /></div>
           <div class="f"><label>이메일</label><input type="email" placeholder="example@email.com" /></div>
