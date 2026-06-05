@@ -8,16 +8,16 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; color: #111; font-size: 14px; }
-.wrap { max-width: 860px; margin: 2rem auto; background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 2rem; }
+.wrap { max-width: 860px; margin: 2rem auto; background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 2.5rem; }
 .hdr { text-align: center; border-bottom: 2px solid #111; padding-bottom: 1rem; margin-bottom: 1.5rem; }
 .hdr .org { font-size: 12px; color: #666; letter-spacing: 3px; margin-bottom: 4px; }
 .hdr h1 { font-size: 28px; font-weight: 600; letter-spacing: 6px; }
 .hdr p { font-size: 13px; color: #888; margin-top: 4px; }
-.sec { margin-bottom: 1.5rem; }
-.sec-t { font-size: 13px; font-weight: 600; color: #555; background: #f7f7f7; padding: 6px 12px; border-left: 3px solid #111; margin-bottom: 10px; letter-spacing: 1px; }
-.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-.g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+.sec { margin-bottom: 1.8rem; page-break-inside: avoid; } /* PDF 분할 시 섹션 쪼개짐 방지 */
+.sec-t { font-size: 13px; font-weight: 600; color: #555; background: #f7f7f7; padding: 6px 12px; border-left: 3px solid #111; margin-bottom: 12px; letter-spacing: 1px; }
+.g2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.g4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 .f { display: flex; flex-direction: column; gap: 4px; }
 .f label { font-size: 12px; color: #666; }
 .f input, .f select, .f textarea {
@@ -28,13 +28,15 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
 }
 .f input:focus, .f select:focus, .f textarea:focus { border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.12); }
 .f textarea { resize: vertical; min-height: 70px; line-height: 1.6; }
-.top-row { display: flex; gap: 16px; align-items: flex-start; }
-.top-fields { flex: 1; }
+
+/* 기본 인적사항 + 사진 배치 레이아웃 개선 */
+.top-row { display: grid; grid-template-columns: 1fr 110px; gap: 16px; align-items: start; }
+.top-fields { display: flex; flex-direction: column; gap: 10px; }
 .photo-box {
-  width: 105px; height: 135px; border: 1px dashed #bbb; border-radius: 8px;
+  width: 110px; height: 145px; border: 1px dashed #bbb; border-radius: 8px;
   display: flex; align-items: center; justify-content: center; flex-direction: column;
   gap: 6px; cursor: pointer; background: #fafafa; font-size: 12px; color: #999;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s; box-sizing: border-box;
 }
 .photo-box:hover { border-color: #378ADD; color: #378ADD; }
 .photo-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 7px; }
@@ -44,16 +46,16 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
 .divider { border: none; border-top: 1px solid #eee; margin: 1.5rem 0; }
 .add-btn { font-size: 13px; color: #378ADD; background: none; border: 1px dashed #378ADD; border-radius: 8px; padding: 8px 16px; cursor: pointer; width: 100%; transition: background 0.15s; }
 .add-btn:hover { background: #f0f7ff; }
-.career-item, .cert-item { border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 8px; position: relative; }
+.career-item, .cert-item { border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 8px; position: relative; page-break-inside: avoid; }
 .remove-btn { position: absolute; top: 10px; right: 10px; font-size: 12px; color: #e24b4a; background: none; border: 1px solid #e24b4a; border-radius: 6px; padding: 3px 8px; cursor: pointer; }
 .remove-btn:hover { background: #fff0f0; }
-.consent-box { border: 1px solid #eee; border-radius: 12px; padding: 1rem 1.25rem; font-size: 13px; color: #666; line-height: 1.7; background: #fafafa; margin-bottom: 8px; }
+.consent-box { border: 1px solid #eee; border-radius: 12px; padding: 1rem 1.25rem; font-size: 13px; color: #666; line-height: 1.7; background: #fafafa; margin-bottom: 8px; page-break-inside: avoid; }
 .consent-box h3 { font-size: 13px; font-weight: 600; color: #111; margin-bottom: 6px; }
 .c-check { display: flex; align-items: flex-start; gap: 8px; margin-top: 10px; font-size: 13px; color: #111; }
 .c-check input[type=checkbox] { margin-top: 2px; flex-shrink: 0; width: 15px; height: 15px; cursor: pointer; }
  
 /* 전자서명 */
-.sig-section { border: 1px solid #ccc; border-radius: 12px; overflow: hidden; }
+.sig-section { border: 1px solid #ccc; border-radius: 12px; overflow: hidden; page-break-inside: avoid; }
 .sig-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f7f7f7; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 8px; }
 .sig-header span { font-size: 13px; color: #666; }
 .sig-actions { display: flex; gap: 8px; }
@@ -64,11 +66,9 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
 .sig-canvas-wrap {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 150px;
   background: #fff;
   touch-action: none;
-  -ms-touch-action: none;
-  overscroll-behavior: contain;
 }
 #sigPad {
   display: block;
@@ -78,12 +78,6 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
   height: 100%;
   background: #fff;
   cursor: crosshair;
-  touch-action: none;
-  -ms-touch-action: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
 }
 .sig-status { font-size: 12px; color: #999; padding: 7px 14px; border-top: 1px solid #eee; background: #fafafa; display: flex; align-items: center; gap: 6px; }
 .sig-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; display: inline-block; flex-shrink: 0; }
@@ -100,76 +94,48 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
 .pdf-btn:disabled { opacity: 0.5; cursor: wait; }
 .note { font-size: 11px; color: #aaa; text-align: center; margin-top: 8px; }
 
+/* ==========================================
+   ★ 핵심: html2pdf 렌더링 최적화 셋팅 
+   ========================================== */
 .pdf-mode { 
   background: #ffffff !important; 
   padding: 0 !important; 
-  margin: 0 !important; 
-  width: 780px !important;
-  max-width: 780px !important;
+  margin: 0 !important;
 }
+/* html2pdf가 원본 크기를 유연하게 읽도록 제한 규격 삭제 */
 html:has(body.pdf-mode) {
-  width: 780px !important;
-  max-width: 780px !important;
-  overflow-x: hidden !important;
+  width: auto !important;
+  max-width: none !important;
+  overflow-x: visible !important;
 }
-/* PDF 캡처 시: 가운데 정렬 제거(margin:0) + 너비 고정 */
+/* PDF 변환 시 여백과 테두리를 리셋하여 잘림 방지 */
 .pdf-mode .wrap { 
   margin: 0 auto !important; 
   border: none !important; 
   border-radius: 0 !important; 
   box-shadow: none !important; 
-  padding: 5px 10px !important;
-  max-width: 780px !important;
-  width: 780px !important;
-}
-
-
-/* 인쇄 시 그리드와 플렉스가 세로로 늘어나는 버그 수정 및 가로 여백 확보 */
-.pdf-mode .g2, .pdf-mode .g3, .pdf-mode .g4, .pdf-mode .top-row {
-  display: table !important;
+  padding: 20px !important;
   width: 100% !important;
-  table-layout: fixed !important;
-  border-collapse: separate !important;
-  border-spacing: 6px 0px !important; /* 칸 사이 간격 살짝 조절 */
-  margin-top: 4px !important;
+  max-width: 100% !important;
 }
-
-.pdf-mode .g2 > div, .pdf-mode .g3 > div, .pdf-mode .g4 > div, .pdf-mode .top-fields {
-  display: table-cell !important;
-  vertical-align: top !important;
-  float: none !important;
-}
-
-/* 훈련 참여 정보 영역이 페이지 경계선에 걸려 쪼개지지 않도록 강제 제어 */
-/* 각 섹션 간의 하단 마진을 줄여서 중간 빈 공간을 압축 */
-.pdf-mode .sec {
-  margin-bottom: 10px !important; 
-  page-break-inside: avoid !important;
-}
-
-/* 탑 로우(인적사항+사진) 레이아웃 보정 */
-.pdf-mode .top-fields { width: 85% !important; }
-.pdf-mode .top-row > div:last-child { display: table-cell !important; width: 15% !important; vertical-align: top !important; }
-.pdf-mode .photo-box { width: 105px !important; height: 135px !important; margin-left: auto !important; }
-
-/* 불필요한 버튼 및 요소 숨기기 */
+/* 불필요한 스크립트 전용 UI 숨기기 */
 .pdf-mode .submit-btn,
 .pdf-mode .pdf-btn,
 .pdf-mode .add-btn,
 .pdf-mode .remove-btn,
 .pdf-mode .addr-btn,
 .pdf-mode .sig-actions,
-.pdf-mode .note { 
+.pdf-mode .note,
+.pdf-mode .sig-status { 
   display: none !important; 
 }
 .pdf-mode .photo-box { border-style: solid !important; border-color: #ccc !important; }
-.pdf-mode .sig-header span { width: 100%; }
-.pdf-mode .sig-status { display: none !important; }
- 
+
 @media (max-width: 620px) {
   .wrap { margin: 0; border-radius: 0; padding: 1.2rem; }
+  .top-row { grid-template-columns: 1fr; }
+  .photo-box { margin: 0 auto; }
   .g2, .g3, .g4 { grid-template-columns: 1fr 1fr; }
-  .g4 { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
