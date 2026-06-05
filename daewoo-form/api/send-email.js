@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     }
 
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
-    const TO_EMAIL = process.env.TO_EMAIL;
+    const TO_EMAIL = process.env.TO_EMAIL || 'recruit@dwit.or.kr';
     const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
 
     if (!RESEND_API_KEY || !TO_EMAIL) {
