@@ -121,7 +121,7 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
 }
 /* .pdf-mode .wrap 내부에 아래 속성이 잘 들어가 있는지 확인하고, 없으면 추가해 주세요 */
 .pdf-mode .wrap { 
-  margin: 0 auto !important; 
+  margin: 0 !important; 
   border: none !important; 
   border-radius: 0 !important; 
   box-shadow: none !important; 
@@ -698,16 +698,16 @@ async function handleSubmit() {
       margin: [12, 12, 12, 12],
       filename: '입학원서_대우능력개발원.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: {
+   html2canvas: {
         scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff',
         logging: false,
-        width: 780,
         windowWidth: 780,
-        scrollY: 0,
+        x: 0,
+        y: 0,
         scrollX: 0,
-        offsetTop: 0
+        scrollY: 0
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
@@ -809,16 +809,16 @@ async function saveAsPDF() {
       margin: [12, 12, 12, 12], // 상, 좌, 하, 우 여백 확보
       filename: '입학원서_대우능력개발원.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-     html2canvas: {
+html2canvas: {
         scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff',
         logging: false,
-        width: 780,          // 820에서 780으로 수정 (오른쪽 짤림 방지)
-        windowWidth: 780,    // 820에서 780으로 수정
-        scrollY: 0,
+        windowWidth: 780,
+        x: 0,
+        y: 0,
         scrollX: 0,
-        offsetTop: 0
+        scrollY: 0
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // 항목 잘림 방지
