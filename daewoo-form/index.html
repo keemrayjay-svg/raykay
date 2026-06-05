@@ -114,7 +114,7 @@ html:has(body.pdf-mode) {
 }
 /* PDF 캡처 시: 가운데 정렬 제거(margin:0) + 너비 고정 */
 .pdf-mode .wrap { 
-  margin: 0 !important; 
+  margin: 0 auto !important; 
   border: none !important; 
   border-radius: 0 !important; 
   box-shadow: none !important; 
@@ -594,35 +594,12 @@ function buildPdfOptions() {
     margin: [10, 10, 10, 10],
     filename: '입학원서_대우능력개발원.pdf',
     image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff',
-      logging: false,
-      width: 780,
-      windowWidth: 780,
-      x: 0,
-      y: 0,
-      scrollX: 0,
-      scrollY: 0,
-      onclone: function (clonedDoc) {
-        if (clonedDoc.body) {
-          clonedDoc.body.style.setProperty('margin', '0', 'important');
-          clonedDoc.body.style.setProperty('padding', '0', 'important');
-          clonedDoc.body.style.setProperty('width', '780px', 'important');
-          clonedDoc.body.style.setProperty('background', '#ffffff', 'important');
-        }
-        var w = clonedDoc.querySelector('.wrap');
-        if (w) {
-          w.style.setProperty('width', '780px', 'important');
-          w.style.setProperty('max-width', '780px', 'important');
-          w.style.setProperty('margin', '0', 'important');
-          w.style.setProperty('transform', 'none', 'important');
-          w.style.setProperty('left', '0', 'important');
-          w.style.setProperty('position', 'static', 'important');
-        }
-      }
-    },
+  html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false
+      },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
   };
