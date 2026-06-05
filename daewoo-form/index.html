@@ -641,60 +641,60 @@ async function handleSubmit() {
 }
 
 // PDF를 Base64 문자열로 반환 (파일 다운로드 없이)
-async function generatePDFBase64() {
+  async function generatePDFBase64() {
   const wrap = document.querySelector('.wrap');
 
-  // input 값을 div로 교체 (기존 saveAsPDF와 동일 로직)
+  // 캡처 전에 화면을 맨 위/왼쪽으로 (밀림·잘림 방지)
+  const origX = window.scrollX;
+  const origY = window.scrollY;
+  window.scrollTo(0, 0);
+
   const replacements = [];
   const inputs = wrap.querySelectorAll('input, select, textarea');
   inputs.forEach(el => {
+    if (el.type === 'checkbox') {
+      if (el.checked) el.setAttribute('checked', 'checked');
+      else el.removeAttribute('checked');
+      return;
+    }
     let displayText = '';
     if (el.tagName === 'SELECT') {
       displayText = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
       if (!el.value) displayText = '';
-    } else if (el.type === 'checkbox') {
-      if (el.checked) el.setAttribute('checked', 'checked');
-      else el.removeAttribute('checked');
-      return;
     } else {
       displayText = el.value || '';
     }
-
     const isEmpty = !displayText;
     if (isEmpty) displayText = el.placeholder || '';
-
     const span = document.createElement('div');
     const cs = getComputedStyle(el);
     span.textContent = displayText;
     span.style.cssText = `
+      box-sizing: border-box;
       border: ${cs.border};
       border-radius: ${cs.borderRadius};
-      padding: ${cs.padding};
+      padding: 6px 10px;
       font-size: ${cs.fontSize};
       font-family: ${cs.fontFamily};
       color: ${isEmpty ? '#bbb' : '#111'};
       background: #fff;
       width: 100%;
-      min-height: ${cs.height};
-      line-height: 1.4;
+      min-height: 32px;
+      line-height: 1.2;
       white-space: ${el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap'};
-      overflow: hidden;
-      box-sizing: border-box;
+      display: inline-block;
+      vertical-align: middle;
     `;
-    if (el.style.width) span.style.width = el.style.width;
-    if (el.style.flex) span.style.flex = el.style.flex;
-    if (el.style.gridColumn) span.style.gridColumn = el.style.gridColumn;
-
-    el.style.display = 'none';
+    el.style.setProperty('display', 'none', 'important');
     el.parentNode.insertBefore(span, el.nextSibling);
     replacements.push({ el, span });
   });
 
   document.body.classList.add('pdf-mode');
-  await new Promise(r => setTimeout(r, 100));
+  await new Promise(r => setTimeout(r, 250));
 
   try {
-   const opt = {
+    const opt = {
       margin: [12, 12, 12, 12],
       filename: '입학원서_대우능력개발원.pdf',
       image: { type: 'jpeg', quality: 0.98 },
@@ -710,20 +710,18 @@ async function generatePDFBase64() {
         offsetTop: 0
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      // 핵심 보정: 무조건 페이지를 쪼개는 구식 방식을 제외하고, 요소 안에서 쪼개짐만 방지(avoid)하도록 변경
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
-    // PDF를 Blob으로 받아서 Base64로 변환
     const pdfBlob = await html2pdf().set(opt).from(wrap).outputPdf('blob');
     const base64 = await blobToBase64(pdfBlob);
     return base64;
   } finally {
-    // 원복
     replacements.forEach(({ el, span }) => {
       span.remove();
       el.style.display = '';
     });
     document.body.classList.remove('pdf-mode');
+    window.scrollTo(origX, origY);
   }
 }
 
