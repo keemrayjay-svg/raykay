@@ -104,6 +104,13 @@ body { font-family: 'Noto Sans KR', Arial, sans-serif; background: #f5f5f5; colo
   background: #ffffff !important; 
   padding: 0 !important; 
   margin: 0 !important; 
+  width: 780px !important;
+  max-width: 780px !important;
+}
+html:has(body.pdf-mode) {
+  width: 780px !important;
+  max-width: 780px !important;
+  overflow-x: hidden !important;
 }
 /* PDF 캡처 시: 가운데 정렬 제거(margin:0) + 너비 고정 */
 .pdf-mode .wrap { 
