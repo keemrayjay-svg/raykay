@@ -711,7 +711,7 @@ async function generatePDFBase64() {
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       // 핵심 보정: 무조건 페이지를 쪼개는 구식 방식을 제외하고, 요소 안에서 쪼개짐만 방지(avoid)하도록 변경
-      pagebreak: { mode: ['avoid-all'], before: [], after: [] } 
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
     // PDF를 Blob으로 받아서 Base64로 변환
     const pdfBlob = await html2pdf().set(opt).from(wrap).outputPdf('blob');
