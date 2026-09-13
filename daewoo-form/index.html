@@ -502,33 +502,44 @@
   </p>
 
   <!-- ⑤ 기관 확인란 -->
-  <div class="sec"><span class="badge">5</span><span class="sec-title">기관 확인란</span></div>
-  <p class="sec-sub">(지원자 작성 아님)</p>
-  <table class="ft">
-    <colgroup>
-      <col style="width:300px"><col><col style="width:300px"><col><col style="width:300px"><col>
-    </colgroup>
+<div class="sec"><span class="badge">5</span><span class="sec-title">기관 확인란</span></div>
+<p class="sec-sub">(지원자 작성 아님)</p>
+
+<table class="ft">
+  <colgroup>
+    <col style="width: 12%;"> <!-- 상담자 라벨 -->
+    <col style="width: 20%;"> <!-- 상담자 입력란 -->
+    <col style="width: 36%;"> <!-- (서명) 영역 -->
+    <col style="width: 12%;"> <!-- 접수일 라벨 -->
+    <col style="width: 20%;"> <!-- 접수일 입력란 -->
+  </colgroup>
+  <tbody>
     <tr>
       <td class="lab">상담자</td>
-      <td><input type="text" name="상담자"></td>
-      <td class="c">(서명)
-        <span class="sig-wrap">
-          <span class="sig-box"><canvas class="sig" data-w="120" data-h="50"></canvas></span>
-          <span class="sig-tools">
-        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
-        <button type="button" class="sig-save">서명 저장</button>
-        <button type="button" class="sig-clear">지우기</button>
-        <span class="sig-preview"><img alt="서명 미리보기"></span>
-      </span>
-        </span>
+      <td><input type="text" name="상담자" style="width:100%; box-sizing:border-box;"></td>
+      <td class="c">
+        (서명)
+        <div class="sig-wrap">
+          <div class="sig-box"><canvas class="sig" data-w="120" data-h="50"></canvas></div>
+          <div class="sig-tools">
+            <span class="sig-status">
+              <span class="sig-dot"></span>
+              <span class="sig-status-text">서명을 입력해 주세요</span>
+            </span>
+            <button type="button" class="sig-save">서명 저장</button>
+            <button type="button" class="sig-clear">지우기</button>
+            <span class="sig-preview"><img alt="서명 미리보기"></span>
+          </div>
+        </div>
       </td>
       <td class="lab">접수일</td>
-      <td><input type="text" name="접수일"></td>
+      <td><input type="text" name="접수일" style="width:100%; box-sizing:border-box;"></td>
     </tr>
     <tr>
       <td class="lab">비고</td>
-      <td colspan="4"><input type="text" name="비고"></td>
+      <td colspan="4"><input type="text" name="비고" style="width:100%; box-sizing:border-box;"></td>
     </tr>
+  </tbody>
   </table>
 
   <div class="doc-footer">
