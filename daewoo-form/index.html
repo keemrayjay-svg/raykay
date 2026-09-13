@@ -600,21 +600,29 @@
   <p class="note">법적 근거 : 「국민 평생 직업능력 개발법」 제11조</p>
   <p class="note">※ 위 가~나 항목은 훈련 수강에 필수적인 정보로, 동의를 거부할 권리가 있으나 거부 시 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.</p>
 
-  <p class="center mt20" style="font-size:12.5px;">
-    위 가~나 내용에 모두 동의합니다.&nbsp;
-    <label class="chk"><input type="radio" name="동의1" value="동의" required><span class="box"></span>동의</label>
-    <label class="chk"><input type="radio" name="동의1" value="미동의"><span class="box"></span>미동의</label>
-    &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의1성명"></span> (서명)
-    <span class="sig-wrap">
-      <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
-      <span class="sig-tools">
-        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
-        <button type="button" class="sig-save">서명 저장</button>
-        <button type="button" class="sig-clear">지우기</button>
-        <span class="sig-preview"><img alt="서명 미리보기"></span>
-      </span>
+ <p class="center mt20" style="font-size:12.5px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: nowrap;">
+  <span>위 가~나 내용에 모두 동의합니다.</span>
+  
+  <label class="chk" style="display: inline-flex; align-items: center;"><input type="radio" name="동의1" value="동의" required><span class="box"></span>동의</label>
+  <label class="chk" style="display: inline-flex; align-items: center;"><input type="radio" name="동의1" value="미동의"><span class="box"></span>미동의</label>
+  
+  <span>성명 :</span>
+  <span class="line" style="width:120px;"><input type="text" name="동의1성명"></span>
+  <span>(서명)</span>
+
+  <span class="sig-wrap" style="display: inline-flex; align-items: center; gap: 6px;">
+    <span class="sig-box" style="display: inline-block; position: relative;">
+      <canvas class="sig" data-w="150" data-h="48" style="vertical-align: middle;"></canvas>
+      <span class="sig-hint">서명</span>
     </span>
-  </p>
+    <span class="sig-tools" style="display: inline-flex; align-items: center; gap: 4px;">
+      <span class="sig-status" style="display: inline-flex; align-items: center;"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+      <button type="button" class="sig-save">서명 저장</button>
+      <button type="button" class="sig-clear">지우기</button>
+      <span class="sig-preview"><img alt="서명 미리보기"></span>
+    </span>
+  </span>
+</p>
 
   <!-- ② 선택 -->
   <div class="sec" style="margin-top:44px;"><span class="badge">2</span><span class="sec-title">취업지원 및 취업정보 제공 동의</span><span class="tag-gray">(선택)</span></div>
