@@ -36,17 +36,17 @@ export default async function handler(req, res) {
     const safeName = (applicantName || '지원자').replace(/[^\w가-힣\s]/g, '').trim() || '지원자';
     const now = new Date();
     const dateStr = now.toISOString().split('T')[0];
-    const filename = `입학원서_${safeName}_${dateStr}.pdf`;
+    const filename = `훈련참여신청서_${safeName}_${dateStr}.pdf`;
 
     const emailPayload = {
-      from: `대우능력개발원 입학원서 <${FROM_EMAIL}>`,
+      from: `대우능력개발원 훈련참여신청서 <${FROM_EMAIL}>`,
       to: [TO_EMAIL],
-      subject: `[입학원서] ${safeName} - ${dateStr}`,
+      subject: `[훈련참여신청서] ${safeName} - ${dateStr}`,
       html: `
         <div style="font-family: 'Malgun Gothic', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h2 style="color: #111; border-bottom: 2px solid #111; padding-bottom: 10px;">📄 새 입학원서 접수</h2>
+          <h2 style="color: #16325C; border-bottom: 2px solid #16325C; padding-bottom: 10px;">📄 새 훈련참여신청서 접수</h2>
           <p style="color: #333; line-height: 1.8;">
-            새로운 입학원서가 제출되었습니다.<br>
+            새로운 훈련참여신청서가 제출되었습니다.<br>
             <strong>지원자명:</strong> ${safeName}<br>
             <strong>접수일시:</strong> ${now.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
           </p>
