@@ -6,6 +6,8 @@
 <title>대우능력개발원 훈련참여신청서 (온라인 작성)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root{
     --navy:#16325C;
@@ -144,6 +146,18 @@
     padding:1px 7px;cursor:pointer;
   }
   .sig-clear:hover{background:#e2e2e2;}
+  .sig-tools{display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap;}
+  .sig-status{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;color:#666;white-space:nowrap;}
+  .sig-dot{width:8px;height:8px;border-radius:50%;background:#c9c9c9;display:inline-block;flex:none;}
+  .sig-dot.pending{background:#e0a800;}
+  .sig-dot.signed{background:#1a7f37;}
+  .sig-save{
+    font-family:inherit;font-size:10px;font-weight:700;color:#fff;background:var(--navy);
+    border:none;border-radius:3px;padding:2px 9px;cursor:pointer;
+  }
+  .sig-save:hover{filter:brightness(1.15);}
+  .sig-preview{display:none;}
+  .sig-preview img{height:22px;border:1px solid #ccc;background:#fff;display:block;}
   .sig-hint{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     color:#aaa;font-size:10.5px;pointer-events:none;
@@ -201,9 +215,16 @@
     .doc-footer{left:16px;right:16px;}
     h1.doc-title{letter-spacing:7px;text-indent:7px;font-size:22px;}
   }
+  /* PDF 캡처 모드 */
+  body.pdf-mode{background:#fff;}
+  body.pdf-mode .topbar,body.pdf-mode .pager,body.pdf-mode .overlay,
+  body.pdf-mode .sig-tools,body.pdf-mode .sig-hint{display:none !important;}
+  body.pdf-mode .paper{display:block !important;box-shadow:none;margin:0 auto;width:794px;page-break-after:always;}
+  body.pdf-mode .photo-box:hover{outline:none;}
+
   @media print{
     body{background:#fff;}
-    .topbar,.pager,.overlay,.sig-clear,.no-print{display:none !important;}
+    .topbar,.pager,.overlay,.sig-clear,.sig-tools,.no-print{display:none !important;}
     .paper{display:block !important;box-shadow:none;margin:0;page-break-after:always;width:100%;}
   }
 </style>
@@ -220,6 +241,7 @@
     <button class="tab" data-page="3">면접 선발 평가 기준표</button>
     <span class="spacer"></span>
     <button class="btn btn-print" onclick="window.print()">인쇄</button>
+    <button class="btn btn-print" id="pdfBtn" style="background:#1a7f37;">PDF 저장</button>
     <button class="btn btn-submit" id="btnSubmit">제출하기</button>
   </div>
 </div>
@@ -408,7 +430,12 @@
     신청인 : <span class="line" style="width:150px;"><input type="text" name="신청인성명"></span> (서명)
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에 서명하세요</span></span>
-      <button type="button" class="sig-clear">지우기</button>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
     </span>
   </p>
 
@@ -425,7 +452,12 @@
       <td class="c">(서명)
         <span class="sig-wrap">
           <span class="sig-box"><canvas class="sig" data-w="120" data-h="40"></canvas></span>
-          <button type="button" class="sig-clear">지우기</button>
+          <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
         </span>
       </td>
       <td class="lab">접수일</td>
@@ -502,7 +534,12 @@
     &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의1성명"></span> (서명)
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
-      <button type="button" class="sig-clear">지우기</button>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
     </span>
   </p>
 
@@ -532,7 +569,12 @@
     &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의2성명"></span> (서명)
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
-      <button type="button" class="sig-clear">지우기</button>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
     </span>
   </p>
 
@@ -578,7 +620,12 @@
     &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의3성명"></span> (서명)
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
-      <button type="button" class="sig-clear">지우기</button>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
     </span>
   </p>
 
@@ -609,7 +656,12 @@
     &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의4성명"></span> (서명)
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
-      <button type="button" class="sig-clear">지우기</button>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
     </span>
   </p>
 
@@ -625,7 +677,12 @@
     지원자와의 관계 : <span class="line" style="width:80px;"><input type="text" name="법정대리인관계"></span>&nbsp; (서명)
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
-      <button type="button" class="sig-clear">지우기</button>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
     </span>
   </p>
 
@@ -664,7 +721,12 @@
     성명 : <span class="line" style="width:150px;"><input type="text" name="안내성명"></span> (서명)
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에 서명하세요</span></span>
-      <button type="button" class="sig-clear">지우기</button>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
     </span>
   </p>
   <p class="doc-note-right mt20">본 동의서 사본은 요청 시 언제든지 교부해 드립니다.</p>
@@ -862,7 +924,12 @@
     면접평가자 : <span class="line" style="width:120px;"><input type="text" name="면접평가자"></span> (서명)
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
-      <button type="button" class="sig-clear">지우기</button>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
     </span>
   </p>
   <p class="center mt14" style="font-size:12.5px;">
@@ -889,7 +956,7 @@
 <div class="overlay" id="doneOverlay">
   <div class="card">
     <h2>제출이 완료되었습니다</h2>
-    <p>작성하신 훈련참여신청서가 접수되었습니다.<br>기관 확인 후 등록하신 연락처로 안내드립니다.</p>
+    <p id="doneMsg">작성하신 훈련참여신청서가 접수되었습니다.<br>기관 확인 후 등록하신 연락처로 안내드립니다.</p>
     <button class="btn" onclick="document.getElementById('doneOverlay').classList.remove('show')">확인</button>
   </div>
 </div>
@@ -912,47 +979,147 @@ document.getElementById('btnPrev').addEventListener('click', ()=>showPage(cur-1)
 document.getElementById('btnNext').addEventListener('click', ()=>showPage(cur+1));
 showPage(0);
 
-/* ---------- 서명 패드 ---------- */
-document.querySelectorAll('canvas.sig').forEach(cv=>{
-  const w = +cv.dataset.w || 150, h = +cv.dataset.h || 48;
-  const scale = window.devicePixelRatio > 1 ? 2 : 2;
-  cv.width = w*scale; cv.height = h*scale;
-  cv.style.width = w+'px'; cv.style.height = h+'px';
-  const ctx = cv.getContext('2d');
-  ctx.scale(scale, scale);
-  ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  ctx.strokeStyle = '#0a1a3a';
-  let drawing = false, last = null;
-  const hint = cv.parentElement.querySelector('.sig-hint');
-  function pos(e){
-    const r = cv.getBoundingClientRect();
-    return {x:(e.clientX-r.left)*(w/r.width), y:(e.clientY-r.top)*(h/r.height)};
-  }
-  function start(e){ drawing=true; last=pos(e); if(hint) hint.style.display='none'; e.preventDefault(); }
-  function move(e){
-    if(!drawing) return;
-    const p = pos(e);
-    ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
-    last = p; e.preventDefault();
-  }
-  function end(){ drawing=false; }
-  cv.addEventListener('pointerdown', start);
-  cv.addEventListener('pointermove', move);
-  window.addEventListener('pointerup', end);
-  cv.addEventListener('pointerleave', end);
-  cv.dataset.empty = '1';
-  cv.addEventListener('pointerdown', ()=>{ cv.dataset.empty='0'; });
-});
-document.querySelectorAll('.sig-clear').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const cv = btn.parentElement.querySelector('canvas.sig');
-    const ctx = cv.getContext('2d');
-    ctx.clearRect(0,0,cv.width,cv.height);
-    cv.dataset.empty='1';
-    const hint = cv.parentElement.querySelector('.sig-hint');
-    if(hint) hint.style.display='flex';
+/* ---------- 서명 패드 (터치+마우스 / 상태표시 / 저장·미리보기) ---------- */
+const sigPads = [];
+function initSignaturePads(){
+  document.querySelectorAll('.sig-wrap').forEach(wrap=>{
+    const canvas = wrap.querySelector('canvas.sig');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if(!ctx) return;
+    const w = +canvas.dataset.w || 150, h = +canvas.dataset.h || 48;
+    canvas.style.width = w+'px'; canvas.style.height = h+'px';
+
+    const state = { canvas, ctx, wrap, drawing:false, hasSig:false, sigSaved:false, lastX:0, lastY:0 };
+    const dot = wrap.querySelector('.sig-dot');
+    const txt = wrap.querySelector('.sig-status-text');
+    const preview = wrap.querySelector('.sig-preview');
+    const img = preview ? preview.querySelector('img') : null;
+    const hint = wrap.querySelector('.sig-hint');
+
+    function setStrokeStyle(){
+      ctx.strokeStyle = '#111';
+      ctx.fillStyle = '#111';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    }
+
+    function resizeCanvas(){
+      var dpr = window.devicePixelRatio || 1;
+      var rect = canvas.getBoundingClientRect();
+      if(rect.width === 0){ return; }
+      var prev = null;
+      if(state.hasSig && canvas.width > 0 && canvas.height > 0){
+        prev = document.createElement('canvas');
+        prev.width = canvas.width;
+        prev.height = canvas.height;
+        prev.getContext('2d').drawImage(canvas, 0, 0);
+      }
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      setStrokeStyle();
+      if(prev){
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(prev, 0, 0);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+    }
+    state.resize = resizeCanvas;
+
+    function updateStatus(saved){
+      if(saved){ dot.className = 'sig-dot signed'; txt.textContent = '서명이 저장되었습니다'; }
+      else if(state.hasSig){ dot.className = 'sig-dot pending'; txt.textContent = '서명 후 [서명 저장] 버튼을 눌러주세요'; }
+      else { dot.className = 'sig-dot'; txt.textContent = '서명을 입력해 주세요'; }
+    }
+    state.updateStatus = updateStatus;
+
+    function getPos(e){
+      var r = canvas.getBoundingClientRect();
+      var clientX, clientY;
+      if(e.touches && e.touches.length > 0){ clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; }
+      else if(e.changedTouches && e.changedTouches.length > 0){ clientX = e.changedTouches[0].clientX; clientY = e.changedTouches[0].clientY; }
+      else { clientX = e.clientX; clientY = e.clientY; }
+      return { x: clientX - r.left, y: clientY - r.top };
+    }
+
+    function startDraw(e){
+      if(e.cancelable) e.preventDefault();
+      state.drawing = true;
+      state.sigSaved = false;
+      var p = getPos(e);
+      state.lastX = p.x; state.lastY = p.y;
+      // 점 찍기
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      state.hasSig = true;
+      if(hint) hint.style.display = 'none';
+      if(preview) preview.style.display = 'none';
+      updateStatus(false);
+    }
+
+    function moveDraw(e){
+      if(!state.drawing) return;
+      if(e.cancelable) e.preventDefault();
+      var p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(state.lastX, state.lastY);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      state.lastX = p.x; state.lastY = p.y;
+      state.hasSig = true;
+    }
+
+    function endDraw(){ state.drawing = false; }
+
+    canvas.addEventListener('touchstart', startDraw, { passive:false });
+    canvas.addEventListener('touchmove', moveDraw, { passive:false });
+    canvas.addEventListener('touchend', endDraw, { passive:false });
+    canvas.addEventListener('touchcancel', endDraw, { passive:false });
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', moveDraw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+    canvas.addEventListener('gesturestart', function(e){ e.preventDefault(); });
+    canvas.addEventListener('gesturechange', function(e){ e.preventDefault(); });
+    canvas.addEventListener('gestureend', function(e){ e.preventDefault(); });
+
+    wrap.querySelector('.sig-clear').addEventListener('click', ()=>{
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+      state.hasSig = false; state.sigSaved = false;
+      if(preview) preview.style.display = 'none';
+      if(hint) hint.style.display = 'flex';
+      updateStatus(false);
+    });
+
+    wrap.querySelector('.sig-save').addEventListener('click', ()=>{
+      if(!state.hasSig){ alert('서명을 먼저 입력해 주세요.'); return; }
+      if(img) img.src = canvas.toDataURL('image/png');
+      if(preview) preview.style.display = 'block';
+      state.sigSaved = true;
+      updateStatus(true);
+    });
+
+    resizeCanvas();
+    setTimeout(resizeCanvas, 300);
+    setTimeout(resizeCanvas, 800);
+    updateStatus(false);
+    sigPads.push(state);
   });
-});
+
+  window.addEventListener('resize', ()=>sigPads.forEach(s=>s.resize()));
+  window.addEventListener('orientationchange', ()=>setTimeout(()=>sigPads.forEach(s=>s.resize()), 300));
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', initSignaturePads);
+}else{
+  initSignaturePads();
+}
 
 /* ---------- 증명사진 업로드 ---------- */
 const photoBox = document.getElementById('photoBox');
@@ -986,19 +1153,202 @@ evNames.forEach(n=>{
 });
 
 /* ---------- 제출 ---------- */
-document.getElementById('btnSubmit').addEventListener('click', ()=>{
+/* ---------- PDF 생성 공통 ---------- */
+function buildPdfOptions(){
+  return {
+    margin: [10, 10, 10, 10],
+    filename: '훈련참여신청서_대우능력개발원.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+}
+
+// 입력 요소를 캡처용 요소로 교체 → 교체기록 반환
+function replaceInputsForCapture(root){
+  const replacements = [];
+  // 체크박스·라디오: 체크된 항목에 실제 ✓ 문자 삽입 (html2canvas는 가상요소 미지원)
+  root.querySelectorAll('label.chk').forEach(lb=>{
+    const input = lb.querySelector('input');
+    const box = lb.querySelector('.box');
+    if(!input || !box) return;
+    if(input.checked){
+      box.textContent = '✓';
+      box.style.fontSize = '11px';
+      box.style.fontWeight = '900';
+      box.style.color = '#16325C';
+      box.style.textAlign = 'center';
+      box.style.lineHeight = '11px';
+      box.style.overflow = 'visible';
+      replacements.push({ type:'chk', box });
+    }
+  });
+  root.querySelectorAll('input[type=text], input[type=tel], input[type=email], input[type=number], textarea').forEach(el=>{
+    const val = el.value || '';
+    const cs = getComputedStyle(el);
+    const span = document.createElement(el.tagName === 'TEXTAREA' ? 'div' : 'span');
+    span.textContent = val;
+    span.style.cssText = `
+      box-sizing: border-box;
+      display: inline-block;
+      width: 100%;
+      min-height: ${el.tagName === 'TEXTAREA' ? '56px' : '14px'};
+      font-size: ${cs.fontSize};
+      font-family: ${cs.fontFamily};
+      font-weight: ${cs.fontWeight};
+      color: #111;
+      text-align: ${cs.textAlign === 'center' ? 'center' : 'left'};
+      background: transparent;
+      white-space: ${el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap'};
+      line-height: 1.3;
+      vertical-align: baseline;
+    `;
+    el.style.setProperty('display', 'none', 'important');
+    el.parentNode.insertBefore(span, el.nextSibling);
+    replacements.push({ type:'in', el, span });
+  });
+  return replacements;
+}
+
+function restoreInputs(replacements){
+  replacements.forEach(r=>{
+    if(r.type === 'chk'){
+      r.box.textContent = '';
+      r.box.style.cssText = '';
+    }else{
+      r.span.remove();
+      r.el.style.display = '';
+    }
+  });
+}
+
+// 4개 페이지를 각각 캡처해 하나의 PDF로 생성
+async function generatePDF(output){
+  const papers = Array.from(document.querySelectorAll('.paper'));
+  const origX = window.scrollX, origY = window.scrollY;
+  window.scrollTo(0, 0);
+
+  const replacements = replaceInputsForCapture(document.body);
+  document.body.classList.add('pdf-mode');
+  await new Promise(r=>setTimeout(r, 250));
+
+  try{
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit:'mm', format:'a4', orientation:'portrait' });
+    for(let i=0; i<papers.length; i++){
+      const canvas = await html2canvas(papers[i], { scale:2, useCORS:true, backgroundColor:'#ffffff', logging:false });
+      const img = canvas.toDataURL('image/jpeg', 0.98);
+      // CSS px → mm (96dpi 기준), A4에 맞게 contain
+      let wmm = canvas.width / 2 / 96 * 25.4;
+      let hmm = canvas.height / 2 / 96 * 25.4;
+      const f = Math.min(210 / wmm, 297 / hmm);
+      wmm *= f; hmm *= f;
+      if(i > 0) pdf.addPage();
+      pdf.addImage(img, 'JPEG', (210 - wmm) / 2, (297 - hmm) / 2, wmm, hmm);
+    }
+    if(output === 'blob') return pdf.output('blob');
+    const blob = pdf.output('blob');
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = buildPdfOptions().filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 5000);
+    return null;
+  } finally {
+    restoreInputs(replacements);
+    document.body.classList.remove('pdf-mode');
+    window.scrollTo(origX, origY);
+  }
+}
+
+function blobToBase64(blob){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onloadend = ()=>resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+// PDF 저장 (다운로드 버튼)
+async function saveAsPDF(){
+  const btn = document.getElementById('pdfBtn');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'PDF 생성 중...';
+  try{
+    await generatePDF('save');
+  }catch(err){
+    console.error(err);
+    alert('PDF 생성 중 오류가 발생했습니다: ' + err.message);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+document.getElementById('pdfBtn').addEventListener('click', saveAsPDF);
+
+/* ---------- 제출 (이메일 전송, 서버 미연결 시 PDF 저장으로 대체) ---------- */
+async function handleSubmit(){
   const name = document.getElementById('fName').value.trim();
   if(!name){ alert('성명을 입력해 주세요.'); showPage(0); document.getElementById('fName').focus(); return; }
   const agree1 = document.querySelector('input[name="동의1"]:checked');
   if(!agree1){ alert('개인정보 수집·이용(필수) 항목의 동의 여부를 선택해 주세요.'); showPage(1); return; }
-  if(agree1.value !== '동의'){ alert('필수 항목(가~나)에 동의하지 않으면 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.'); }
-  const sig1 = document.querySelectorAll('#page0 canvas.sig')[0];
-  if(sig1.dataset.empty==='1'){
-    if(!confirm('신청인 서명이 없습니다. 서명 없이 제출하시겠습니까?')){ showPage(0); return; }
+  if(agree1.value !== '동의'){
+    alert('필수 개인정보 동의 항목을 확인해주세요.\n(필수 항목에 동의하지 않으면 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.)');
+    showPage(1); return;
   }
-  document.getElementById('doneOverlay').classList.add('show');
-});
+  if(!sigPads.length || !sigPads[0].sigSaved){
+    alert('신청인 전자서명을 입력하고 [서명 저장] 버튼을 눌러주세요.');
+    showPage(0); return;
+  }
+
+  const submitBtn = document.getElementById('btnSubmit');
+  const originalText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'PDF 생성 중...';
+  submitBtn.style.opacity = '0.6';
+
+  const doneMsg = document.getElementById('doneMsg');
+  try{
+    // 1) PDF를 Base64로 생성
+    const pdfBlob = await generatePDF('blob');
+    const pdfBase64 = await blobToBase64(pdfBlob);
+    submitBtn.textContent = '이메일 전송 중...';
+
+    // 2) 서버로 전송
+    const res = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pdfBase64, applicantName: name })
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok){
+      throw new Error((data.error || '서버 오류') + (data.detail ? ('\n상세: ' + JSON.stringify(data.detail)) : ''));
+    }
+    doneMsg.innerHTML = '작성하신 훈련참여신청서가 접수되었습니다.<br>성명: ' + name + '<br>기관 확인 후 등록하신 연락처로 안내드립니다.';
+    document.getElementById('doneOverlay').classList.add('show');
+  }catch(err){
+    console.error(err);
+    // 서버 미연결 → PDF 다운로드로 대체
+    try{
+      await generatePDF('save');
+      doneMsg.innerHTML = '서버에 연결되어 있지 않아 제출 대신<br><b>PDF 파일로 저장</b>했습니다.<br>저장된 PDF를 기관에 제출해 주세요.';
+    }catch(e2){
+      doneMsg.innerHTML = '제출 중 오류가 발생했습니다:<br>' + err.message + '<br>다시 시도해 주세요.';
+    }
+    document.getElementById('doneOverlay').classList.add('show');
+  }finally{
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+    submitBtn.style.opacity = '';
+  }
+}
+document.getElementById('btnSubmit').addEventListener('click', handleSubmit);
 </script>
 </body>
 </html>
-
