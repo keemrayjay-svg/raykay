@@ -626,7 +626,27 @@
       color: #fff;
     }
 
+
+    .consent-sign-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      gap: 4px;
+    }
+
+    .consent-sign-row .sig-wrap {
+      flex: 0 0 auto;
+      margin-left: 4px;
+    }
+
     @media (max-width:860px) {
+      .consent-sign-row {
+        flex-wrap: wrap;
+        white-space: normal;
+      }
+
       .paper {
         width: 100%;
         padding: 30px 16px 60px;
@@ -1037,7 +1057,7 @@
       <p class="note">법적 근거 : 「국민 평생 직업능력 개발법」 제11조</p>
       <p class="note">※ 위 가~나 항목은 훈련 수강에 필수적인 정보로, 동의를 거부할 권리가 있으나 거부 시 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.</p>
 
-      <p class="center mt20" style="font-size:12.5px;">
+      <p class="center mt20 consent-sign-row" style="font-size:12.5px;">
         위 가~나 내용에 모두 동의합니다.&nbsp;
         <label class="chk"><input type="radio" name="동의1" value="동의" required><span class="box"></span>동의</label>
         <label class="chk"><input type="radio" name="동의1" value="미동의"><span class="box"></span>미동의</label>
