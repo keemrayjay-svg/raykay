@@ -1,1763 +1,1272 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>대우능력개발원 훈련참여신청서 (온라인 작성)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    :root {
-      --navy: #16325C;
-      --red: #B5321F;
-      --gray-hd: #f7f7f7;
-      --ink: #111;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      -webkit-text-size-adjust: 100%;
-    }
-
-    body {
-      background: #e9e9ee;
-      font-family: 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', sans-serif;
-      color: var(--ink);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    /* ============ 상단 네비게이션 ============ */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: var(--navy);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
-    }
-
-    .topbar-inner {
-      max-width: 900px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 14px;
-      flex-wrap: wrap;
-    }
-
-    .topbar .brand {
-      color: #fff;
-      font-weight: 900;
-      font-size: 14px;
-      margin-right: 10px;
-      letter-spacing: .5px;
-    }
-
-    .tab {
-      border: 1px solid rgba(255, 255, 255, .45);
-      background: transparent;
-      color: #dfe5f2;
-      font-family: inherit;
-      font-size: 12px;
-      font-weight: 500;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .tab.active {
-      background: #fff;
-      color: var(--navy);
-      font-weight: 700;
-      border-color: #fff;
-    }
-
-    .tab:hover:not(.active) {
-      background: rgba(255, 255, 255, .12);
-    }
-
-    .topbar .spacer {
-      flex: 1;
-    }
-
-    .btn {
-      font-family: inherit;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 7px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      border: none;
-    }
-
-    .btn-print {
-      background: #3d5a92;
-      color: #fff;
-    }
-
-    .btn-submit {
-      background: var(--red);
-      color: #fff;
-    }
-
-    .btn:hover {
-      filter: brightness(1.12);
-    }
-
-    /* ============ 용지(페이지) ============ */
-    .paper {
-      width: 794px;
-      min-height: 1122px;
-      background: #fff;
-      margin: 26px auto 40px;
-      padding: 44px 58px 60px;
-      box-shadow: 0 3px 18px rgba(0, 0, 0, .18);
-      position: relative;
-      display: none;
-    }
-
-    .paper.active {
-      display: block;
-    }
-
-    .doc-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .logo {
-      color: var(--navy);
-      font-weight: 900;
-      font-size: 19px;
-      letter-spacing: .5px;
-    }
-
-    .doc-header .right {
-      text-align: right;
-      font-size: 10.5px;
-      color: #222;
-      line-height: 1.7;
-    }
-
-    .doc-header .right .num {
-      font-size: 11.5px;
-    }
-
-    h1.doc-title {
-      text-align: center;
-      font-size: 27px;
-      font-weight: 900;
-      letter-spacing: 14px;
-      text-indent: 14px;
-      margin: 16px 0 6px;
-    }
-
-    h1.doc-title.small {
-      letter-spacing: 9px;
-      text-indent: 9px;
-      font-size: 25px;
-    }
-
-    .doc-sub {
-      text-align: center;
-      font-size: 11.5px;
-      color: #333;
-      margin-bottom: 6px;
-    }
-
-    .doc-note-right {
-      text-align: right;
-      font-size: 10.5px;
-      color: #555;
-      margin: 10px 0 4px;
-    }
-
-    /* 섹션 타이틀 */
-    .sec {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      margin: 16px 0 6px;
-    }
-
-    .sec .badge {
-      width: 20px;
-      height: 20px;
-      background: var(--navy);
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-      flex: none;
-    }
-
-    .sec .sec-title {
-      color: var(--navy);
-      font-weight: 700;
-      font-size: 14.5px;
-    }
-
-    .sec .tag-red {
-      color: var(--red);
-      font-size: 12px;
-      font-weight: 700;
-      margin-left: 2px;
-    }
-
-    .sec .tag-gray {
-      color: #444;
-      font-size: 11.5px;
-      font-weight: 500;
-      margin-left: 2px;
-    }
-
-    .sec-sub {
-      font-size: 10.5px;
-      color: #333;
-      margin: -2px 0 4px 0;
-    }
-
-    /* ============ 표 ============ */
-    table.ft {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
-
-    table.ft th,
-    table.ft td {
-      border: 1px solid #000;
-      padding: 6px 8px;
-      font-size: 12px;
-      font-weight: 400;
-      vertical-align: middle;
-      word-break: keep-all;
-      overflow-wrap: break-word;
-    }
-
-    table.ft th {
-      background: var(--gray-hd);
-      font-weight: 700;
-      text-align: center;
-      font-size: 12.5px;
-    }
-
-    td.lab {
-      text-align: center;
-      font-weight: 700;
-      background: #fff;
-      font-size: 12px;
-    }
-
-    td.c {
-      text-align: center;
-    }
-
-    .note {
-      font-size: 10.5px;
-      color: #333;
-      margin: 5px 0 0;
-    }
-
-    /* ============ 입력 요소 ============ */
-    input[type=text],
-    input[type=tel],
-    input[type=email],
-    input[type=number],
-    textarea {
-      font-family: inherit;
-      font-size: 12.5px;
-      color: #111;
-      border: none;
-      background: transparent;
-      outline: none;
-      width: 100%;
-    }
-
-    .line {
-      display: inline-block;
-      border-bottom: 1px solid #333;
-      vertical-align: baseline;
-    }
-
-    .line input {
-      text-align: center;
-    }
-
-    textarea.ta {
-      border: none;
-      resize: vertical;
-      width: 100%;
-      min-height: 56px;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    /* 체크박스 */
-    label.chk {
-      display: inline-flex;
-      align-items: center;
-      cursor: pointer;
-      margin: 1px 8px 1px 0;
-      white-space: nowrap;
-      font-size: 12px;
-    }
-
-    label.chk>input[type="checkbox"],
-    label.chk>input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    label.chk .box {
-      width: 12px;
-      height: 12px;
-      border: 1.3px solid #000;
-      background: #fff;
-      display: inline-block;
-      margin-right: 4px;
-      position: relative;
-      flex: none;
-    }
-
-    label.chk input:checked+.box::after {
-      content: '✓';
-      position: absolute;
-      left: -.5px;
-      top: -4.5px;
-      font-size: 14px;
-      font-weight: 900;
-      color: var(--navy);
-    }
-
-    label.chk input:focus-visible+.box {
-      outline: 2px solid var(--navy);
-      outline-offset: 1px;
-    }
-
-    /* 날짜 입력줄 */
-    .dt {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 2px;
-    }
-
-    .dt input {
-      width: 30px;
-      text-align: center;
-      border: none;
-      border-bottom: 1px solid #333;
-      font-family: inherit;
-      font-size: 12.5px;
-      outline: none;
-      background: transparent;
-    }
-
-    .dt input.y {
-      width: 26px;
-    }
-
-    /* 서명 패드 */
-    .sig-wrap {
-      display: inline-block;
-      vertical-align: middle;
-      margin-left: 6px;
-    }
-
-    .sig-box {
-      border: 1px solid #8a8a8a;
-      background: #fff;
-      display: inline-block;
-      vertical-align: middle;
-      position: relative;
-      cursor: crosshair;
-      touch-action: none;
-    }
-
-    canvas.sig {
-      display: block;
-      cursor: crosshair;
-      touch-action: none;
-    }
-
-    .sig-clear {
-      display: block;
-      margin: 2px 0 0 auto;
-      font-family: inherit;
-      font-size: 10px;
-      color: #666;
-      background: #f0f0f0;
-      border: 1px solid #bbb;
-      border-radius: 3px;
-      padding: 1px 7px;
-      cursor: pointer;
-    }
-
-    .sig-clear:hover {
-      background: #e2e2e2;
-    }
-
-    .sig-tools {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 3px;
-      flex-wrap: wrap;
-    }
-
-    .sig-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 9.5px;
-      color: #666;
-      white-space: nowrap;
-    }
-
-    .sig-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #c9c9c9;
-      display: inline-block;
-      flex: none;
-    }
-
-    .sig-dot.pending {
-      background: #e0a800;
-    }
-
-    .sig-dot.signed {
-      background: #1a7f37;
-    }
-
-    .sig-save {
-      font-family: inherit;
-      font-size: 10px;
-      font-weight: 700;
-      color: #fff;
-      background: var(--navy);
-      border: none;
-      border-radius: 3px;
-      padding: 2px 9px;
-      cursor: pointer;
-    }
-
-    .sig-save:hover {
-      filter: brightness(1.15);
-    }
-
-    .sig-preview {
-      display: none;
-    }
-
-    .sig-preview img {
-      height: 22px;
-      border: 1px solid #ccc;
-      background: #fff;
-      display: block;
-    }
-
-    .sig-hint {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #aaa;
-      font-size: 10.5px;
-      pointer-events: none;
-    }
-
-    /* 증명사진 */
-    .photo-box {
-      width: 104px;
-      height: 138px;
-      margin: 2px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .photo-box:hover {
-      outline: 1.5px dashed #9aa7c4;
-      outline-offset: 3px;
-    }
-
-    .photo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none;
-    }
-
-    .photo-cap {
-      text-align: center;
-      font-size: 10.5px;
-      color: #333;
-      line-height: 1.5;
-      padding: 4px 2px;
-    }
-
-    /* 서약 박스 */
-    .oath {
-      border: 1px solid #000;
-      padding: 14px 16px;
-      font-size: 12px;
-      line-height: 1.75;
-      text-align: justify;
-    }
-
-    .center {
-      text-align: center;
-    }
-
-    .mt8 {
-      margin-top: 8px;
-    }
-
-    .mt14 {
-      margin-top: 14px;
-    }
-
-    .mt20 {
-      margin-top: 20px;
-    }
-
-    /* 푸터 */
-    .doc-footer {
-      position: absolute;
-      left: 58px;
-      right: 58px;
-      bottom: 22px;
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      color: #888;
-    }
-
-    /* 페이지 이동 */
-    .pager {
-      max-width: 794px;
-      margin: 0 auto 50px;
-      display: flex;
-      justify-content: space-between;
-      padding: 0 4px;
-    }
-
-    .pager button {
-      font-family: inherit;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      background: #fff;
-      color: var(--navy);
-      border: 1.5px solid var(--navy);
-      padding: 8px 22px;
-      border-radius: 4px;
-    }
-
-    .pager button:disabled {
-      opacity: .35;
-      cursor: default;
-    }
-
-    .pager button:not(:disabled):hover {
-      background: var(--navy);
-      color: #fff;
-    }
-
-    /* 완료 오버레이 */
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(10, 20, 40, .55);
-      align-items: center;
-      justify-content: center;
-    }
-
-    .overlay.show {
-      display: flex;
-    }
-
-    .overlay .card {
-      background: #fff;
-      border-radius: 8px;
-      padding: 34px 40px;
-      max-width: 420px;
-      text-align: center;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, .35);
-    }
-
-    .overlay h2 {
-      color: var(--navy);
-      font-size: 19px;
-      margin-bottom: 12px;
-    }
-
-    .overlay p {
-      font-size: 13px;
-      color: #333;
-      line-height: 1.7;
-      margin-bottom: 18px;
-    }
-
-    .overlay .btn {
-      background: var(--navy);
-      color: #fff;
-    }
-
-
-    .consent-sign-row {
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      flex-wrap: nowrap;
-      white-space: nowrap;
-      gap: 4px;
-    }
-
-    .consent-sign-row .sig-wrap {
-      flex: 0 0 auto;
-      margin-left: 4px;
-    }
-
-    @media (max-width:860px) {
-      .consent-sign-row {
-        flex-wrap: wrap;
-        white-space: normal;
-      }
-
-      .paper {
-        width: 100%;
-        padding: 30px 16px 60px;
-      }
-
-      .doc-footer {
-        left: 16px;
-        right: 16px;
-      }
-
-      h1.doc-title {
-        letter-spacing: 7px;
-        text-indent: 7px;
-        font-size: 22px;
-      }
-    }
-
-    /* PDF 캡처 모드 */
-    body.pdf-mode {
-      background: #fff;
-    }
-
-    body.pdf-mode .topbar,
-    body.pdf-mode .pager,
-    body.pdf-mode .overlay,
-    body.pdf-mode .sig-tools,
-    body.pdf-mode .sig-hint {
-      display: none !important;
-    }
-
-    body.pdf-mode .paper {
-      display: block !important;
-      box-shadow: none;
-      margin: 0 auto;
-      width: 794px;
-      page-break-after: always;
-    }
-
-    body.pdf-mode .photo-box:hover {
-      outline: none;
-    }
-
-    @media print {
-      body {
-        background: #fff;
-      }
-
-      .topbar,
-      .pager,
-      .overlay,
-      .sig-clear,
-      .sig-tools,
-      .no-print {
-        display: none !important;
-      }
-
-      .paper {
-        display: block !important;
-        box-shadow: none;
-        margin: 0;
-        page-break-after: always;
-        width: 100%;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대우능력개발원 훈련참여신청서 (온라인 작성)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --navy:#16325C;
+    --red:#B5321F;
+    --gray-hd:#f7f7f7;
+    --ink:#111;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    background:#e9e9ee;
+    font-family:'Noto Sans KR','Malgun Gothic','맑은 고딕',sans-serif;
+    color:var(--ink);
+    font-size:13px;
+    line-height:1.45;
+  }
+
+  /* ============ 상단 네비게이션 ============ */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:var(--navy);
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+  }
+  .topbar-inner{
+    max-width:900px;margin:0 auto;
+    display:flex;align-items:center;gap:6px;
+    padding:10px 14px;flex-wrap:wrap;
+  }
+  .topbar .brand{color:#fff;font-weight:900;font-size:14px;margin-right:10px;letter-spacing:.5px;}
+  .tab{
+    border:1px solid rgba(255,255,255,.45);
+    background:transparent;color:#dfe5f2;
+    font-family:inherit;font-size:12px;font-weight:500;
+    padding:6px 12px;border-radius:4px;cursor:pointer;
+  }
+  .tab.active{background:#fff;color:var(--navy);font-weight:700;border-color:#fff;}
+  .tab:hover:not(.active){background:rgba(255,255,255,.12);}
+  .topbar .spacer{flex:1;}
+  .btn{
+    font-family:inherit;font-size:12px;font-weight:700;
+    padding:7px 14px;border-radius:4px;cursor:pointer;border:none;
+  }
+  .btn-print{background:#3d5a92;color:#fff;}
+  .btn-submit{background:var(--red);color:#fff;}
+  .btn:hover{filter:brightness(1.12);}
+
+  /* ============ 용지(페이지) ============ */
+  .paper{
+    width:794px;min-height:1122px;
+    background:#fff;
+    margin:26px auto 40px;
+    padding:44px 58px 60px;
+    box-shadow:0 3px 18px rgba(0,0,0,.18);
+    position:relative;
+    display:none;
+  }
+  .paper.active{display:block;}
+
+  .doc-header{display:flex;justify-content:space-between;align-items:flex-start;}
+  .logo{color:var(--navy);font-weight:900;font-size:19px;letter-spacing:.5px;}
+  .doc-header .right{text-align:right;font-size:10.5px;color:#222;line-height:1.7;}
+  .doc-header .right .num{font-size:11.5px;}
+
+  h1.doc-title{
+    text-align:center;font-size:27px;font-weight:900;
+    letter-spacing:14px;text-indent:14px;
+    margin:16px 0 6px;
+  }
+  h1.doc-title.small{letter-spacing:9px;text-indent:9px;font-size:25px;}
+  .doc-sub{text-align:center;font-size:11.5px;color:#333;margin-bottom:6px;}
+  .doc-note-right{text-align:right;font-size:10.5px;color:#555;margin:10px 0 4px;}
+
+  /* 섹션 타이틀 */
+  .sec{display:flex;align-items:center;gap:7px;margin:16px 0 6px;}
+  .sec .badge{
+    width:20px;height:20px;background:var(--navy);color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;flex:none;
+  }
+  .sec .sec-title{color:var(--navy);font-weight:700;font-size:14.5px;}
+  .sec .tag-red{color:var(--red);font-size:12px;font-weight:700;margin-left:2px;}
+  .sec .tag-gray{color:#444;font-size:11.5px;font-weight:500;margin-left:2px;}
+  .sec-sub{font-size:10.5px;color:#333;margin:-2px 0 4px 0;}
+
+  /* ============ 표 ============ */
+  table.ft{width:100%;border-collapse:collapse;table-layout:fixed;}
+  table.ft th,table.ft td{
+    border:1px solid #000;padding:6px 8px;
+    font-size:12px;font-weight:400;vertical-align:middle;
+    word-break:keep-all;overflow-wrap:break-word;
+  }
+  table.ft th{background:var(--gray-hd);font-weight:700;text-align:center;font-size:12.5px;}
+  td.lab{text-align:center;font-weight:700;background:#fff;font-size:12px;}
+  td.c{text-align:center;}
+  .note{font-size:10.5px;color:#333;margin:5px 0 0;}
+
+  /* ============ 입력 요소 ============ */
+  input[type=text],input[type=tel],input[type=email],input[type=number],textarea{
+    font-family:inherit;font-size:12.5px;color:#111;
+    border:none;background:transparent;outline:none;width:100%;
+  }
+  .line{display:inline-block;border-bottom:1px solid #333;vertical-align:baseline;}
+  .line input{text-align:center;}
+  textarea.ta{border:none;resize:vertical;width:100%;min-height:56px;font-size:12px;line-height:1.5;}
+
+  /* 체크박스 */
+  label.chk{display:inline-flex;align-items:center;cursor:pointer;margin:1px 8px 1px 0;white-space:nowrap;font-size:12px;}
+  label.chk input{position:absolute;opacity:0;width:0;height:0;}
+  label.chk .box{
+    width:12px;height:12px;border:1.3px solid #000;background:#fff;
+    display:inline-block;margin-right:4px;position:relative;flex:none;
+  }
+  label.chk input:checked + .box::after{
+    content:'✓';position:absolute;left:-.5px;top:-4.5px;
+    font-size:14px;font-weight:900;color:var(--navy);
+  }
+  label.chk input:focus-visible + .box{outline:2px solid var(--navy);outline-offset:1px;}
+
+  /* 날짜 입력줄 */
+  .dt{display:inline-flex;align-items:baseline;gap:2px;}
+  .dt input{width:30px;text-align:center;border:none;border-bottom:1px solid #333;font-family:inherit;font-size:12.5px;outline:none;background:transparent;}
+  .dt input.y{width:26px;}
+
+  /* 서명 패드 */
+  .sig-wrap{display:inline-block;vertical-align:middle;margin-left:6px;}
+  .sig-box{
+    border:1px solid #8a8a8a;background:#fff;
+    display:inline-block;vertical-align:middle;position:relative;
+    cursor:crosshair;touch-action:none;
+  }
+  canvas.sig{display:block;cursor:crosshair;touch-action:none;}
+  .sig-clear{
+    display:block;margin:2px 0 0 auto;
+    font-family:inherit;font-size:10px;color:#666;
+    background:#f0f0f0;border:1px solid #bbb;border-radius:3px;
+    padding:1px 7px;cursor:pointer;
+  }
+  .sig-clear:hover{background:#e2e2e2;}
+  .sig-tools{display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap;}
+  .sig-status{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;color:#666;white-space:nowrap;}
+  .sig-dot{width:8px;height:8px;border-radius:50%;background:#c9c9c9;display:inline-block;flex:none;}
+  .sig-dot.pending{background:#e0a800;}
+  .sig-dot.signed{background:#1a7f37;}
+  .sig-save{
+    font-family:inherit;font-size:10px;font-weight:700;color:#fff;background:var(--navy);
+    border:none;border-radius:3px;padding:2px 9px;cursor:pointer;
+  }
+  .sig-save:hover{filter:brightness(1.15);}
+  .sig-preview{display:none;}
+  .sig-preview img{height:22px;border:1px solid #ccc;background:#fff;display:block;}
+  .sig-hint{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    color:#aaa;font-size:10.5px;pointer-events:none;
+  }
+
+  /* 증명사진 */
+  .photo-box{
+    width:104px;height:138px;margin:2px auto;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;overflow:hidden;position:relative;
+  }
+  .photo-box:hover{outline:1.5px dashed #9aa7c4;outline-offset:3px;}
+  .photo-box img{width:100%;height:100%;object-fit:cover;display:none;}
+  .photo-cap{text-align:center;font-size:10.5px;color:#333;line-height:1.5;padding:4px 2px;}
+
+  /* 서약 박스 */
+  .oath{border:1px solid #000;padding:14px 16px;font-size:12px;line-height:1.75;text-align:justify;}
+
+  .center{text-align:center;}
+  .mt8{margin-top:8px;} .mt14{margin-top:14px;} .mt20{margin-top:20px;}
+
+  /* 푸터 */
+  .doc-footer{
+    position:absolute;left:58px;right:58px;bottom:22px;
+    display:flex;justify-content:space-between;
+    font-size:10px;color:#888;
+  }
+
+  /* 페이지 이동 */
+  .pager{max-width:794px;margin:0 auto 50px;display:flex;justify-content:space-between;padding:0 4px;}
+  .pager button{
+    font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
+    background:#fff;color:var(--navy);border:1.5px solid var(--navy);
+    padding:8px 22px;border-radius:4px;
+  }
+  .pager button:disabled{opacity:.35;cursor:default;}
+  .pager button:not(:disabled):hover{background:var(--navy);color:#fff;}
+
+  /* 완료 오버레이 */
+  .overlay{
+    display:none;position:fixed;inset:0;z-index:100;
+    background:rgba(10,20,40,.55);align-items:center;justify-content:center;
+  }
+  .overlay.show{display:flex;}
+  .overlay .card{
+    background:#fff;border-radius:8px;padding:34px 40px;max-width:420px;text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,.35);
+  }
+  .overlay h2{color:var(--navy);font-size:19px;margin-bottom:12px;}
+  .overlay p{font-size:13px;color:#333;line-height:1.7;margin-bottom:18px;}
+  .overlay .btn{background:var(--navy);color:#fff;}
+
+  /* ============ 모바일·태블릿 반응형 (표 → 세로 블록형) ============ */
+  @media (max-width:860px){
+    body{font-size:12px;}
+    .paper{width:100%;padding:24px 10px 70px;margin:14px auto 30px;}
+    .doc-footer{left:10px;right:10px;font-size:9px;}
+    h1.doc-title{letter-spacing:5px;text-indent:5px;font-size:20px;margin:10px 0 4px;}
+    h1.doc-title.small{font-size:17px;letter-spacing:3px;text-indent:3px;}
+    .doc-sub{font-size:10px;line-height:1.6;}
+    .doc-header{flex-direction:column;gap:2px;}
+    .doc-header .right{text-align:left;}
+    .logo{font-size:17px;}
+    .sec{margin:14px 0 5px;}
+    .sec .sec-title{font-size:12.5px;}
+
+    /* 표 전체를 블록으로 */
+    table.ft, table.ft tbody, table.ft tr{display:block;width:100%;}
+    table.ft th, table.ft td{display:block;width:100% !important;}
+    table.ft tr.hd{display:none;}               /* 헤더행 숨김 (data-label로 대체) */
+    table.ft tr{border-top:1px solid #000;}
+    table.ft tr:first-child{border-top:none;}
+    table.ft th, table.ft td{border-top:none;border-left:none;border-right:none;padding:8px 10px;font-size:12px;}
+    table.ft td:last-child{border-bottom:none;}
+
+    /* 라벨 칸 → 네이비 칩 */
+    table.ft td.lab{background:var(--navy);color:#fff;text-align:left;padding:5px 10px;font-size:11.5px;}
+    table.ft td.lab span{color:#cdd6ea !important;}
+
+    /* 헤더 있는 표: 칸 위에 라벨 표시 */
+    table.ft td[data-label]::before{
+      content:attr(data-label);display:block;
+      font-weight:700;color:var(--navy);font-size:10.5px;margin-bottom:3px;
+    }
+
+    /* 입력줄·체크박스 줄바꿈 */
+    label.chk{white-space:normal;align-items:flex-start;margin-bottom:3px;}
+    label.chk .box{margin-top:2px;}
+    td.flexline{display:flex !important;flex-wrap:wrap;gap:4px 6px;align-items:baseline;justify-content:center;}
+    td.flexline .line{flex:1 1 30px;min-width:26px;width:auto !important;}
+
+    /* 서명 */
+    .sig-wrap{display:block;margin:8px auto 0;max-width:100%;}
+    .sig-box{max-width:100%;}
+    .oath{font-size:11px;padding:10px 12px;}
+    .photo-box{margin:6px auto;}
+    .pager{padding:0 8px;}
+    .topbar-inner{padding:8px 10px;gap:5px;}
+    .topbar .brand{font-size:12.5px;}
+    .tab{font-size:11px;padding:5px 9px;}
+
+    /* PDF 캡처 시에는 A4 원본 레이아웃 복원 */
+    body.pdf-mode .paper{padding:44px 58px 60px;}
+    body.pdf-mode table.ft{display:table;}
+    body.pdf-mode table.ft tbody{display:table-row-group;}
+    body.pdf-mode table.ft tr{display:table-row;border-top:none !important;}
+    body.pdf-mode table.ft tr.hd{display:table-row !important;}
+    body.pdf-mode table.ft th, body.pdf-mode table.ft td{display:table-cell;width:auto !important;border:1px solid #000 !important;padding:6px 8px !important;}
+    body.pdf-mode table.ft td.lab{background:#fff !important;color:#111 !important;text-align:center !important;}
+    body.pdf-mode table.ft td.lab span{color:#333 !important;}
+    body.pdf-mode table.ft td[data-label]::before{content:none !important;}
+    body.pdf-mode td.flexline{display:table-cell !important;}
+    body.pdf-mode .sig-wrap{display:inline-block;}
+    body.pdf-mode label.chk{white-space:nowrap !important;}
+    body.pdf-mode .doc-header{flex-direction:row;}
+    body.pdf-mode .doc-header .right{text-align:right;}
+    body.pdf-mode h1.doc-title{font-size:27px;letter-spacing:14px;text-indent:14px;margin:16px 0 6px;}
+    body.pdf-mode h1.doc-title.small{font-size:25px;letter-spacing:9px;text-indent:9px;}
+  }
+  /* PDF 캡처 모드 */
+  body.pdf-mode{background:#fff;}
+  body.pdf-mode .topbar,body.pdf-mode .pager,body.pdf-mode .overlay,
+  body.pdf-mode .sig-tools,body.pdf-mode .sig-hint{display:none !important;}
+  body.pdf-mode .paper{display:block !important;box-shadow:none;margin:0 auto;width:794px;page-break-after:always;}
+  body.pdf-mode .photo-box:hover{outline:none;}
+
+  @media print{
+    body{background:#fff;}
+    .topbar,.pager,.overlay,.sig-clear,.sig-tools,.no-print{display:none !important;}
+    .paper{display:block !important;box-shadow:none;margin:0;page-break-after:always;width:100%;}
+  }
+</style>
 </head>
-
 <body>
 
-  <!-- ============ 상단 바 ============ -->
-  <div class="topbar no-print">
-    <div class="topbar-inner">
-      <span class="brand">대우능력개발원 온라인 신청</span>
-      <button class="tab active" data-page="0">훈련참여신청서</button>
-      <button class="tab" data-page="1">개인정보 동의서 ①②</button>
-      <button class="tab" data-page="2">개인정보 동의서 ③~⑥</button>
-      <button class="tab" data-page="3">면접 선발 평가 기준표</button>
-      <span class="spacer"></span>
-      <button class="btn btn-print" onclick="window.print()">인쇄</button>
-      <button class="btn btn-print" id="pdfBtn" style="background:#1a7f37;">PDF 저장</button>
-      <button class="btn btn-submit" id="btnSubmit">제출하기</button>
-    </div>
+<!-- ============ 상단 바 ============ -->
+<div class="topbar no-print">
+  <div class="topbar-inner">
+    <span class="brand">대우능력개발원 온라인 신청</span>
+    <button class="tab active" data-page="0">훈련참여신청서</button>
+    <button class="tab" data-page="1">개인정보 동의서 ①②</button>
+    <button class="tab" data-page="2">개인정보 동의서 ③~⑥</button>
+    <button class="tab" data-page="3">면접 선발 평가 기준표</button>
+    <span class="spacer"></span>
+    <button class="btn btn-print" onclick="window.print()">인쇄</button>
+    <button class="btn btn-print" id="pdfBtn" style="background:#1a7f37;">PDF 저장</button>
+    <button class="btn btn-submit" id="btnSubmit">제출하기</button>
   </div>
+</div>
 
-  <form id="mainForm" onsubmit="return false;">
+<form id="mainForm" onsubmit="return false;">
 
-    <!-- ================================================================
+<!-- ================================================================
      1 / 4  훈련참여신청서
 ================================================================= -->
-    <section class="paper active" id="page0">
-      <div class="doc-header">
-        <div class="logo">대우능력개발원</div>
-        <div class="right">
-          2026.09 제정 · 전 과정 공통양식<br>
-          <span class="num">접수번호 <span class="line" style="width:110px;"><input type="text" name="접수번호"></span></span>
-        </div>
-      </div>
-
-      <h1 class="doc-title">훈련참여신청서</h1>
-      <p class="doc-sub">국민내일배움카드 훈련과정(K-디지털 트레이닝·국가기간전략산업·산업구조변화 대응 특화훈련 등) 공통 신청서</p>
-
-      <!-- ① 지원자 기본정보 -->
-      <div class="sec"><span class="badge">1</span><span class="sec-title">지원자 기본정보</span></div>
-      <table class="ft">
-        <colgroup>
-          <col style="width:118px">
-          <col style="width:88px">
-          <col style="width:172px">
-          <col style="width:88px">
-          <col>
-        </colgroup>
-        <tr>
-          <td rowspan="6" class="c" style="padding:6px 4px;">
-            <div class="photo-box" id="photoBox" title="클릭하여 사진 업로드">
-              <span class="photo-cap">증명사진<br>3×4cm<br>(6개월 이내)</span>
-              <img id="photoImg" alt="증명사진">
-            </div>
-            <input type="file" id="photoFile" accept="image/*" hidden>
-          </td>
-          <td class="lab">성 명</td>
-          <td><input type="text" name="성명" id="fName"></td>
-          <td class="lab">생년월일</td>
-          <td><input type="text" name="생년월일" placeholder="예) 2000.01.01"></td>
-        </tr>
-        <tr>
-          <td class="lab">휴대폰</td>
-          <td><input type="tel" name="휴대폰" placeholder="010-0000-0000"></td>
-          <td class="lab">성별</td>
-          <td>
-            <label class="chk"><input type="radio" name="성별" value="남"><span class="box"></span>남</label>
-            <label class="chk"><input type="radio" name="성별" value="여"><span class="box"></span>여</label>
-          </td>
-        </tr>
-        <tr>
-          <td class="lab">이메일</td>
-          <td colspan="3"><input type="email" name="이메일"></td>
-        </tr>
-        <tr>
-          <td class="lab">주소(실거주지)</td>
-          <td colspan="3"><input type="text" name="주소"></td>
-        </tr>
-        <tr>
-          <td class="lab">비상연락처</td>
-          <td colspan="3">연락처 : <span class="line" style="width:150px;"><input type="text" name="비상연락처"></span>&nbsp;
-          </td>
-        </tr>
-        <tr>
-          <td class="lab">수신동의</td>
-          <td colspan="3" style="font-size:11px;">
-            <label class="chk"><input type="checkbox" name="수신동의_SMS"><span class="box"></span>SMS·전화 수신
-              (필수)</label><br>
-            <label class="chk"><input type="checkbox" name="수신동의_이메일"><span class="box"></span>이메일(취업·교육정보) 수신
-              (필수)</label>
-            <div style="font-size:10px;color:#333;margin-top:3px;">※ SMS·전화 수신과 이메일 수신에 동의하지 않으면 출결·휴강·일정변경 등 훈련 운영에 필요한
-              안내를 받을 수 없어 훈련 참여에 불이익이 있을 수 있습니다.</div>
-          </td>
-        </tr>
-      </table>
-
-      <!-- ② 학력·경력사항 -->
-      <div class="sec"><span class="badge">2</span><span class="sec-title">학력·경력사항</span></div>
-      <table class="ft">
-        <colgroup>
-          <col style="width:118px">
-          <col>
-          <col style="width:104px">
-          <col style="width:170px">
-        </colgroup>
-        <tr>
-          <td class="lab">학력사항</td>
-          <td style="font-size:11.5px;">
-            <label class="chk"><input type="radio" name="학력" value="고등학교 재학"><span class="box"></span>고등학교 재학</label>
-            <label class="chk"><input type="radio" name="학력" value="고등학교 졸업"><span class="box"></span>고등학교
-              졸업</label><br>
-            <label class="chk"><input type="radio" name="학력" value="전문대학 재학(2~3년제)"><span class="box"></span>전문대학
-              재학(2~3년제)</label>
-            <label class="chk"><input type="radio" name="학력" value="전문대학 졸업(2~3년제)"><span class="box"></span>전문대학
-              졸업(2~3년제)</label><br>
-            <label class="chk"><input type="radio" name="학력" value="대학교 재학(4년제)"><span class="box"></span>대학교
-              재학(4년제)</label>
-            <label class="chk"><input type="radio" name="학력" value="대학교 졸업(4년제)"><span class="box"></span>대학교
-              졸업(4년제)</label><br>
-            <label class="chk"><input type="radio" name="학력" value="대학원 재학(석사 이상)"><span class="box"></span>대학원 재학(석사
-              이상)</label>
-            <label class="chk"><input type="radio" name="학력" value="대학원 졸업(석사 이상)"><span class="box"></span>대학원 졸업(석사
-              이상)</label>
-          </td>
-          <td class="lab">전공(학과)</td>
-          <td><input type="text" name="전공"></td>
-        </tr>
-        <tr>
-          <td class="lab">학년·반 등<br><span style="font-weight:400;font-size:10.5px;">(해당자만)</span></td>
-          <td colspan="3" style="text-align:center;">
-            <span class="line" style="width:90px;"><input type="text" name="학교명"></span> 대학교
-            <span class="line" style="width:150px;"><input type="text" name="학과"></span> 학과
-            <span class="line" style="width:44px;"><input type="text" name="학년"></span> 학년
-            <span class="line" style="width:90px;"><input type="text" name="반"></span> 반
-          </td>
-        </tr>
-        <tr>
-          <td class="lab">직장경력</td>
-          <td>
-            <label class="chk"><input type="radio" name="직장경력" value="유"><span class="box"></span>유(직무:
-              <span class="line" style="width:70px;"><input type="text" name="직무"></span> / 기간:
-              <span class="line" style="width:34px;"><input type="text" name="경력기간"></span> 개월)</label>
-            <label class="chk"><input type="radio" name="직장경력" value="무"><span class="box"></span>무</label>
-          </td>
-          <td class="lab">군 관계<br><span style="font-weight:400;font-size:10.5px;">(해당자만)</span></td>
-          <td>
-            <label class="chk"><input type="radio" name="군관계" value="군필"><span class="box"></span>군필</label>
-            <label class="chk"><input type="radio" name="군관계" value="면제"><span class="box"></span>면제</label>
-            <label class="chk"><input type="radio" name="군관계" value="미필"><span class="box"></span>미필</label>
-          </td>
-        </tr>
-      </table>
-      <p class="note">※ 학과가 학년·반 또는 기수(1부·2부 등)로 세부 구분되는 경우 함께 기재해 주세요. (예 : IOT전자공학과 2학년 B반)</p>
-
-      <!-- ③ 훈련 신청 정보 -->
-      <div class="sec"><span class="badge">3</span><span class="sec-title">훈련 신청 정보</span></div>
-      <table class="ft">
-        <colgroup>
-          <col style="width:118px">
-          <col>
-          <col style="width:80px">
-          <col style="width:230px">
-        </colgroup>
-        <tr>
-          <td class="lab">신청 훈련과정</td>
-          <td colspan="3"><input type="text" name="신청훈련과정"></td>
-        </tr>
-        <tr>
-          <td class="lab">훈련기간(예정)</td>
-          <td class="c" style="font-size:11.5px;">
-            20<span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작연"></span> .
-            <span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작월"></span> .
-            <span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작일"></span>
-            ~ 20<span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료연"></span> .
-            <span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료월"></span> .
-            <span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료일"></span>
-          </td>
-          <td class="lab">과정 유형</td>
-          <td style="font-size:11px;">
-            <label class="chk"><input type="radio" name="과정유형" value="K-디지털 트레이닝"><span class="box"></span>K-디지털
-              트레이닝</label>
-            <label class="chk"><input type="radio" name="과정유형" value="과정평가형"><span class="box"></span>과정평가형</label><br>
-            <label class="chk"><input type="radio" name="과정유형" value="산업구조변화 대응 특화훈련"><span class="box"></span>산업구조변화 대응
-              특화훈련</label><br>
-            <label class="chk"><input type="radio" name="과정유형" value="국가기간·전략산업"><span
-                class="box"></span>국가기간·전략산업</label>
-            <label class="chk"><input type="radio" name="과정유형" value="기타"><span class="box"></span>기타</label>
-          </td>
-        </tr>
-        <tr>
-          <td class="lab">훈련 지원경로</td>
-          <td colspan="3" style="font-size:11.5px;">
-            <label class="chk"><input type="radio" name="지원경로" value="고용센터"><span class="box"></span>고용센터</label>
-            <label class="chk"><input type="radio" name="지원경로" value="재학생·수료생·교원 추천"><span class="box"></span>재학생·수료생·교원
-              추천</label>
-            <label class="chk"><input type="radio" name="지원경로" value="지인추천"><span class="box"></span>지인추천(추천인: <span
-                class="line" style="width:80px;"><input type="text" name="추천인"></span>)</label>
-            <label class="chk"><input type="radio" name="지원경로" value="인터넷검색"><span class="box"></span>인터넷검색(사이트: <span
-                class="line" style="width:80px;"><input type="text" name="검색사이트"></span>)</label><br>
-            <label class="chk"><input type="radio" name="지원경로" value="전단지·현수막"><span class="box"></span>전단지·현수막</label>
-            <label class="chk"><input type="radio" name="지원경로" value="기타"><span class="box"></span>기타( <span
-                class="line" style="width:170px;"><input type="text" name="지원경로기타"></span> )</label>
-          </td>
-        </tr>
-      </table>
-
-      <table class="ft mt8">
-        <colgroup>
-          <col style="width:150px">
-          <col>
-          <col style="width:150px">
-          <col>
-        </colgroup>
-        <tr>
-          <td class="lab">국민취업지원제도<br><span style="font-weight:400;font-size:10.5px;">(참여자만)</span></td>
-          <td><b>기관명</b>&nbsp; <input type="text" name="취업지원기관명" style="width:72%;"></td>
-          <td><b>담당자</b>&nbsp; <input type="text" name="취업지원담당자" style="width:70%;"></td>
-          <td><b>연락처</b>&nbsp; <input type="text" name="취업지원연락처" style="width:72%;"></td>
-        </tr>
-      </table>
-
-      <!-- ④ 훈련 참여 서약 -->
-      <div class="sec"><span class="badge">4</span><span class="sec-title">훈련 참여 서약</span></div>
-      <div class="oath">
-        본인은 고용노동부가 주관하는 국민내일배움카드 제도에 따라 대우능력개발원이 위탁받아 실시하는 훈련과정(K-디지털 트레이닝, 국가기간·전략산업훈련, 산업구조변화 대응 특화훈련 등)에 참여함에 있어, 「국민
-        평생 직업능력 개발법」및 「국민내일배움카드 운영규정」, 본 원의 제반 학칙을 철저히 준수하며 본 훈련에 적극 참여할 것을 서약합니다. 아울러 면접 선발 절차 및 그 결과에 대하여 이의를 제기하지
-        않습니다. (자기부담금·훈련장려금 등 구체적인 지원 조건은 담당 상담원에게 확인하시기 바랍니다.)
-      </div>
-      <p class="center mt14" style="font-size:12.5px;">
-        20<span class="line" style="width:26px;"><input type="text" maxlength="2" name="서약연"></span> 년
-        <span class="line" style="width:26px;"><input type="text" maxlength="2" name="서약월"></span> 월
-        <span class="line" style="width:26px;"><input type="text" maxlength="2" name="서약일"></span> 일
-      </p>
-      <p class="center mt14" style="font-size:13px;">
-        신청인 : <span class="line" style="width:150px;"><input type="text" name="신청인성명"></span> (서명)
-        <span class="sig-wrap">
-          <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에
-              서명하세요</span></span>
-          <span class="sig-tools">
-            <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해
-                주세요</span></span>
-            <button type="button" class="sig-save">서명 저장</button>
-            <button type="button" class="sig-clear">지우기</button>
-            <span class="sig-preview"><img alt="서명 미리보기"></span>
-          </span>
-        </span>
-      </p>
-
-      <!-- ⑤ 기관 확인란 -->
-      <div class="sec"><span class="badge">5</span><span class="sec-title">기관 확인란</span></div>
-      <p class="sec-sub">(지원자 작성 아님)</p>
-      <table class="ft">
-        <colgroup>
-          <col style="width:14%">
-          <col style="width:18%">
-          <col style="width:32%">
-          <col style="width:14%">
-          <col style="width:22%">
-        </colgroup>
-        <tr>
-          <td class="lab">상담자</td>
-          <td><input type="text" name="상담자"></td>
-          <td class="c">(서명)
-            <span class="sig-wrap">
-              <span class="sig-box"><canvas class="sig" data-w="120" data-h="40"></canvas></span>
-              <span class="sig-tools">
-                <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해
-                    주세요</span></span>
-                <button type="button" class="sig-save">서명 저장</button>
-                <button type="button" class="sig-clear">지우기</button>
-                <span class="sig-preview"><img alt="서명 미리보기"></span>
-              </span>
-            </span>
-          </td>
-          <td class="lab">접수일</td>
-          <td><input type="text" name="접수일"></td>
-        </tr>
-        <tr>
-          <td class="lab">비고</td>
-          <td colspan="4"><input type="text" name="비고"></td>
-        </tr>
-      </table>
-
-      <div class="doc-footer">
-        <span>대우능력개발원 훈련참여 신청서 (전 과정 공통양식)</span>
-        <span>1 / 4</span>
-      </div>
-    </section>
-
-    <!-- ================================================================
-     2 / 4  개인정보 수집·이용 동의서 (①②)
-================================================================= -->
-    <section class="paper" id="page1">
-      <div class="doc-header">
-        <div class="logo">대우능력개발원</div>
-        <div class="right">2026.09 제정<br>신청서와 함께 제출</div>
-      </div>
-
-      <h1 class="doc-title small">개인정보 수집·이용 동의서</h1>
-      <p class="doc-note-right">본 동의서 사본은 요청 시 교부해 드립니다.</p>
-
-      <!-- ① 필수 -->
-      <div class="sec"><span class="badge">1</span><span class="sec-title">훈련 참여를 위한 개인정보 수집·이용 (출결관리·재해보험)</span><span
-          class="tag-red">(필수)</span></div>
-
-      <p style="font-size:12.5px;font-weight:700;margin:10px 0 4px;">가. 출결관리 및 훈련비 지원</p>
-      <table class="ft">
-        <colgroup>
-          <col style="width:42%">
-          <col style="width:36%">
-          <col>
-        </colgroup>
-        <tr>
-          <th>수집·이용 목적</th>
-          <th>수집 항목</th>
-          <th>보유·이용 기간</th>
-        </tr>
-        <tr>
-          <td style="padding:14px 10px;">훈련생 등록·관리, 출결시스템(카드·비콘·지문 등) 출결관리, 훈련비 지원(국민내일배움카드) 신청, 수료·취업 사후관리</td>
-          <td style="padding:14px 10px;">성명, 생년월일, 성별, 연락처, 주소, 이메일, 학력·경력, 훈련과정 정보, 출결정보</td>
-          <td style="padding:14px 10px;">수집일로부터 훈련종료 후 3년</td>
-        </tr>
-      </table>
-      <p class="note">법적 근거 : 「국민 평생 직업능력 개발법」 제12조, 「고용보험법」, 「국민내일배움카드 운영규정」 제34조</p>
-
-      <p style="font-size:12.5px;font-weight:700;margin:14px 0 4px;">나. 훈련생 재해보상책임보험 가입</p>
-      <table class="ft">
-        <colgroup>
-          <col style="width:42%">
-          <col style="width:36%">
-          <col>
-        </colgroup>
-        <tr>
-          <th>수집·이용 목적</th>
-          <th>수집 항목</th>
-          <th>보유·이용 기간</th>
-        </tr>
-        <tr>
-          <td style="padding:14px 10px;">「국민 평생 직업능력 개발법」 제11조에 따른 훈련생 재해보상책임보험 가입 및 보험사 제공</td>
-          <td style="padding:14px 10px;">성명, 생년월일, 연락처</td>
-          <td style="padding:14px 10px;">훈련종료 후 3년</td>
-        </tr>
-      </table>
-      <p class="note">법적 근거 : 「국민 평생 직업능력 개발법」 제11조</p>
-      <p class="note">※ 위 가~나 항목은 훈련 수강에 필수적인 정보로, 동의를 거부할 권리가 있으나 거부 시 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.</p>
-
-      <p class="center mt20 consent-sign-row" style="font-size:12.5px;">
-        위 가~나 내용에 모두 동의합니다.&nbsp;
-        <label class="chk"><input type="radio" name="동의1" value="동의" required><span class="box"></span>동의</label>
-        <label class="chk"><input type="radio" name="동의1" value="미동의"><span class="box"></span>미동의</label>
-        &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의1성명"></span> (서명)
-        <span class="sig-wrap">
-          <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span
-              class="sig-hint">서명</span></span>
-          <span class="sig-tools">
-            <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해
-                주세요</span></span>
-            <button type="button" class="sig-save">서명 저장</button>
-            <button type="button" class="sig-clear">지우기</button>
-            <span class="sig-preview"><img alt="서명 미리보기"></span>
-          </span>
-        </span>
-      </p>
-
-      <!-- ② 선택 -->
-      <div class="sec" style="margin-top:44px;"><span class="badge">2</span><span class="sec-title">취업지원 및 취업정보 제공
-          동의</span><span class="tag-gray">(선택)</span></div>
-      <table class="ft">
-        <colgroup>
-          <col style="width:42%">
-          <col style="width:36%">
-          <col>
-        </colgroup>
-        <tr>
-          <th>수집·이용 목적</th>
-          <th>수집 항목</th>
-          <th>보유·이용 기간</th>
-        </tr>
-        <tr>
-          <td style="padding:14px 10px;">수강관리(지각·결석 확인), 취업상담, 훈련·일자리 관련 정보 안내</td>
-          <td style="padding:14px 10px;">전화번호, 휴대전화번호, 주소, 이메일</td>
-          <td style="padding:14px 10px;">훈련종료 후 7개월</td>
-        </tr>
-      </table>
-      <p class="note">법적 근거 : 「개인정보보호법」 제15조 &nbsp; ※ 거부 시 취업지원 서비스만 제공되지 않을 뿐, 훈련 수강에는 영향이 없습니다.</p>
-
-      <p class="center mt20" style="font-size:12.5px;">
-        위 내용에 동의합니다.&nbsp;
-        <label class="chk"><input type="radio" name="동의2" value="동의"><span class="box"></span>동의</label>
-        <label class="chk"><input type="radio" name="동의2" value="미동의"><span class="box"></span>미동의</label>
-        &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의2성명"></span> (서명)
-        <span class="sig-wrap">
-          <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span
-              class="sig-hint">서명</span></span>
-          <span class="sig-tools">
-            <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해
-                주세요</span></span>
-            <button type="button" class="sig-save">서명 저장</button>
-            <button type="button" class="sig-clear">지우기</button>
-            <span class="sig-preview"><img alt="서명 미리보기"></span>
-          </span>
-        </span>
-      </p>
-
-      <div class="doc-footer">
-        <span>대우능력개발원 개인정보 수집·이용 동의서</span>
-        <span>2 / 4</span>
-      </div>
-    </section>
-
-    <!-- ================================================================
-     3 / 4  개인정보 수집·이용 동의서 (③④⑤⑥)
-================================================================= -->
-    <section class="paper" id="page2">
-      <div class="doc-header">
-        <div class="logo">대우능력개발원</div>
-        <div class="right">2026.09 제정<br>신청서와 함께 제출</div>
-      </div>
-
-      <!-- ③ 제3자 제공 동의 -->
-      <div class="sec" style="margin-top:8px;"><span class="badge">3</span><span class="sec-title">제3자 제공 동의 (취업 연계 기관
-          등)</span><span class="tag-gray">(선택)</span></div>
-      <table class="ft">
-        <colgroup>
-          <col style="width:40%">
-          <col style="width:36%">
-          <col>
-        </colgroup>
-        <tr>
-          <th>제공받는 자</th>
-          <th>제공 항목</th>
-          <th>제공 목적</th>
-        </tr>
-        <tr>
-          <td style="padding:12px 10px;">취업 연계 협약기관,<br>고용노동부·한국산업인력공단 등</td>
-          <td style="padding:12px 10px;">성명, 연락처, 이메일, 훈련이수 정보</td>
-          <td style="padding:12px 10px;">취업 알선·구인 정보 제공</td>
-        </tr>
-      </table>
-      <p class="note">법적 근거 : 「개인정보보호법」 제17조(제3자 제공) · 보유기간 : 제공 목적 달성 시까지</p>
-      <p class="note">※ 동의를 거부할 권리가 있으며, 거부 시 취업 연계기관을 통한 알선 서비스만 제공되지 않을 뿐, 훈련 수강에는 영향이 없습니다.</p>
-
-      <p class="center mt14" style="font-size:12.5px;">
-        위 내용에 동의합니다.&nbsp;
-        <label class="chk"><input type="radio" name="동의3" value="동의"><span class="box"></span>동의</label>
-        <label class="chk"><input type="radio" name="동의3" value="미동의"><span class="box"></span>미동의</label>
-        &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의3성명"></span> (서명)
-        <span class="sig-wrap">
-          <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span
-              class="sig-hint">서명</span></span>
-          <span class="sig-tools">
-            <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해
-                주세요</span></span>
-            <button type="button" class="sig-save">서명 저장</button>
-            <button type="button" class="sig-clear">지우기</button>
-            <span class="sig-preview"><img alt="서명 미리보기"></span>
-          </span>
-        </span>
-      </p>
-
-      <!-- ④ 건강정보 -->
-      <div class="sec" style="margin-top:30px;"><span class="badge">4</span><span class="sec-title">훈련 참여 안전관리를 위한 건강정보
-          수집·이용 (해당자만)</span><span class="tag-gray">(선택)</span></div>
-      <table class="ft">
-        <colgroup>
-          <col style="width:42%">
-          <col style="width:36%">
-          <col>
-        </colgroup>
-        <tr>
-          <th>수집·이용 목적</th>
-          <th>수집 항목</th>
-          <th>보유·이용 기간</th>
-        </tr>
-        <tr>
-          <td style="padding:12px 10px;">실습·현장훈련 등 참여 시 안전사고 예방 및 필요한 편의지원(좌석·동선 조정 등) 제공을 위한 참고자료 확보</td>
-          <td style="padding:12px 10px;">정기적 치료·복약이 필요한 질환 등 안전 관련 건강정보(자기기재)</td>
-          <td style="padding:12px 10px;">훈련종료 후 즉시 파기</td>
-        </tr>
-      </table>
-      <p class="note">법적 근거 : 「개인정보보호법」 제23조(민감정보의 처리)</p>
-      <p class="note">※ 본 항목은 안전사고 예방 및 편의지원 검토 목적에 한하며, 미기재·미동의를 이유로 합격 여부를 자동으로 결정하지 않습니다. 질환·장애 자체를 이유로 한 응시 제한은 하지
-        않으며, 훈련 참여를 위한 안전조치·편의지원 필요 여부만을 개별적으로 확인합니다.</p>
-
-      <p class="center mt14" style="font-size:12.5px;">
-        위 내용에 동의합니다.&nbsp;
-        <label class="chk"><input type="radio" name="동의4" value="동의"><span class="box"></span>동의</label>
-        <label class="chk"><input type="radio" name="동의4" value="미동의"><span class="box"></span>미동의</label>
-        &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의4성명"></span> (서명)
-        <span class="sig-wrap">
-          <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span
-              class="sig-hint">서명</span></span>
-          <span class="sig-tools">
-            <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해
-                주세요</span></span>
-            <button type="button" class="sig-save">서명 저장</button>
-            <button type="button" class="sig-clear">지우기</button>
-            <span class="sig-preview"><img alt="서명 미리보기"></span>
-          </span>
-        </span>
-      </p>
-
-      <!-- ⑤ 미성년자 법정대리인 동의 -->
-      <div class="sec" style="margin-top:30px;"><span class="badge">5</span><span class="sec-title">미성년자 법정대리인
-          동의</span><span class="tag-gray">(만 19세 미만 지원자만 작성)</span></div>
-      <table class="ft">
-        <tr>
-          <td style="padding:9px 10px;">본인은 위 1~4항의 동의 내용에 대하여 미성년자(지원자)의 법정대리인으로서 이를 숙지하고 동의합니다.</td>
-        </tr>
-      </table>
-      <p class="center mt14" style="font-size:12.5px;">
-        법정대리인 성명 : <span class="line" style="width:120px;"><input type="text" name="법정대리인성명"></span>&nbsp;&nbsp;
-        지원자와의 관계 : <span class="line" style="width:80px;"><input type="text" name="법정대리인관계"></span>&nbsp; (서명)
-        <span class="sig-wrap">
-          <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span
-              class="sig-hint">서명</span></span>
-          <span class="sig-tools">
-            <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해
-                주세요</span></span>
-            <button type="button" class="sig-save">서명 저장</button>
-            <button type="button" class="sig-clear">지우기</button>
-            <span class="sig-preview"><img alt="서명 미리보기"></span>
-          </span>
-        </span>
-      </p>
-
-      <!-- ⑥ 정보주체의 권리 및 보유기간 안내 -->
-      <div class="sec" style="margin-top:30px;"><span class="badge">6</span><span class="sec-title">정보주체의 권리 및 보유기간
-          안내</span></div>
-      <table class="ft">
-        <colgroup>
-          <col style="width:38%">
-          <col>
-        </colgroup>
-        <tr>
-          <th>구분</th>
-          <th>보유기간</th>
-        </tr>
-        <tr>
-          <td style="padding:7px 10px;">홈페이지 회원 가입·관리</td>
-          <td style="padding:7px 10px;">훈련기간 종료 후 수료생 사후관리 종료 시점 기준 5년</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 10px;">훈련참여 신청서 관리·보관</td>
-          <td style="padding:7px 10px;">훈련기간 종료 후 수료생 사후관리 종료 시점 기준 5년</td>
-        </tr>
-        <tr>
-          <td style="padding:7px 10px;">훈련생 관리대장 및 평가서류 등 훈련운영 관련 서류</td>
-          <td style="padding:7px 10px;">훈련기간 종료 후 수료생 사후관리 종료 시점 기준 5년</td>
-        </tr>
-      </table>
-      <p class="note">본인의 개인정보 열람·정정·삭제·처리정지 요구 및 동의 철회 등 권리 행사는 아래 보유기간 및 대우능력개발원 개인정보 처리방침에 따릅니다.</p>
-      <p class="note">(근거 : 「개인정보보호법」 제35조~제39조)</p>
-
-      <p class="center mt20" style="font-size:12.5px;">
-        20<span class="line" style="width:26px;"><input type="text" maxlength="2" name="안내연"></span> 년
-        <span class="line" style="width:26px;"><input type="text" maxlength="2" name="안내월"></span> 월
-        <span class="line" style="width:26px;"><input type="text" maxlength="2" name="안내일"></span> 일
-      </p>
-      <p class="center mt14" style="font-size:13px;">
-        성명 : <span class="line" style="width:150px;"><input type="text" name="안내성명"></span> (서명)
-        <span class="sig-wrap">
-          <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에
-              서명하세요</span></span>
-          <span class="sig-tools">
-            <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해
-                주세요</span></span>
-            <button type="button" class="sig-save">서명 저장</button>
-            <button type="button" class="sig-clear">지우기</button>
-            <span class="sig-preview"><img alt="서명 미리보기"></span>
-          </span>
-        </span>
-      </p>
-      <p class="doc-note-right mt20">본 동의서 사본은 요청 시 언제든지 교부해 드립니다.</p>
-
-      <div class="doc-footer">
-        <span>대우능력개발원 개인정보 수집·이용 동의서</span>
-        <span>3 / 4</span>
-      </div>
-    </section>
-
-    <!-- ================================================================
-     4 / 4  훈련생 면접 선발 평가 기준표
-================================================================= -->
-    <section class="paper" id="page3">
-      <div class="doc-header">
-        <div class="logo">대우능력개발원</div>
-        <div class="right">2026.09 제정<br>면접위원 작성</div>
-      </div>
-
-      <h1 class="doc-title small">훈련생 면접 선발 평가 기준표</h1>
-      <p class="doc-sub">면접위원이 작성하며, 지원자에게 배부하지 않습니다. (100점 만점)</p>
-
-      <table class="ft mt8">
-        <colgroup>
-          <col style="width:15%">
-          <col style="width:47%">
-          <col style="width:26%">
-          <col>
-        </colgroup>
-        <tr>
-          <th>평가영역</th>
-          <th>평가기준 (등급별 판단기준)</th>
-          <th>평가 (해당란 체크)</th>
-          <th>배점</th>
-        </tr>
-        <tr>
-          <td class="lab">훈련과정 관심도</td>
-          <td style="font-size:11px;">
-            우수(10) : 과정명·주요 교과목·수료 후 활용 계획을 스스로 설명함<br>
-            보통(5) : 과정명과 개략적 내용만 파악하고 있음<br>
-            미흡(2) : 지원 과정명 또는 주요 내용을 정확히 답변하지 못함
-          </td>
-          <td>
-            <label class="chk"><input type="radio" name="ev1" data-score="10"><span class="box"></span>우수(10)</label>
-            <label class="chk"><input type="radio" name="ev1" data-score="5"><span class="box"></span>보통(5)</label>
-            <label class="chk"><input type="radio" name="ev1" data-score="2"><span class="box"></span>미흡(2)</label>
-          </td>
-          <td class="c">10</td>
-        </tr>
-        <tr>
-          <td class="lab">취업의지 및<br>가능성</td>
-          <td style="font-size:11px;">
-            우수(10) : 수료 후 취업하고자 하는 구체적 직무·업종을 제시함<br>
-            보통(5) : 취업 의사는 있으나 구체적 목표 직무를 제시하지 못함<br>
-            미흡(2) : 취업 의사가 불분명하거나 답변을 회피함
-          </td>
-          <td>
-            <label class="chk"><input type="radio" name="ev2" data-score="10"><span class="box"></span>우수(10)</label>
-            <label class="chk"><input type="radio" name="ev2" data-score="5"><span class="box"></span>보통(5)</label>
-            <label class="chk"><input type="radio" name="ev2" data-score="2"><span class="box"></span>미흡(2)</label>
-          </td>
-          <td class="c">10</td>
-        </tr>
-        <tr>
-          <td class="lab">자격증 취득 의지</td>
-          <td style="font-size:11px;">
-            우수(10) : 취득 예정 자격증명과 응시 일정을 구체적으로 제시함<br>
-            보통(5) : 취득 의사는 있으나 구체적 계획을 제시하지 못함<br>
-            미흡(2) : 자격증 취득 의사가 없거나 응답하지 못함
-          </td>
-          <td>
-            <label class="chk"><input type="radio" name="ev3" data-score="10"><span class="box"></span>우수(10)</label>
-            <label class="chk"><input type="radio" name="ev3" data-score="5"><span class="box"></span>보통(5)</label>
-            <label class="chk"><input type="radio" name="ev3" data-score="2"><span class="box"></span>미흡(2)</label>
-          </td>
-          <td class="c">10</td>
-        </tr>
-        <tr>
-          <td class="lab">학력 및 전공사항</td>
-          <td style="font-size:11px;">
-            최우수(10) : 관련 전공 및 동일 분야 자격증·이수 과목 보유<br>
-            우수(7) : 관련 전공 보유(관련 자격증·이수 과목 없음)<br>
-            보통(5) : 비관련 전공이나 관련 분야 이수 경험 있음<br>
-            기타(2) : 비관련 전공 및 관련 경험 없음
-          </td>
-          <td>
-            <label class="chk"><input type="radio" name="ev4" data-score="10"><span class="box"></span>최우수(10)</label>
-            <label class="chk"><input type="radio" name="ev4" data-score="7"><span class="box"></span>우수(7)</label><br>
-            <label class="chk"><input type="radio" name="ev4" data-score="5"><span class="box"></span>보통(5)</label>
-            <label class="chk"><input type="radio" name="ev4" data-score="2"><span class="box"></span>기타(2)</label>
-          </td>
-          <td class="c">10</td>
-        </tr>
-        <tr>
-          <td class="lab">경력사항</td>
-          <td style="font-size:11px;">
-            관련직종(10) : 지원 과정과 관련된 직종에서 6개월이상 근무 경력<br>
-            타직종(5) : 관련 직종 6개월 미만 또는 타직종 근무 경력<br>
-            경력없음(2) : 근무 경력 없음
-          </td>
-          <td>
-            <label class="chk"><input type="radio" name="ev5" data-score="10"><span class="box"></span>관련직종(10)</label>
-            <label class="chk"><input type="radio" name="ev5" data-score="5"><span class="box"></span>타직종(5)</label><br>
-            <label class="chk"><input type="radio" name="ev5" data-score="2"><span class="box"></span>경력없음(2)</label>
-          </td>
-          <td class="c">10</td>
-        </tr>
-        <tr>
-          <td class="lab">책임감 및 성실성</td>
-          <td style="font-size:11px;">
-            우수(10) : 지각·결석 없이 성실하게 임했던 구체적 경험<br>
-            (학업·직장 등)을 스스로 설명함<br>
-            보통(5) : 성실성에 대한 답변이 다소 추상적이거나 근거가 부족함<br>
-            미흡(2) : 성실성을 뒷받침할 근거를 제시하지 못함
-          </td>
-          <td>
-            <label class="chk"><input type="radio" name="ev6" data-score="10"><span class="box"></span>우수(10)</label>
-            <label class="chk"><input type="radio" name="ev6" data-score="5"><span class="box"></span>보통(5)</label><br>
-            <label class="chk"><input type="radio" name="ev6" data-score="2"><span class="box"></span>미흡(2)</label>
-          </td>
-          <td class="c">10</td>
-        </tr>
-        <tr>
-          <td class="lab">면접태도 및 용모</td>
-          <td style="font-size:11px;">
-            우수(10) : 질문에 명확히 답변하고 예정 시간을 지켜 참석함<br>
-            보통(5) : 답변이 다소 불명확하거나 10분 이내 지각함<br>
-            미흡(2) : 답변을 거의 하지 못하거나 10분을 초과하여 지각함
-          </td>
-          <td>
-            <label class="chk"><input type="radio" name="ev7" data-score="10"><span class="box"></span>우수(10)</label>
-            <label class="chk"><input type="radio" name="ev7" data-score="5"><span class="box"></span>보통(5)</label><br>
-            <label class="chk"><input type="radio" name="ev7" data-score="2"><span class="box"></span>미흡(2)</label>
-          </td>
-          <td class="c">10</td>
-        </tr>
-        <tr>
-          <td class="lab">훈련 참여<br>안전적합성</td>
-          <td style="font-size:11px;">
-            지장없음(10) : 안전 수행에 지장 없음(자기기재 기준 특이사항 없음)<br>
-            편의지원 필요(5) : 편의지원(좌석·동선 조정 등) 제공 시 참여 가능<br>
-            확인필요(2) : 안전관리책임자 확인 필요(개별 상담 대상)
-          </td>
-          <td>
-            <label class="chk"><input type="radio" name="ev8" data-score="10"><span
-                class="box"></span>지장없음(10)</label><br>
-            <label class="chk"><input type="radio" name="ev8" data-score="5"><span class="box"></span>편의지원
-              필요(5)</label><br>
-            <label class="chk"><input type="radio" name="ev8" data-score="2"><span class="box"></span>확인필요(2)</label>
-          </td>
-          <td class="c">10</td>
-        </tr>
-        <tr>
-          <td class="lab">종합<br>직무적합도<br>(면접위원<br>종합판단)</td>
-          <td style="font-size:11px;">
-            우수(20) : 질의응답의 논리성·상황 대처·태도를 종합할 때<br>
-            훈련 참여에 특별한 우려가 없음<br>
-            보통(12) : 일부 우려되는 부분이 있으나<br>
-            훈련 참여에 지장이 없다고 판단됨<br>
-            미흡(5) : 훈련 참여 적합성에 대해 우려가 있음<br>
-            (사유를 면접자의견란에 기재)
-          </td>
-          <td>
-            <label class="chk"><input type="radio" name="ev9" data-score="20"><span
-                class="box"></span>우수(20)</label><br>
-            <label class="chk"><input type="radio" name="ev9" data-score="12"><span
-                class="box"></span>보통(12)</label><br>
-            <label class="chk"><input type="radio" name="ev9" data-score="5"><span class="box"></span>미흡(5)</label>
-          </td>
-          <td class="c">20</td>
-        </tr>
-      </table>
-      <p class="note">※ '훈련 참여 안전적합성' 항목에서 '확인필요'로 평가된 경우, 이 점수만으로 자동 불합격 처리하지 않습니다. 담당 부서(안전관리책임자 포함)의 개별 상담·확인을 거쳐 합격
-        여부 및 편의지원 방안을 결정하며, 정당한 사유 없이 질병·장애를 이유로 응시 자체를 제한하지 않습니다. (근거 : 「장애인차별금지 및 권리구제 등에 관한 법률」 제4조·제10조)</p>
-
-      <table class="ft mt14">
-        <colgroup>
-          <col style="width:20%">
-          <col style="width:44%">
-          <col style="width:14%">
-          <col>
-        </colgroup>
-        <tr>
-          <td class="lab" style="font-size:11.5px;">면접자 의견<br>(특이사항 등 상세기입)</td>
-          <td><textarea class="ta" name="면접자의견" rows="3"></textarea></td>
-          <td class="lab" style="font-size:11.5px;">면접 총점</td>
-          <td style="font-size:11px;">
-            81점 이상 = A<br>
-            71~80점 = B<br>
-            60~70점 = C<br>
-            60점 이하 = 불합격
-          </td>
-        </tr>
-        <tr>
-          <td class="lab">합계 점수</td>
-          <td style="font-size:12px;">총점 : <span class="line" style="width:110px;"><input type="text" name="총점"
-                id="totalScore" readonly style="font-weight:700;"></span> / 100 점</td>
-          <td class="lab">판정</td>
-          <td>
-            <label class="chk"><input type="radio" name="판정" value="합격"><span class="box"></span>합격</label>
-            <label class="chk"><input type="radio" name="판정" value="불합격"><span class="box"></span>불합격</label>
-          </td>
-        </tr>
-      </table>
-
-      <p class="center mt14" style="font-size:12.5px;">
-        면접평가자 : <span class="line" style="width:120px;"><input type="text" name="면접평가자"></span> (서명)
-        <span class="sig-wrap">
-          <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span
-              class="sig-hint">서명</span></span>
-          <span class="sig-tools">
-            <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해
-                주세요</span></span>
-            <button type="button" class="sig-save">서명 저장</button>
-            <button type="button" class="sig-clear">지우기</button>
-            <span class="sig-preview"><img alt="서명 미리보기"></span>
-          </span>
-        </span>
-      </p>
-      <p class="center mt14" style="font-size:12.5px;">
-        20<span class="line" style="width:26px;"><input type="text" maxlength="2" name="평가연"></span> 년
-        <span class="line" style="width:26px;"><input type="text" maxlength="2" name="평가월"></span> 월
-        <span class="line" style="width:26px;"><input type="text" maxlength="2" name="평가일"></span> 일
-      </p>
-
-      <div class="doc-footer">
-        <span>대우능력개발원 훈련생 면접 선발 평가 기준표</span>
-        <span>4 / 4</span>
-      </div>
-    </section>
-
-  </form>
-
-  <!-- 페이지 이동 -->
-  <div class="pager no-print">
-    <button type="button" id="btnPrev">← 이전 페이지</button>
-    <button type="button" id="btnNext">다음 페이지 →</button>
-  </div>
-
-  <!-- 제출 완료 -->
-  <div class="overlay" id="doneOverlay">
-    <div class="card">
-      <h2>제출이 완료되었습니다</h2>
-      <p id="doneMsg">작성하신 훈련참여신청서가 접수되었습니다.<br>기관 확인 후 등록하신 연락처로 안내드립니다.</p>
-      <button class="btn" onclick="document.getElementById('doneOverlay').classList.remove('show')">확인</button>
+<section class="paper active" id="page0">
+  <div class="doc-header">
+    <div class="logo">대우능력개발원</div>
+    <div class="right">
+      2026.09 제정 · 전 과정 공통양식<br>
+      <span class="num">접수번호 <span class="line" style="width:110px;"><input type="text" name="접수번호"></span></span>
     </div>
   </div>
 
-  <script>
-    /* ---------- 페이지 탭 ---------- */
-    const papers = document.querySelectorAll('.paper');
-    const tabs = document.querySelectorAll('.tab');
-    let cur = 0;
-    function showPage(i) {
-      cur = Math.max(0, Math.min(papers.length - 1, i));
-      papers.forEach((p, idx) => p.classList.toggle('active', idx === cur));
-      tabs.forEach((t, idx) => t.classList.toggle('active', idx === cur));
-      document.getElementById('btnPrev').disabled = cur === 0;
-      document.getElementById('btnNext').disabled = cur === papers.length - 1;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  <h1 class="doc-title">훈련참여신청서</h1>
+  <p class="doc-sub">국민내일배움카드 훈련과정(K-디지털 트레이닝·국가기간전략산업·산업구조변화 대응 특화훈련 등) 공통 신청서</p>
+
+  <!-- ① 지원자 기본정보 -->
+  <div class="sec"><span class="badge">1</span><span class="sec-title">지원자 기본정보</span></div>
+  <table class="ft">
+    <colgroup>
+      <col style="width:118px"><col style="width:88px"><col style="width:172px"><col style="width:88px"><col>
+    </colgroup>
+    <tr>
+      <td rowspan="6" class="c" style="padding:6px 4px;">
+        <div class="photo-box" id="photoBox" title="클릭하여 사진 업로드">
+          <span class="photo-cap">증명사진<br>3×4cm<br>(6개월 이내)</span>
+          <img id="photoImg" alt="증명사진">
+        </div>
+        <input type="file" id="photoFile" accept="image/*" hidden>
+      </td>
+      <td class="lab">성 명</td>
+      <td><input type="text" name="성명" id="fName"></td>
+      <td class="lab">생년월일</td>
+      <td><input type="text" name="생년월일" placeholder="예) 2000.01.01"></td>
+    </tr>
+    <tr>
+      <td class="lab">휴대폰</td>
+      <td><input type="tel" name="휴대폰" placeholder="010-0000-0000"></td>
+      <td class="lab">성별</td>
+      <td>
+        <label class="chk"><input type="radio" name="성별" value="남"><span class="box"></span>남</label>
+        <label class="chk"><input type="radio" name="성별" value="여"><span class="box"></span>여</label>
+      </td>
+    </tr>
+    <tr>
+      <td class="lab">이메일</td>
+      <td colspan="3"><input type="email" name="이메일"></td>
+    </tr>
+    <tr>
+      <td class="lab">주소(실거주지)</td>
+      <td colspan="3"><input type="text" name="주소"></td>
+    </tr>
+    <tr>
+      <td class="lab">비상연락처</td>
+      <td colspan="3">연락처 : <span class="line" style="width:150px;"><input type="text" name="비상연락처"></span>&nbsp;
+        관계 : ( 부 / 모 / 조부 / 조모 / 기타 )</td>
+    </tr>
+    <tr>
+      <td class="lab">수신동의</td>
+      <td colspan="3" style="font-size:11px;">
+        <label class="chk"><input type="checkbox" name="수신동의_SMS"><span class="box"></span>SMS·전화 수신 (필수)</label><br>
+        <label class="chk"><input type="checkbox" name="수신동의_이메일"><span class="box"></span>이메일(취업·교육정보) 수신 (필수)</label>
+        <div style="font-size:10px;color:#333;margin-top:3px;">※ SMS·전화 수신과 이메일 수신에 동의하지 않으면 출결·휴강·일정변경 등 훈련 운영에 필요한 안내를 받을 수 없어 훈련 참여에 불이익이 있을 수 있습니다.</div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- ② 학력·경력사항 -->
+  <div class="sec"><span class="badge">2</span><span class="sec-title">학력·경력사항</span></div>
+  <table class="ft">
+    <colgroup>
+      <col style="width:118px"><col><col style="width:104px"><col style="width:170px">
+    </colgroup>
+    <tr>
+      <td class="lab">학력사항</td>
+      <td style="font-size:11.5px;">
+        <label class="chk"><input type="radio" name="학력" value="고등학교 재학"><span class="box"></span>고등학교 재학</label>
+        <label class="chk"><input type="radio" name="학력" value="고등학교 졸업"><span class="box"></span>고등학교 졸업</label><br>
+        <label class="chk"><input type="radio" name="학력" value="전문대학 재학(2~3년제)"><span class="box"></span>전문대학 재학(2~3년제)</label>
+        <label class="chk"><input type="radio" name="학력" value="전문대학 졸업(2~3년제)"><span class="box"></span>전문대학 졸업(2~3년제)</label><br>
+        <label class="chk"><input type="radio" name="학력" value="대학교 재학(4년제)"><span class="box"></span>대학교 재학(4년제)</label>
+        <label class="chk"><input type="radio" name="학력" value="대학교 졸업(4년제)"><span class="box"></span>대학교 졸업(4년제)</label><br>
+        <label class="chk"><input type="radio" name="학력" value="대학원 재학(석사 이상)"><span class="box"></span>대학원 재학(석사 이상)</label>
+        <label class="chk"><input type="radio" name="학력" value="대학원 졸업(석사 이상)"><span class="box"></span>대학원 졸업(석사 이상)</label>
+      </td>
+      <td class="lab">전공(학과)</td>
+      <td><input type="text" name="전공"></td>
+    </tr>
+    <tr>
+      <td class="lab">학년·반 등<br><span style="font-weight:400;font-size:10.5px;">(해당자만)</span></td>
+      <td colspan="3" class="flexline" style="text-align:center;">
+        <span class="line" style="width:90px;"><input type="text" name="학교명"></span> 대학교
+        <span class="line" style="width:150px;"><input type="text" name="학과"></span> 학과
+        <span class="line" style="width:44px;"><input type="text" name="학년"></span> 학년
+        <span class="line" style="width:90px;"><input type="text" name="반"></span> 반
+      </td>
+    </tr>
+    <tr>
+      <td class="lab">직장경력</td>
+      <td>
+        <label class="chk"><input type="radio" name="직장경력" value="유"><span class="box"></span>유(직무:
+          <span class="line" style="width:70px;"><input type="text" name="직무"></span> / 기간:
+          <span class="line" style="width:34px;"><input type="text" name="경력기간"></span> 개월)</label>
+        <label class="chk"><input type="radio" name="직장경력" value="무"><span class="box"></span>무</label>
+      </td>
+      <td class="lab">군 관계<br><span style="font-weight:400;font-size:10.5px;">(해당자만)</span></td>
+      <td>
+        <label class="chk"><input type="radio" name="군관계" value="군필"><span class="box"></span>군필</label>
+        <label class="chk"><input type="radio" name="군관계" value="면제"><span class="box"></span>면제</label>
+        <label class="chk"><input type="radio" name="군관계" value="미필"><span class="box"></span>미필</label>
+      </td>
+    </tr>
+  </table>
+  <p class="note">※ 학과가 학년·반 또는 기수(1부·2부 등)로 세부 구분되는 경우 함께 기재해 주세요. (예 : IOT전자공학과 2학년 B반)</p>
+
+  <!-- ③ 훈련 신청 정보 -->
+  <div class="sec"><span class="badge">3</span><span class="sec-title">훈련 신청 정보</span></div>
+  <table class="ft">
+    <colgroup>
+      <col style="width:118px"><col><col style="width:80px"><col style="width:230px">
+    </colgroup>
+    <tr>
+      <td class="lab">신청 훈련과정</td>
+      <td colspan="3"><input type="text" name="신청훈련과정"></td>
+    </tr>
+    <tr>
+      <td class="lab">훈련기간(예정)</td>
+      <td class="c flexline" style="font-size:11.5px;">
+        20<span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작연"></span> .
+        <span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작월"></span> .
+        <span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작일"></span>
+        ~ 20<span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료연"></span> .
+        <span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료월"></span> .
+        <span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료일"></span>
+      </td>
+      <td class="lab">과정 유형</td>
+      <td style="font-size:11px;">
+        <label class="chk"><input type="radio" name="과정유형" value="K-디지털 트레이닝"><span class="box"></span>K-디지털 트레이닝</label>
+        <label class="chk"><input type="radio" name="과정유형" value="과정평가형"><span class="box"></span>과정평가형</label><br>
+        <label class="chk"><input type="radio" name="과정유형" value="산업구조변화 대응 특화훈련"><span class="box"></span>산업구조변화 대응 특화훈련</label><br>
+        <label class="chk"><input type="radio" name="과정유형" value="국가기간·전략산업"><span class="box"></span>국가기간·전략산업</label>
+        <label class="chk"><input type="radio" name="과정유형" value="기타"><span class="box"></span>기타</label>
+      </td>
+    </tr>
+    <tr>
+      <td class="lab">훈련 지원경로</td>
+      <td colspan="3" style="font-size:11.5px;">
+        <label class="chk"><input type="radio" name="지원경로" value="고용센터"><span class="box"></span>고용센터</label>
+        <label class="chk"><input type="radio" name="지원경로" value="재학생·수료생·교원 추천"><span class="box"></span>재학생·수료생·교원 추천</label>
+        <label class="chk"><input type="radio" name="지원경로" value="지인추천"><span class="box"></span>지인추천(추천인: <span class="line" style="width:80px;"><input type="text" name="추천인"></span>)</label>
+        <label class="chk"><input type="radio" name="지원경로" value="인터넷검색"><span class="box"></span>인터넷검색(사이트: <span class="line" style="width:80px;"><input type="text" name="검색사이트"></span>)</label><br>
+        <label class="chk"><input type="radio" name="지원경로" value="전단지·현수막"><span class="box"></span>전단지·현수막</label>
+        <label class="chk"><input type="radio" name="지원경로" value="기타"><span class="box"></span>기타( <span class="line" style="width:170px;"><input type="text" name="지원경로기타"></span> )</label>
+      </td>
+    </tr>
+  </table>
+
+  <table class="ft mt8">
+    <colgroup>
+      <col style="width:150px"><col><col style="width:150px"><col>
+    </colgroup>
+    <tr>
+      <td class="lab">국민취업지원제도<br><span style="font-weight:400;font-size:10.5px;">(참여자만)</span></td>
+      <td><b>기관명</b>&nbsp; <input type="text" name="취업지원기관명" style="width:72%;"></td>
+      <td><b>담당자</b>&nbsp; <input type="text" name="취업지원담당자" style="width:70%;"></td>
+      <td><b>연락처</b>&nbsp; <input type="text" name="취업지원연락처" style="width:72%;"></td>
+    </tr>
+  </table>
+
+  <!-- ④ 훈련 참여 서약 -->
+  <div class="sec"><span class="badge">4</span><span class="sec-title">훈련 참여 서약</span></div>
+  <div class="oath">
+    본인은 고용노동부가 주관하는 국민내일배움카드 제도에 따라 대우능력개발원이 위탁받아 실시하는 훈련과정(K-디지털 트레이닝, 국가기간·전략산업훈련, 산업구조변화 대응 특화훈련 등)에 참여함에 있어, 「국민 평생 직업능력 개발법」및 「국민내일배움카드 운영규정」, 본 원의 제반 학칙을 철저히 준수하며 본 훈련에 적극 참여할 것을 서약합니다. 아울러 면접 선발 절차 및 그 결과에 대하여 이의를 제기하지 않습니다. (자기부담금·훈련장려금 등 구체적인 지원 조건은 담당 상담원에게 확인하시기 바랍니다.)
+  </div>
+  <p class="center mt14" style="font-size:12.5px;">
+    20<span class="line" style="width:26px;"><input type="text" maxlength="2" name="서약연"></span> 년
+    <span class="line" style="width:26px;"><input type="text" maxlength="2" name="서약월"></span> 월
+    <span class="line" style="width:26px;"><input type="text" maxlength="2" name="서약일"></span> 일
+  </p>
+  <p class="center mt14" style="font-size:13px;">
+    신청인 : <span class="line" style="width:150px;"><input type="text" name="신청인성명"></span> (서명)
+    <span class="sig-wrap">
+      <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에 서명하세요</span></span>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
+    </span>
+  </p>
+
+  <!-- ⑤ 기관 확인란 -->
+  <div class="sec"><span class="badge">5</span><span class="sec-title">기관 확인란</span></div>
+  <p class="sec-sub">(지원자 작성 아님)</p>
+  <table class="ft">
+    <colgroup>
+      <col style="width:118px"><col><col style="width:150px"><col><col style="width:88px"><col>
+    </colgroup>
+    <tr>
+      <td class="lab">상담자</td>
+      <td><input type="text" name="상담자"></td>
+      <td class="c">(서명)
+        <span class="sig-wrap">
+          <span class="sig-box"><canvas class="sig" data-w="120" data-h="40"></canvas></span>
+          <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
+        </span>
+      </td>
+      <td class="lab">접수일</td>
+      <td><input type="text" name="접수일"></td>
+    </tr>
+    <tr>
+      <td class="lab">비고</td>
+      <td colspan="4"><input type="text" name="비고"></td>
+    </tr>
+  </table>
+
+  <div class="doc-footer">
+    <span>대우능력개발원 훈련참여 신청서 (전 과정 공통양식)</span>
+    <span>1 / 4</span>
+  </div>
+</section>
+
+<!-- ================================================================
+     2 / 4  개인정보 수집·이용 동의서 (①②)
+================================================================= -->
+<section class="paper" id="page1">
+  <div class="doc-header">
+    <div class="logo">대우능력개발원</div>
+    <div class="right">2026.09 제정<br>신청서와 함께 제출</div>
+  </div>
+
+  <h1 class="doc-title small">개인정보 수집·이용 동의서</h1>
+  <p class="doc-note-right">본 동의서 사본은 요청 시 교부해 드립니다.</p>
+
+  <!-- ① 필수 -->
+  <div class="sec"><span class="badge">1</span><span class="sec-title">훈련 참여를 위한 개인정보 수집·이용 (출결관리·재해보험)</span><span class="tag-red">(필수)</span></div>
+
+  <p style="font-size:12.5px;font-weight:700;margin:10px 0 4px;">가. 출결관리 및 훈련비 지원</p>
+  <table class="ft">
+    <colgroup>
+      <col style="width:42%"><col style="width:36%"><col>
+    </colgroup>
+    <tr>
+      <th>수집·이용 목적</th>
+      <th>수집 항목</th>
+      <th>보유·이용 기간</th>
+    </tr>
+    <tr>
+      <td style="padding:14px 10px;">훈련생 등록·관리, 출결시스템(카드·비콘·지문 등) 출결관리, 훈련비 지원(국민내일배움카드) 신청, 수료·취업 사후관리</td>
+      <td style="padding:14px 10px;">성명, 생년월일, 성별, 연락처, 주소, 이메일, 학력·경력, 훈련과정 정보, 출결정보</td>
+      <td style="padding:14px 10px;">수집일로부터 훈련종료 후 3년</td>
+    </tr>
+  </table>
+  <p class="note">법적 근거 : 「국민 평생 직업능력 개발법」 제12조, 「고용보험법」, 「국민내일배움카드 운영규정」 제34조</p>
+
+  <p style="font-size:12.5px;font-weight:700;margin:14px 0 4px;">나. 훈련생 재해보상책임보험 가입</p>
+  <table class="ft">
+    <colgroup>
+      <col style="width:42%"><col style="width:36%"><col>
+    </colgroup>
+    <tr>
+      <th>수집·이용 목적</th>
+      <th>수집 항목</th>
+      <th>보유·이용 기간</th>
+    </tr>
+    <tr>
+      <td style="padding:14px 10px;">「국민 평생 직업능력 개발법」 제11조에 따른 훈련생 재해보상책임보험 가입 및 보험사 제공</td>
+      <td style="padding:14px 10px;">성명, 생년월일, 연락처</td>
+      <td style="padding:14px 10px;">훈련종료 후 3년</td>
+    </tr>
+  </table>
+  <p class="note">법적 근거 : 「국민 평생 직업능력 개발법」 제11조</p>
+  <p class="note">※ 위 가~나 항목은 훈련 수강에 필수적인 정보로, 동의를 거부할 권리가 있으나 거부 시 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.</p>
+
+  <p class="center mt20" style="font-size:12.5px;">
+    위 가~나 내용에 모두 동의합니다.&nbsp;
+    <label class="chk"><input type="radio" name="동의1" value="동의" required><span class="box"></span>동의</label>
+    <label class="chk"><input type="radio" name="동의1" value="미동의"><span class="box"></span>미동의</label>
+    &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의1성명"></span> (서명)
+    <span class="sig-wrap">
+      <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
+    </span>
+  </p>
+
+  <!-- ② 선택 -->
+  <div class="sec" style="margin-top:44px;"><span class="badge">2</span><span class="sec-title">취업지원 및 취업정보 제공 동의</span><span class="tag-gray">(선택)</span></div>
+  <table class="ft">
+    <colgroup>
+      <col style="width:42%"><col style="width:36%"><col>
+    </colgroup>
+    <tr>
+      <th>수집·이용 목적</th>
+      <th>수집 항목</th>
+      <th>보유·이용 기간</th>
+    </tr>
+    <tr>
+      <td style="padding:14px 10px;">수강관리(지각·결석 확인), 취업상담, 훈련·일자리 관련 정보 안내</td>
+      <td style="padding:14px 10px;">전화번호, 휴대전화번호, 주소, 이메일</td>
+      <td style="padding:14px 10px;">훈련종료 후 7개월</td>
+    </tr>
+  </table>
+  <p class="note">법적 근거 : 「개인정보보호법」 제15조 &nbsp; ※ 거부 시 취업지원 서비스만 제공되지 않을 뿐, 훈련 수강에는 영향이 없습니다.</p>
+
+  <p class="center mt20" style="font-size:12.5px;">
+    위 내용에 동의합니다.&nbsp;
+    <label class="chk"><input type="radio" name="동의2" value="동의"><span class="box"></span>동의</label>
+    <label class="chk"><input type="radio" name="동의2" value="미동의"><span class="box"></span>미동의</label>
+    &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의2성명"></span> (서명)
+    <span class="sig-wrap">
+      <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
+    </span>
+  </p>
+
+  <div class="doc-footer">
+    <span>대우능력개발원 개인정보 수집·이용 동의서</span>
+    <span>2 / 4</span>
+  </div>
+</section>
+
+<!-- ================================================================
+     3 / 4  개인정보 수집·이용 동의서 (③④⑤⑥)
+================================================================= -->
+<section class="paper" id="page2">
+  <div class="doc-header">
+    <div class="logo">대우능력개발원</div>
+    <div class="right">2026.09 제정<br>신청서와 함께 제출</div>
+  </div>
+
+  <!-- ③ 제3자 제공 동의 -->
+  <div class="sec" style="margin-top:8px;"><span class="badge">3</span><span class="sec-title">제3자 제공 동의 (취업 연계 기관 등)</span><span class="tag-gray">(선택)</span></div>
+  <table class="ft">
+    <colgroup>
+      <col style="width:40%"><col style="width:36%"><col>
+    </colgroup>
+    <tr>
+      <th>제공받는 자</th>
+      <th>제공 항목</th>
+      <th>제공 목적</th>
+    </tr>
+    <tr>
+      <td style="padding:12px 10px;">취업 연계 협약기관,<br>고용노동부·한국산업인력공단 등</td>
+      <td style="padding:12px 10px;">성명, 연락처, 이메일, 훈련이수 정보</td>
+      <td style="padding:12px 10px;">취업 알선·구인 정보 제공</td>
+    </tr>
+  </table>
+  <p class="note">법적 근거 : 「개인정보보호법」 제17조(제3자 제공) · 보유기간 : 제공 목적 달성 시까지</p>
+  <p class="note">※ 동의를 거부할 권리가 있으며, 거부 시 취업 연계기관을 통한 알선 서비스만 제공되지 않을 뿐, 훈련 수강에는 영향이 없습니다.</p>
+
+  <p class="center mt14" style="font-size:12.5px;">
+    위 내용에 동의합니다.&nbsp;
+    <label class="chk"><input type="radio" name="동의3" value="동의"><span class="box"></span>동의</label>
+    <label class="chk"><input type="radio" name="동의3" value="미동의"><span class="box"></span>미동의</label>
+    &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의3성명"></span> (서명)
+    <span class="sig-wrap">
+      <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
+    </span>
+  </p>
+
+  <!-- ④ 건강정보 -->
+  <div class="sec" style="margin-top:30px;"><span class="badge">4</span><span class="sec-title">훈련 참여 안전관리를 위한 건강정보 수집·이용 (해당자만)</span><span class="tag-gray">(선택)</span></div>
+  <table class="ft">
+    <colgroup>
+      <col style="width:42%"><col style="width:36%"><col>
+    </colgroup>
+    <tr>
+      <th>수집·이용 목적</th>
+      <th>수집 항목</th>
+      <th>보유·이용 기간</th>
+    </tr>
+    <tr>
+      <td style="padding:12px 10px;">실습·현장훈련 등 참여 시 안전사고 예방 및 필요한 편의지원(좌석·동선 조정 등) 제공을 위한 참고자료 확보</td>
+      <td style="padding:12px 10px;">정기적 치료·복약이 필요한 질환 등 안전 관련 건강정보(자기기재)</td>
+      <td style="padding:12px 10px;">훈련종료 후 즉시 파기</td>
+    </tr>
+  </table>
+  <p class="note">법적 근거 : 「개인정보보호법」 제23조(민감정보의 처리)</p>
+  <p class="note">※ 본 항목은 안전사고 예방 및 편의지원 검토 목적에 한하며, 미기재·미동의를 이유로 합격 여부를 자동으로 결정하지 않습니다. 질환·장애 자체를 이유로 한 응시 제한은 하지 않으며, 훈련 참여를 위한 안전조치·편의지원 필요 여부만을 개별적으로 확인합니다.</p>
+
+  <p class="center mt14" style="font-size:12.5px;">
+    위 내용에 동의합니다.&nbsp;
+    <label class="chk"><input type="radio" name="동의4" value="동의"><span class="box"></span>동의</label>
+    <label class="chk"><input type="radio" name="동의4" value="미동의"><span class="box"></span>미동의</label>
+    &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의4성명"></span> (서명)
+    <span class="sig-wrap">
+      <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
+    </span>
+  </p>
+
+  <!-- ⑤ 미성년자 법정대리인 동의 -->
+  <div class="sec" style="margin-top:30px;"><span class="badge">5</span><span class="sec-title">미성년자 법정대리인 동의</span><span class="tag-gray">(만 19세 미만 지원자만 작성)</span></div>
+  <table class="ft">
+    <tr>
+      <td style="padding:9px 10px;">본인은 위 1~4항의 동의 내용에 대하여 미성년자(지원자)의 법정대리인으로서 이를 숙지하고 동의합니다.</td>
+    </tr>
+  </table>
+  <p class="center mt14" style="font-size:12.5px;">
+    법정대리인 성명 : <span class="line" style="width:120px;"><input type="text" name="법정대리인성명"></span>&nbsp;&nbsp;
+    지원자와의 관계 : <span class="line" style="width:80px;"><input type="text" name="법정대리인관계"></span>&nbsp; (서명)
+    <span class="sig-wrap">
+      <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
+    </span>
+  </p>
+
+  <!-- ⑥ 정보주체의 권리 및 보유기간 안내 -->
+  <div class="sec" style="margin-top:30px;"><span class="badge">6</span><span class="sec-title">정보주체의 권리 및 보유기간 안내</span></div>
+  <table class="ft">
+    <colgroup>
+      <col style="width:38%"><col>
+    </colgroup>
+    <tr>
+      <th>구분</th>
+      <th>보유기간</th>
+    </tr>
+    <tr>
+      <td style="padding:7px 10px;">홈페이지 회원 가입·관리</td>
+      <td style="padding:7px 10px;">훈련기간 종료 후 수료생 사후관리 종료 시점 기준 5년</td>
+    </tr>
+    <tr>
+      <td style="padding:7px 10px;">훈련참여 신청서 관리·보관</td>
+      <td style="padding:7px 10px;">훈련기간 종료 후 수료생 사후관리 종료 시점 기준 5년</td>
+    </tr>
+    <tr>
+      <td style="padding:7px 10px;">훈련생 관리대장 및 평가서류 등 훈련운영 관련 서류</td>
+      <td style="padding:7px 10px;">훈련기간 종료 후 수료생 사후관리 종료 시점 기준 5년</td>
+    </tr>
+  </table>
+  <p class="note">본인의 개인정보 열람·정정·삭제·처리정지 요구 및 동의 철회 등 권리 행사는 아래 보유기간 및 대우능력개발원 개인정보 처리방침에 따릅니다.</p>
+  <p class="note">(근거 : 「개인정보보호법」 제35조~제39조)</p>
+
+  <p class="center mt20" style="font-size:12.5px;">
+    20<span class="line" style="width:26px;"><input type="text" maxlength="2" name="안내연"></span> 년
+    <span class="line" style="width:26px;"><input type="text" maxlength="2" name="안내월"></span> 월
+    <span class="line" style="width:26px;"><input type="text" maxlength="2" name="안내일"></span> 일
+  </p>
+  <p class="center mt14" style="font-size:13px;">
+    성명 : <span class="line" style="width:150px;"><input type="text" name="안내성명"></span> (서명)
+    <span class="sig-wrap">
+      <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에 서명하세요</span></span>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
+    </span>
+  </p>
+  <p class="doc-note-right mt20">본 동의서 사본은 요청 시 언제든지 교부해 드립니다.</p>
+
+  <div class="doc-footer">
+    <span>대우능력개발원 개인정보 수집·이용 동의서</span>
+    <span>3 / 4</span>
+  </div>
+</section>
+
+<!-- ================================================================
+     4 / 4  훈련생 면접 선발 평가 기준표
+================================================================= -->
+<section class="paper" id="page3">
+  <div class="doc-header">
+    <div class="logo">대우능력개발원</div>
+    <div class="right">2026.09 제정<br>면접위원 작성</div>
+  </div>
+
+  <h1 class="doc-title small">훈련생 면접 선발 평가 기준표</h1>
+  <p class="doc-sub">면접위원이 작성하며, 지원자에게 배부하지 않습니다. (100점 만점)</p>
+
+  <table class="ft mt8">
+    <colgroup>
+      <col style="width:15%"><col style="width:47%"><col style="width:26%"><col>
+    </colgroup>
+    <tr>
+      <th>평가영역</th>
+      <th>평가기준 (등급별 판단기준)</th>
+      <th>평가 (해당란 체크)</th>
+      <th>배점</th>
+    </tr>
+    <tr>
+      <td class="lab">훈련과정 관심도</td>
+      <td style="font-size:11px;">
+        우수(10) : 과정명·주요 교과목·수료 후 활용 계획을 스스로 설명함<br>
+        보통(5) : 과정명과 개략적 내용만 파악하고 있음<br>
+        미흡(2) : 지원 과정명 또는 주요 내용을 정확히 답변하지 못함
+      </td>
+      <td>
+        <label class="chk"><input type="radio" name="ev1" data-score="10"><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev1" data-score="5"><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev1" data-score="2"><span class="box"></span>미흡(2)</label>
+      </td>
+      <td class="c">10</td>
+    </tr>
+    <tr>
+      <td class="lab">취업의지 및<br>가능성</td>
+      <td style="font-size:11px;">
+        우수(10) : 수료 후 취업하고자 하는 구체적 직무·업종을 제시함<br>
+        보통(5) : 취업 의사는 있으나 구체적 목표 직무를 제시하지 못함<br>
+        미흡(2) : 취업 의사가 불분명하거나 답변을 회피함
+      </td>
+      <td>
+        <label class="chk"><input type="radio" name="ev2" data-score="10"><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev2" data-score="5"><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev2" data-score="2"><span class="box"></span>미흡(2)</label>
+      </td>
+      <td class="c">10</td>
+    </tr>
+    <tr>
+      <td class="lab">자격증 취득 의지</td>
+      <td style="font-size:11px;">
+        우수(10) : 취득 예정 자격증명과 응시 일정을 구체적으로 제시함<br>
+        보통(5) : 취득 의사는 있으나 구체적 계획을 제시하지 못함<br>
+        미흡(2) : 자격증 취득 의사가 없거나 응답하지 못함
+      </td>
+      <td>
+        <label class="chk"><input type="radio" name="ev3" data-score="10"><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev3" data-score="5"><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev3" data-score="2"><span class="box"></span>미흡(2)</label>
+      </td>
+      <td class="c">10</td>
+    </tr>
+    <tr>
+      <td class="lab">학력 및 전공사항</td>
+      <td style="font-size:11px;">
+        최우수(10) : 관련 전공 및 동일 분야 자격증·이수 과목 보유<br>
+        우수(7) : 관련 전공 보유(관련 자격증·이수 과목 없음)<br>
+        보통(5) : 비관련 전공이나 관련 분야 이수 경험 있음<br>
+        기타(2) : 비관련 전공 및 관련 경험 없음
+      </td>
+      <td>
+        <label class="chk"><input type="radio" name="ev4" data-score="10"><span class="box"></span>최우수(10)</label>
+        <label class="chk"><input type="radio" name="ev4" data-score="7"><span class="box"></span>우수(7)</label><br>
+        <label class="chk"><input type="radio" name="ev4" data-score="5"><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev4" data-score="2"><span class="box"></span>기타(2)</label>
+      </td>
+      <td class="c">10</td>
+    </tr>
+    <tr>
+      <td class="lab">경력사항</td>
+      <td style="font-size:11px;">
+        관련직종(10) : 지원 과정과 관련된 직종에서 6개월이상 근무 경력<br>
+        타직종(5) : 관련 직종 6개월 미만 또는 타직종 근무 경력<br>
+        경력없음(2) : 근무 경력 없음
+      </td>
+      <td>
+        <label class="chk"><input type="radio" name="ev5" data-score="10"><span class="box"></span>관련직종(10)</label>
+        <label class="chk"><input type="radio" name="ev5" data-score="5"><span class="box"></span>타직종(5)</label><br>
+        <label class="chk"><input type="radio" name="ev5" data-score="2"><span class="box"></span>경력없음(2)</label>
+      </td>
+      <td class="c">10</td>
+    </tr>
+    <tr>
+      <td class="lab">책임감 및 성실성</td>
+      <td style="font-size:11px;">
+        우수(10) : 지각·결석 없이 성실하게 임했던 구체적 경험<br>
+        (학업·직장 등)을 스스로 설명함<br>
+        보통(5) : 성실성에 대한 답변이 다소 추상적이거나 근거가 부족함<br>
+        미흡(2) : 성실성을 뒷받침할 근거를 제시하지 못함
+      </td>
+      <td>
+        <label class="chk"><input type="radio" name="ev6" data-score="10"><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev6" data-score="5"><span class="box"></span>보통(5)</label><br>
+        <label class="chk"><input type="radio" name="ev6" data-score="2"><span class="box"></span>미흡(2)</label>
+      </td>
+      <td class="c">10</td>
+    </tr>
+    <tr>
+      <td class="lab">면접태도 및 용모</td>
+      <td style="font-size:11px;">
+        우수(10) : 질문에 명확히 답변하고 예정 시간을 지켜 참석함<br>
+        보통(5) : 답변이 다소 불명확하거나 10분 이내 지각함<br>
+        미흡(2) : 답변을 거의 하지 못하거나 10분을 초과하여 지각함
+      </td>
+      <td>
+        <label class="chk"><input type="radio" name="ev7" data-score="10"><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev7" data-score="5"><span class="box"></span>보통(5)</label><br>
+        <label class="chk"><input type="radio" name="ev7" data-score="2"><span class="box"></span>미흡(2)</label>
+      </td>
+      <td class="c">10</td>
+    </tr>
+    <tr>
+      <td class="lab">훈련 참여<br>안전적합성</td>
+      <td style="font-size:11px;">
+        지장없음(10) : 안전 수행에 지장 없음(자기기재 기준 특이사항 없음)<br>
+        편의지원 필요(5) : 편의지원(좌석·동선 조정 등) 제공 시 참여 가능<br>
+        확인필요(2) : 안전관리책임자 확인 필요(개별 상담 대상)
+      </td>
+      <td>
+        <label class="chk"><input type="radio" name="ev8" data-score="10"><span class="box"></span>지장없음(10)</label><br>
+        <label class="chk"><input type="radio" name="ev8" data-score="5"><span class="box"></span>편의지원 필요(5)</label><br>
+        <label class="chk"><input type="radio" name="ev8" data-score="2"><span class="box"></span>확인필요(2)</label>
+      </td>
+      <td class="c">10</td>
+    </tr>
+    <tr>
+      <td class="lab">종합<br>직무적합도<br>(면접위원<br>종합판단)</td>
+      <td style="font-size:11px;">
+        우수(20) : 질의응답의 논리성·상황 대처·태도를 종합할 때<br>
+        훈련 참여에 특별한 우려가 없음<br>
+        보통(12) : 일부 우려되는 부분이 있으나<br>
+        훈련 참여에 지장이 없다고 판단됨<br>
+        미흡(5) : 훈련 참여 적합성에 대해 우려가 있음<br>
+        (사유를 면접자의견란에 기재)
+      </td>
+      <td>
+        <label class="chk"><input type="radio" name="ev9" data-score="20"><span class="box"></span>우수(20)</label><br>
+        <label class="chk"><input type="radio" name="ev9" data-score="12"><span class="box"></span>보통(12)</label><br>
+        <label class="chk"><input type="radio" name="ev9" data-score="5"><span class="box"></span>미흡(5)</label>
+      </td>
+      <td class="c">20</td>
+    </tr>
+  </table>
+  <p class="note">※ '훈련 참여 안전적합성' 항목에서 '확인필요'로 평가된 경우, 이 점수만으로 자동 불합격 처리하지 않습니다. 담당 부서(안전관리책임자 포함)의 개별 상담·확인을 거쳐 합격 여부 및 편의지원 방안을 결정하며, 정당한 사유 없이 질병·장애를 이유로 응시 자체를 제한하지 않습니다. (근거 : 「장애인차별금지 및 권리구제 등에 관한 법률」 제4조·제10조)</p>
+
+  <table class="ft mt14">
+    <colgroup>
+      <col style="width:20%"><col style="width:44%"><col style="width:14%"><col>
+    </colgroup>
+    <tr>
+      <td class="lab" style="font-size:11.5px;">면접자 의견<br>(특이사항 등 상세기입)</td>
+      <td><textarea class="ta" name="면접자의견" rows="3"></textarea></td>
+      <td class="lab" style="font-size:11.5px;">면접 총점</td>
+      <td style="font-size:11px;">
+        81점 이상 = A<br>
+        71~80점 = B<br>
+        60~70점 = C<br>
+        60점 이하 = 불합격
+      </td>
+    </tr>
+    <tr>
+      <td class="lab">합계 점수</td>
+      <td style="font-size:12px;">총점 : <span class="line" style="width:110px;"><input type="text" name="총점" id="totalScore" readonly style="font-weight:700;"></span> / 100 점</td>
+      <td class="lab">판정</td>
+      <td>
+        <label class="chk"><input type="radio" name="판정" value="합격"><span class="box"></span>합격</label>
+        <label class="chk"><input type="radio" name="판정" value="불합격"><span class="box"></span>불합격</label>
+      </td>
+    </tr>
+  </table>
+
+  <p class="center mt14" style="font-size:12.5px;">
+    면접평가자 : <span class="line" style="width:120px;"><input type="text" name="면접평가자"></span> (서명)
+    <span class="sig-wrap">
+      <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
+    </span>
+  </p>
+  <p class="center mt14" style="font-size:12.5px;">
+    20<span class="line" style="width:26px;"><input type="text" maxlength="2" name="평가연"></span> 년
+    <span class="line" style="width:26px;"><input type="text" maxlength="2" name="평가월"></span> 월
+    <span class="line" style="width:26px;"><input type="text" maxlength="2" name="평가일"></span> 일
+  </p>
+
+  <div class="doc-footer">
+    <span>대우능력개발원 훈련생 면접 선발 평가 기준표</span>
+    <span>4 / 4</span>
+  </div>
+</section>
+
+</form>
+
+<!-- 페이지 이동 -->
+<div class="pager no-print">
+  <button type="button" id="btnPrev">← 이전 페이지</button>
+  <button type="button" id="btnNext">다음 페이지 →</button>
+</div>
+
+<!-- 제출 완료 -->
+<div class="overlay" id="doneOverlay">
+  <div class="card">
+    <h2>제출이 완료되었습니다</h2>
+    <p id="doneMsg">작성하신 훈련참여신청서가 접수되었습니다.<br>기관 확인 후 등록하신 연락처로 안내드립니다.</p>
+    <button class="btn" onclick="document.getElementById('doneOverlay').classList.remove('show')">확인</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 페이지 탭 ---------- */
+const papers = document.querySelectorAll('.paper');
+const tabs = document.querySelectorAll('.tab');
+let cur = 0;
+function showPage(i){
+  cur = Math.max(0, Math.min(papers.length-1, i));
+  papers.forEach((p,idx)=>p.classList.toggle('active', idx===cur));
+  tabs.forEach((t,idx)=>t.classList.toggle('active', idx===cur));
+  document.getElementById('btnPrev').disabled = cur===0;
+  document.getElementById('btnNext').disabled = cur===papers.length-1;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+tabs.forEach((t,idx)=>t.addEventListener('click', ()=>showPage(idx)));
+document.getElementById('btnPrev').addEventListener('click', ()=>showPage(cur-1));
+document.getElementById('btnNext').addEventListener('click', ()=>showPage(cur+1));
+showPage(0);
+
+/* ---------- 모바일 표 대응: 헤더행 표기 + 각 칸에 data-label 부여 ---------- */
+document.querySelectorAll('table.ft').forEach(t=>{
+  const firstRow = t.rows[0];
+  if(!firstRow) return;
+  const ths = firstRow.querySelectorAll('th');
+  if(!ths.length) return;
+  firstRow.classList.add('hd');
+  const labels = Array.from(ths).map(th=>th.textContent.trim());
+  Array.from(t.rows).slice(1).forEach(tr=>{
+    Array.from(tr.cells).forEach((td,i)=>{
+      if(!td.classList.contains('lab') && labels[i]) td.setAttribute('data-label', labels[i]);
+    });
+  });
+});
+
+/* ---------- 서명 패드 (터치+마우스 / 상태표시 / 저장·미리보기) ---------- */
+const sigPads = [];
+function initSignaturePads(){
+  document.querySelectorAll('.sig-wrap').forEach(wrap=>{
+    const canvas = wrap.querySelector('canvas.sig');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if(!ctx) return;
+    const w = +canvas.dataset.w || 150, h = +canvas.dataset.h || 48;
+    canvas.style.width = w+'px'; canvas.style.height = h+'px';
+
+    const state = { canvas, ctx, wrap, drawing:false, hasSig:false, sigSaved:false, lastX:0, lastY:0 };
+    const dot = wrap.querySelector('.sig-dot');
+    const txt = wrap.querySelector('.sig-status-text');
+    const preview = wrap.querySelector('.sig-preview');
+    const img = preview ? preview.querySelector('img') : null;
+    const hint = wrap.querySelector('.sig-hint');
+
+    function setStrokeStyle(){
+      ctx.strokeStyle = '#111';
+      ctx.fillStyle = '#111';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
     }
-    tabs.forEach((t, idx) => t.addEventListener('click', () => showPage(idx)));
-    document.getElementById('btnPrev').addEventListener('click', () => showPage(cur - 1));
-    document.getElementById('btnNext').addEventListener('click', () => showPage(cur + 1));
-    showPage(0);
 
-    /* ---------- 서명 패드 (터치+마우스 / 상태표시 / 저장·미리보기) ---------- */
-    const sigPads = [];
-    function initSignaturePads() {
-      document.querySelectorAll('.sig-wrap').forEach(wrap => {
-        const canvas = wrap.querySelector('canvas.sig');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        const w = +canvas.dataset.w || 150, h = +canvas.dataset.h || 48;
-        canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-
-        const state = { canvas, ctx, wrap, drawing: false, hasSig: false, sigSaved: false, lastX: 0, lastY: 0 };
-        const dot = wrap.querySelector('.sig-dot');
-        const txt = wrap.querySelector('.sig-status-text');
-        const preview = wrap.querySelector('.sig-preview');
-        const img = preview ? preview.querySelector('img') : null;
-        const hint = wrap.querySelector('.sig-hint');
-
-        function setStrokeStyle() {
-          ctx.strokeStyle = '#111';
-          ctx.fillStyle = '#111';
-          ctx.lineWidth = 2.5;
-          ctx.lineCap = 'round';
-          ctx.lineJoin = 'round';
-        }
-
-        function resizeCanvas() {
-          var dpr = window.devicePixelRatio || 1;
-          var rect = canvas.getBoundingClientRect();
-          if (rect.width === 0) { return; }
-          var prev = null;
-          if (state.hasSig && canvas.width > 0 && canvas.height > 0) {
-            prev = document.createElement('canvas');
-            prev.width = canvas.width;
-            prev.height = canvas.height;
-            prev.getContext('2d').drawImage(canvas, 0, 0);
-          }
-          canvas.width = Math.round(rect.width * dpr);
-          canvas.height = Math.round(rect.height * dpr);
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          setStrokeStyle();
-          if (prev) {
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.drawImage(prev, 0, 0);
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          }
-        }
-        state.resize = resizeCanvas;
-
-        function updateStatus(saved) {
-          if (saved) { dot.className = 'sig-dot signed'; txt.textContent = '서명이 저장되었습니다'; }
-          else if (state.hasSig) { dot.className = 'sig-dot pending'; txt.textContent = '서명 후 [서명 저장] 버튼을 눌러주세요'; }
-          else { dot.className = 'sig-dot'; txt.textContent = '서명을 입력해 주세요'; }
-        }
-        state.updateStatus = updateStatus;
-
-        function getPos(e) {
-          var r = canvas.getBoundingClientRect();
-          var clientX, clientY;
-          if (e.touches && e.touches.length > 0) { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; }
-          else if (e.changedTouches && e.changedTouches.length > 0) { clientX = e.changedTouches[0].clientX; clientY = e.changedTouches[0].clientY; }
-          else { clientX = e.clientX; clientY = e.clientY; }
-          return { x: clientX - r.left, y: clientY - r.top };
-        }
-
-        function startDraw(e) {
-          if (e.cancelable) e.preventDefault();
-          state.drawing = true;
-          state.sigSaved = false;
-          var p = getPos(e);
-          state.lastX = p.x; state.lastY = p.y;
-          // 점 찍기
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
-          ctx.fill();
-          state.hasSig = true;
-          if (hint) hint.style.display = 'none';
-          if (preview) preview.style.display = 'none';
-          updateStatus(false);
-        }
-
-        function moveDraw(e) {
-          if (!state.drawing) return;
-          if (e.cancelable) e.preventDefault();
-          var p = getPos(e);
-          ctx.beginPath();
-          ctx.moveTo(state.lastX, state.lastY);
-          ctx.lineTo(p.x, p.y);
-          ctx.stroke();
-          state.lastX = p.x; state.lastY = p.y;
-          state.hasSig = true;
-        }
-
-        function endDraw() { state.drawing = false; }
-
-        canvas.addEventListener('touchstart', startDraw, { passive: false });
-        canvas.addEventListener('touchmove', moveDraw, { passive: false });
-        canvas.addEventListener('touchend', endDraw, { passive: false });
-        canvas.addEventListener('touchcancel', endDraw, { passive: false });
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', moveDraw);
-        canvas.addEventListener('mouseup', endDraw);
-        canvas.addEventListener('mouseleave', endDraw);
-        canvas.addEventListener('gesturestart', function (e) { e.preventDefault(); });
-        canvas.addEventListener('gesturechange', function (e) { e.preventDefault(); });
-        canvas.addEventListener('gestureend', function (e) { e.preventDefault(); });
-
-        wrap.querySelector('.sig-clear').addEventListener('click', () => {
-          ctx.save();
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.restore();
-          state.hasSig = false; state.sigSaved = false;
-          if (preview) preview.style.display = 'none';
-          if (hint) hint.style.display = 'flex';
-          updateStatus(false);
-        });
-
-        wrap.querySelector('.sig-save').addEventListener('click', () => {
-          if (!state.hasSig) { alert('서명을 먼저 입력해 주세요.'); return; }
-          if (img) img.src = canvas.toDataURL('image/png');
-          if (preview) preview.style.display = 'block';
-          state.sigSaved = true;
-          updateStatus(true);
-        });
-
-        resizeCanvas();
-        setTimeout(resizeCanvas, 300);
-        setTimeout(resizeCanvas, 800);
-        updateStatus(false);
-        sigPads.push(state);
-      });
-
-      window.addEventListener('resize', () => sigPads.forEach(s => s.resize()));
-      window.addEventListener('orientationchange', () => setTimeout(() => sigPads.forEach(s => s.resize()), 300));
+    function resizeCanvas(){
+      var dpr = window.devicePixelRatio || 1;
+      var rect = canvas.getBoundingClientRect();
+      if(rect.width === 0){ return; }
+      var prev = null;
+      if(state.hasSig && canvas.width > 0 && canvas.height > 0){
+        prev = document.createElement('canvas');
+        prev.width = canvas.width;
+        prev.height = canvas.height;
+        prev.getContext('2d').drawImage(canvas, 0, 0);
+      }
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      setStrokeStyle();
+      if(prev){
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(prev, 0, 0);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
     }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initSignaturePads);
-    } else {
-      initSignaturePads();
+    state.resize = resizeCanvas;
+
+    function updateStatus(saved){
+      if(saved){ dot.className = 'sig-dot signed'; txt.textContent = '서명이 저장되었습니다'; }
+      else if(state.hasSig){ dot.className = 'sig-dot pending'; txt.textContent = '서명 후 [서명 저장] 버튼을 눌러주세요'; }
+      else { dot.className = 'sig-dot'; txt.textContent = '서명을 입력해 주세요'; }
+    }
+    state.updateStatus = updateStatus;
+
+    function getPos(e){
+      var r = canvas.getBoundingClientRect();
+      var clientX, clientY;
+      if(e.touches && e.touches.length > 0){ clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; }
+      else if(e.changedTouches && e.changedTouches.length > 0){ clientX = e.changedTouches[0].clientX; clientY = e.changedTouches[0].clientY; }
+      else { clientX = e.clientX; clientY = e.clientY; }
+      return { x: clientX - r.left, y: clientY - r.top };
     }
 
-    /* ---------- 증명사진 업로드 ---------- */
-    const photoBox = document.getElementById('photoBox');
-    const photoFile = document.getElementById('photoFile');
-    const photoImg = document.getElementById('photoImg');
-    photoBox.addEventListener('click', () => photoFile.click());
-    photoFile.addEventListener('change', () => {
-      const f = photoFile.files[0];
-      if (!f) return;
-      const rd = new FileReader();
-      rd.onload = e => {
-        photoImg.src = e.target.result;
-        photoImg.style.display = 'block';
-        photoBox.querySelector('.photo-cap').style.display = 'none';
-      };
-      rd.readAsDataURL(f);
+    function startDraw(e){
+      if(e.cancelable) e.preventDefault();
+      state.drawing = true;
+      state.sigSaved = false;
+      var p = getPos(e);
+      state.lastX = p.x; state.lastY = p.y;
+      // 점 찍기
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      state.hasSig = true;
+      if(hint) hint.style.display = 'none';
+      if(preview) preview.style.display = 'none';
+      updateStatus(false);
+    }
+
+    function moveDraw(e){
+      if(!state.drawing) return;
+      if(e.cancelable) e.preventDefault();
+      var p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(state.lastX, state.lastY);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      state.lastX = p.x; state.lastY = p.y;
+      state.hasSig = true;
+    }
+
+    function endDraw(){ state.drawing = false; }
+
+    canvas.addEventListener('touchstart', startDraw, { passive:false });
+    canvas.addEventListener('touchmove', moveDraw, { passive:false });
+    canvas.addEventListener('touchend', endDraw, { passive:false });
+    canvas.addEventListener('touchcancel', endDraw, { passive:false });
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', moveDraw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+    canvas.addEventListener('gesturestart', function(e){ e.preventDefault(); });
+    canvas.addEventListener('gesturechange', function(e){ e.preventDefault(); });
+    canvas.addEventListener('gestureend', function(e){ e.preventDefault(); });
+
+    wrap.querySelector('.sig-clear').addEventListener('click', ()=>{
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+      state.hasSig = false; state.sigSaved = false;
+      if(preview) preview.style.display = 'none';
+      if(hint) hint.style.display = 'flex';
+      updateStatus(false);
     });
 
-    /* ---------- 면접 총점 자동 계산 ---------- */
-    const evNames = ['ev1', 'ev2', 'ev3', 'ev4', 'ev5', 'ev6', 'ev7', 'ev8', 'ev9'];
-    function calcTotal() {
-      let sum = 0;
-      evNames.forEach(n => {
-        const c = document.querySelector(`input[name="${n}"]:checked`);
-        if (c) sum += +c.dataset.score;
-      });
-      document.getElementById('totalScore').value = sum;
-    }
-    evNames.forEach(n => {
-      document.querySelectorAll(`input[name="${n}"]`).forEach(r => r.addEventListener('change', calcTotal));
+    wrap.querySelector('.sig-save').addEventListener('click', ()=>{
+      if(!state.hasSig){ alert('서명을 먼저 입력해 주세요.'); return; }
+      if(img) img.src = canvas.toDataURL('image/png');
+      if(preview) preview.style.display = 'block';
+      state.sigSaved = true;
+      updateStatus(true);
     });
 
-    /* ---------- 제출 ---------- */
-    /* ---------- PDF 생성 공통 ---------- */
-    function buildPdfOptions() {
-      return {
-        margin: [10, 10, 10, 10],
-        filename: '훈련참여신청서_대우능력개발원.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-      };
-    }
+    resizeCanvas();
+    setTimeout(resizeCanvas, 300);
+    setTimeout(resizeCanvas, 800);
+    updateStatus(false);
+    sigPads.push(state);
+  });
 
-    // 입력 요소를 캡처용 요소로 교체 → 교체기록 반환
-    function replaceInputsForCapture(root) {
-      const replacements = [];
-      // 체크박스·라디오: 체크된 항목에 실제 ✓ 문자 삽입 (html2canvas는 가상요소 미지원)
-      root.querySelectorAll('label.chk').forEach(lb => {
-        const input = lb.querySelector('input');
-        const box = lb.querySelector('.box');
-        if (!input || !box) return;
-        if (input.checked) {
-          box.textContent = '✓';
-          box.style.fontSize = '11px';
-          box.style.fontWeight = '900';
-          box.style.color = '#16325C';
-          box.style.textAlign = 'center';
-          box.style.lineHeight = '11px';
-          box.style.overflow = 'visible';
-          replacements.push({ type: 'chk', box });
-        }
-      });
-      root.querySelectorAll('input[type=text], input[type=tel], input[type=email], input[type=number], textarea').forEach(el => {
-        const val = el.value || '';
-        const cs = getComputedStyle(el);
-        const span = document.createElement(el.tagName === 'TEXTAREA' ? 'div' : 'span');
-        span.textContent = val;
-        span.style.cssText = `
+  window.addEventListener('resize', ()=>sigPads.forEach(s=>s.resize()));
+  window.addEventListener('orientationchange', ()=>setTimeout(()=>sigPads.forEach(s=>s.resize()), 300));
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', initSignaturePads);
+}else{
+  initSignaturePads();
+}
+
+/* ---------- 증명사진 업로드 ---------- */
+const photoBox = document.getElementById('photoBox');
+const photoFile = document.getElementById('photoFile');
+const photoImg = document.getElementById('photoImg');
+photoBox.addEventListener('click', ()=>photoFile.click());
+photoFile.addEventListener('change', ()=>{
+  const f = photoFile.files[0];
+  if(!f) return;
+  const rd = new FileReader();
+  rd.onload = e=>{
+    photoImg.src = e.target.result;
+    photoImg.style.display='block';
+    photoBox.querySelector('.photo-cap').style.display='none';
+  };
+  rd.readAsDataURL(f);
+});
+
+/* ---------- 면접 총점 자동 계산 ---------- */
+const evNames = ['ev1','ev2','ev3','ev4','ev5','ev6','ev7','ev8','ev9'];
+function calcTotal(){
+  let sum = 0;
+  evNames.forEach(n=>{
+    const c = document.querySelector(`input[name="${n}"]:checked`);
+    if(c) sum += +c.dataset.score;
+  });
+  document.getElementById('totalScore').value = sum;
+}
+evNames.forEach(n=>{
+  document.querySelectorAll(`input[name="${n}"]`).forEach(r=>r.addEventListener('change', calcTotal));
+});
+
+/* ---------- 제출 ---------- */
+/* ---------- PDF 생성 공통 ---------- */
+function buildPdfOptions(){
+  return {
+    margin: [10, 10, 10, 10],
+    filename: '훈련참여신청서_대우능력개발원.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+}
+
+// 입력 요소를 캡처용 요소로 교체 → 교체기록 반환
+function replaceInputsForCapture(root){
+  const replacements = [];
+  // 체크박스·라디오: 체크된 항목에 실제 ✓ 문자 삽입 (html2canvas는 가상요소 미지원)
+  root.querySelectorAll('label.chk').forEach(lb=>{
+    const input = lb.querySelector('input');
+    const box = lb.querySelector('.box');
+    if(!input || !box) return;
+    if(input.checked){
+      box.textContent = '✓';
+      box.style.fontSize = '11px';
+      box.style.fontWeight = '900';
+      box.style.color = '#16325C';
+      box.style.textAlign = 'center';
+      box.style.lineHeight = '11px';
+      box.style.overflow = 'visible';
+      replacements.push({ type:'chk', box });
+    }
+  });
+  root.querySelectorAll('input[type=text], input[type=tel], input[type=email], input[type=number], textarea').forEach(el=>{
+    const val = el.value || '';
+    const cs = getComputedStyle(el);
+    const span = document.createElement(el.tagName === 'TEXTAREA' ? 'div' : 'span');
+    span.textContent = val;
+    span.style.cssText = `
       box-sizing: border-box;
       display: inline-block;
       width: 100%;
@@ -1772,152 +1281,151 @@
       line-height: 1.3;
       vertical-align: baseline;
     `;
-        el.style.setProperty('display', 'none', 'important');
-        el.parentNode.insertBefore(span, el.nextSibling);
-        replacements.push({ type: 'in', el, span });
-      });
-      return replacements;
+    el.style.setProperty('display', 'none', 'important');
+    el.parentNode.insertBefore(span, el.nextSibling);
+    replacements.push({ type:'in', el, span });
+  });
+  return replacements;
+}
+
+function restoreInputs(replacements){
+  replacements.forEach(r=>{
+    if(r.type === 'chk'){
+      r.box.textContent = '';
+      r.box.style.cssText = '';
+    }else{
+      r.span.remove();
+      r.el.style.display = '';
     }
+  });
+}
 
-    function restoreInputs(replacements) {
-      replacements.forEach(r => {
-        if (r.type === 'chk') {
-          r.box.textContent = '';
-          r.box.style.cssText = '';
-        } else {
-          r.span.remove();
-          r.el.style.display = '';
-        }
-      });
+// 4개 페이지를 각각 캡처해 하나의 PDF로 생성
+async function generatePDF(output){
+  const papers = Array.from(document.querySelectorAll('.paper'));
+  const origX = window.scrollX, origY = window.scrollY;
+  window.scrollTo(0, 0);
+
+  const replacements = replaceInputsForCapture(document.body);
+  document.body.classList.add('pdf-mode');
+  await new Promise(r=>setTimeout(r, 250));
+
+  try{
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit:'mm', format:'a4', orientation:'portrait' });
+    for(let i=0; i<papers.length; i++){
+      const canvas = await html2canvas(papers[i], { scale:2, useCORS:true, backgroundColor:'#ffffff', logging:false });
+      const img = canvas.toDataURL('image/jpeg', 0.98);
+      // CSS px → mm (96dpi 기준), A4에 맞게 contain
+      let wmm = canvas.width / 2 / 96 * 25.4;
+      let hmm = canvas.height / 2 / 96 * 25.4;
+      const f = Math.min(210 / wmm, 297 / hmm);
+      wmm *= f; hmm *= f;
+      if(i > 0) pdf.addPage();
+      pdf.addImage(img, 'JPEG', (210 - wmm) / 2, (297 - hmm) / 2, wmm, hmm);
     }
+    if(output === 'blob') return pdf.output('blob');
+    const blob = pdf.output('blob');
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = buildPdfOptions().filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 5000);
+    return null;
+  } finally {
+    restoreInputs(replacements);
+    document.body.classList.remove('pdf-mode');
+    window.scrollTo(origX, origY);
+  }
+}
 
-    // 4개 페이지를 각각 캡처해 하나의 PDF로 생성
-    async function generatePDF(output) {
-      const papers = Array.from(document.querySelectorAll('.paper'));
-      const origX = window.scrollX, origY = window.scrollY;
-      window.scrollTo(0, 0);
+function blobToBase64(blob){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onloadend = ()=>resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
 
-      const replacements = replaceInputsForCapture(document.body);
-      document.body.classList.add('pdf-mode');
-      await new Promise(r => setTimeout(r, 250));
+// PDF 저장 (다운로드 버튼)
+async function saveAsPDF(){
+  const btn = document.getElementById('pdfBtn');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'PDF 생성 중...';
+  try{
+    await generatePDF('save');
+  }catch(err){
+    console.error(err);
+    alert('PDF 생성 중 오류가 발생했습니다: ' + err.message);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+document.getElementById('pdfBtn').addEventListener('click', saveAsPDF);
 
-      try {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-        for (let i = 0; i < papers.length; i++) {
-          const canvas = await html2canvas(papers[i], { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
-          const img = canvas.toDataURL('image/jpeg', 0.98);
-          // CSS px → mm (96dpi 기준), A4에 맞게 contain
-          let wmm = canvas.width / 2 / 96 * 25.4;
-          let hmm = canvas.height / 2 / 96 * 25.4;
-          const f = Math.min(210 / wmm, 297 / hmm);
-          wmm *= f; hmm *= f;
-          if (i > 0) pdf.addPage();
-          pdf.addImage(img, 'JPEG', (210 - wmm) / 2, (297 - hmm) / 2, wmm, hmm);
-        }
-        if (output === 'blob') return pdf.output('blob');
-        const blob = pdf.output('blob');
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = buildPdfOptions().filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        return null;
-      } finally {
-        restoreInputs(replacements);
-        document.body.classList.remove('pdf-mode');
-        window.scrollTo(origX, origY);
-      }
+/* ---------- 제출 (이메일 전송, 서버 미연결 시 PDF 저장으로 대체) ---------- */
+async function handleSubmit(){
+  const name = document.getElementById('fName').value.trim();
+  if(!name){ alert('성명을 입력해 주세요.'); showPage(0); document.getElementById('fName').focus(); return; }
+  const agree1 = document.querySelector('input[name="동의1"]:checked');
+  if(!agree1){ alert('개인정보 수집·이용(필수) 항목의 동의 여부를 선택해 주세요.'); showPage(1); return; }
+  if(agree1.value !== '동의'){
+    alert('필수 개인정보 동의 항목을 확인해주세요.\n(필수 항목에 동의하지 않으면 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.)');
+    showPage(1); return;
+  }
+  if(!sigPads.length || !sigPads[0].sigSaved){
+    alert('신청인 전자서명을 입력하고 [서명 저장] 버튼을 눌러주세요.');
+    showPage(0); return;
+  }
+
+  const submitBtn = document.getElementById('btnSubmit');
+  const originalText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'PDF 생성 중...';
+  submitBtn.style.opacity = '0.6';
+
+  const doneMsg = document.getElementById('doneMsg');
+  try{
+    // 1) PDF를 Base64로 생성
+    const pdfBlob = await generatePDF('blob');
+    const pdfBase64 = await blobToBase64(pdfBlob);
+    submitBtn.textContent = '이메일 전송 중...';
+
+    // 2) 서버로 전송
+    const res = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pdfBase64, applicantName: name })
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok){
+      throw new Error((data.error || '서버 오류') + (data.detail ? ('\n상세: ' + JSON.stringify(data.detail)) : ''));
     }
-
-    function blobToBase64(blob) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
+    doneMsg.innerHTML = '작성하신 훈련참여신청서가 접수되었습니다.<br>성명: ' + name + '<br>기관 확인 후 등록하신 연락처로 안내드립니다.';
+    document.getElementById('doneOverlay').classList.add('show');
+  }catch(err){
+    console.error(err);
+    // 서버 미연결 → PDF 다운로드로 대체
+    try{
+      await generatePDF('save');
+      doneMsg.innerHTML = '서버에 연결되어 있지 않아 제출 대신<br><b>PDF 파일로 저장</b>했습니다.<br>저장된 PDF를 기관에 제출해 주세요.';
+    }catch(e2){
+      doneMsg.innerHTML = '제출 중 오류가 발생했습니다:<br>' + err.message + '<br>다시 시도해 주세요.';
     }
-
-    // PDF 저장 (다운로드 버튼)
-    async function saveAsPDF() {
-      const btn = document.getElementById('pdfBtn');
-      const originalText = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = 'PDF 생성 중...';
-      try {
-        await generatePDF('save');
-      } catch (err) {
-        console.error(err);
-        alert('PDF 생성 중 오류가 발생했습니다: ' + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = originalText;
-      }
-    }
-    document.getElementById('pdfBtn').addEventListener('click', saveAsPDF);
-
-    /* ---------- 제출 (이메일 전송, 서버 미연결 시 PDF 저장으로 대체) ---------- */
-    async function handleSubmit() {
-      const name = document.getElementById('fName').value.trim();
-      if (!name) { alert('성명을 입력해 주세요.'); showPage(0); document.getElementById('fName').focus(); return; }
-      const agree1 = document.querySelector('input[name="동의1"]:checked');
-      if (!agree1) { alert('개인정보 수집·이용(필수) 항목의 동의 여부를 선택해 주세요.'); showPage(1); return; }
-      if (agree1.value !== '동의') {
-        alert('필수 개인정보 동의 항목을 확인해주세요.\n(필수 항목에 동의하지 않으면 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.)');
-        showPage(1); return;
-      }
-      if (!sigPads.length || !sigPads[0].sigSaved) {
-        alert('신청인 전자서명을 입력하고 [서명 저장] 버튼을 눌러주세요.');
-        showPage(0); return;
-      }
-
-      const submitBtn = document.getElementById('btnSubmit');
-      const originalText = submitBtn.textContent;
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'PDF 생성 중...';
-      submitBtn.style.opacity = '0.6';
-
-      const doneMsg = document.getElementById('doneMsg');
-      try {
-        // 1) PDF를 Base64로 생성
-        const pdfBlob = await generatePDF('blob');
-        const pdfBase64 = await blobToBase64(pdfBlob);
-        submitBtn.textContent = '이메일 전송 중...';
-
-        // 2) 서버로 전송
-        const res = await fetch('/api/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pdfBase64, applicantName: name })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) {
-          throw new Error((data.error || '서버 오류') + (data.detail ? ('\n상세: ' + JSON.stringify(data.detail)) : ''));
-        }
-        doneMsg.innerHTML = '작성하신 훈련참여신청서가 접수되었습니다.<br>성명: ' + name + '<br>기관 확인 후 등록하신 연락처로 안내드립니다.';
-        document.getElementById('doneOverlay').classList.add('show');
-      } catch (err) {
-        console.error(err);
-        // 서버 미연결 → PDF 다운로드로 대체
-        try {
-          await generatePDF('save');
-          doneMsg.innerHTML = '서버에 연결되어 있지 않아 제출 대신<br><b>PDF 파일로 저장</b>했습니다.<br>저장된 PDF를 기관에 제출해 주세요.';
-        } catch (e2) {
-          doneMsg.innerHTML = '제출 중 오류가 발생했습니다:<br>' + err.message + '<br>다시 시도해 주세요.';
-        }
-        document.getElementById('doneOverlay').classList.add('show');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
-        submitBtn.style.opacity = '';
-      }
-    }
-    document.getElementById('btnSubmit').addEventListener('click', handleSubmit);
-  </script>
+    document.getElementById('doneOverlay').classList.add('show');
+  }finally{
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+    submitBtn.style.opacity = '';
+  }
+}
+document.getElementById('btnSubmit').addEventListener('click', handleSubmit);
+</script>
 </body>
-
 </html>
