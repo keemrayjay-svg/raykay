@@ -1,0 +1,7 @@
+{
+  "name": "daewoo-training-application",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "대우능력개발원 훈련참여신청서 온라인 폼 (Vercel 배포용)"
+}
