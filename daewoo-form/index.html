@@ -318,7 +318,7 @@
     <div class="logo">대우능력개발원</div>
     <div class="right">
       2026.09 제정 · 전 과정 공통양식<br>
-      <span class="num">접수번호 <span class="line" style="width:110px;"><input type="text" name="접수번호"></span></span>
+    <span class="num">접수번호 <span class="line" style="width:110px;">&nbsp;</span></span>
     </div>
   </div>
 
@@ -362,9 +362,15 @@
       <td colspan="3"><input type="text" name="주소"></td>
     </tr>
     <tr>
-      <td class="lab">비상연락처</td>
+    <td class="lab">비상연락처</td>
       <td colspan="3">연락처 : <span class="line" style="width:150px;"><input type="text" name="비상연락처"></span>&nbsp;
-        관계 : ( 부 / 모 / 기타 )</td>
+        관계 : (
+        <label class="chk"><input type="radio" name="비상연락처관계" value="부"><span class="box"></span>부</label>
+        <label class="chk"><input type="radio" name="비상연락처관계" value="모"><span class="box"></span>모</label>
+        <label class="chk"><input type="radio" name="비상연락처관계" value="조부"><span class="box"></span>조부</label>
+        <label class="chk"><input type="radio" name="비상연락처관계" value="조모"><span class="box"></span>조모</label>
+        <label class="chk"><input type="radio" name="비상연락처관계" value="기타"><span class="box"></span>기타</label>
+        )</td>
     </tr>
     <tr>
       <td class="lab">수신동의</td>
@@ -421,6 +427,7 @@
         <label class="chk"><input type="radio" name="군관계" value="미필"><span class="box"></span>미필</label>
       </td>
     </tr>
+    </tr>
   </table>
   <p class="note">※ 학과가 학년·반 또는 기수(1부·2부 등)로 세부 구분되는 경우 함께 기재해 주세요. (예 : IOT전자공학과 2학년 B반)</p>
 
@@ -455,14 +462,14 @@
     </tr>
     <tr>
 <td class="lab">훈련 지원경로</td>
-<td colspan="3" style="font-size:11.5px;">
-  <label class="chk"><input type="radio" name="지원경로" value="고용센터"><span class="box"></span>고용센터</label>
-  <label class="chk"><input type="radio" name="지원경로" value="재학생·수료생·교원 추천"><span class="box"></span>재학생·수료생·교원 추천</label>
-  <label class="chk"><input type="radio" name="지원경로" value="지인추천"><span class="box"></span>지인추천</label>(추천인: <span class="line" style="width:80px;"><input type="text" name="추천인"></span>)
-  <label class="chk"><input type="radio" name="지원경로" value="인터넷검색"><span class="box"></span>인터넷검색</label>(사이트: <span class="line" style="width:80px;"><input type="text" name="검색사이트"></span>)<br>
-  <label class="chk"><input type="radio" name="지원경로" value="전단지·현수막"><span class="box"></span>전단지·현수막</label>
-  <label class="chk"><input type="radio" name="지원경로" value="기타"><span class="box"></span>기타</label>( <span class="line" style="width:170px;"><input type="text" name="지원경로기타"></span> )
-</td>
+      <td colspan="3" style="font-size:11px;">
+        <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="고용센터"><span class="box"></span>고용센터</label>
+        <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="재학생·수료생·교원 추천"><span class="box"></span>재학생·수료생·교원 추천</label>
+        <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="지인추천"><span class="box"></span>지인추천(추천인: <span class="line" style="width:75px;"><input type="text" name="추천인"></span>)</label><br>
+        <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="인터넷검색"><span class="box"></span>인터넷검색(사이트: <span class="line" style="width:75px;"><input type="text" name="검색사이트"></span>)</label>
+        <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="전단지·현수막"><span class="box"></span>전단지·현수막</label>
+        <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="기타"><span class="box"></span>기타( <span class="line" style="width:150px;"><input type="text" name="지원경로기타"></span> )</label>
+      </td>
     </tr>
   </table>
 
@@ -862,9 +869,9 @@
         미흡(2) : 지원 과정명 또는 주요 내용을 정확히 답변하지 못함
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev1" data-score="10"><span class="box"></span>우수(10)</label>
-        <label class="chk"><input type="radio" name="ev1" data-score="5"><span class="box"></span>보통(5)</label>
-        <label class="chk"><input type="radio" name="ev1" data-score="2"><span class="box"></span>미흡(2)</label>
+        <label class="chk"><input type="radio" name="ev1" data-score="10"disabled><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev1" data-score="5"disabled><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev1" data-score="2"disabled><span class="box"></span>미흡(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -876,9 +883,9 @@
         미흡(2) : 취업 의사가 불분명하거나 답변을 회피함
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev2" data-score="10"><span class="box"></span>우수(10)</label>
-        <label class="chk"><input type="radio" name="ev2" data-score="5"><span class="box"></span>보통(5)</label>
-        <label class="chk"><input type="radio" name="ev2" data-score="2"><span class="box"></span>미흡(2)</label>
+        <label class="chk"><input type="radio" name="ev2" data-score="10"disabled><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev2" data-score="5"disabled><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev2" data-score="2"disabled><span class="box"></span>미흡(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -890,9 +897,9 @@
         미흡(2) : 자격증 취득 의사가 없거나 응답하지 못함
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev3" data-score="10"><span class="box"></span>우수(10)</label>
-        <label class="chk"><input type="radio" name="ev3" data-score="5"><span class="box"></span>보통(5)</label>
-        <label class="chk"><input type="radio" name="ev3" data-score="2"><span class="box"></span>미흡(2)</label>
+        <label class="chk"><input type="radio" name="ev3" data-score="10"disabled><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev3" data-score="5"disabled><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev3" data-score="2"disabled><span class="box"></span>미흡(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -905,10 +912,10 @@
         기타(2) : 비관련 전공 및 관련 경험 없음
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev4" data-score="10"><span class="box"></span>최우수(10)</label>
-        <label class="chk"><input type="radio" name="ev4" data-score="7"><span class="box"></span>우수(7)</label><br>
-        <label class="chk"><input type="radio" name="ev4" data-score="5"><span class="box"></span>보통(5)</label>
-        <label class="chk"><input type="radio" name="ev4" data-score="2"><span class="box"></span>기타(2)</label>
+        <label class="chk"><input type="radio" name="ev4" data-score="10"disabled><span class="box"></span>최우수(10)</label>
+        <label class="chk"><input type="radio" name="ev4" data-score="7"disabled><span class="box"></span>우수(7)</label><br>
+        <label class="chk"><input type="radio" name="ev4" data-score="5"disabled><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev4" data-score="2"disabled><span class="box"></span>기타(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -920,9 +927,9 @@
         경력없음(2) : 근무 경력 없음
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev5" data-score="10"><span class="box"></span>관련직종(10)</label>
-        <label class="chk"><input type="radio" name="ev5" data-score="5"><span class="box"></span>타직종(5)</label><br>
-        <label class="chk"><input type="radio" name="ev5" data-score="2"><span class="box"></span>경력없음(2)</label>
+        <label class="chk"><input type="radio" name="ev5" data-score="10"disabled><span class="box"></span>관련직종(10)</label>
+        <label class="chk"><input type="radio" name="ev5" data-score="5"disabled><span class="box"></span>타직종(5)</label><br>
+        <label class="chk"><input type="radio" name="ev5" data-score="2"disabled><span class="box"></span>경력없음(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -935,9 +942,9 @@
         미흡(2) : 성실성을 뒷받침할 근거를 제시하지 못함
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev6" data-score="10"><span class="box"></span>우수(10)</label>
-        <label class="chk"><input type="radio" name="ev6" data-score="5"><span class="box"></span>보통(5)</label><br>
-        <label class="chk"><input type="radio" name="ev6" data-score="2"><span class="box"></span>미흡(2)</label>
+        <label class="chk"><input type="radio" name="ev6" data-score="10"disabled><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev6" data-score="5"disabled><span class="box"></span>보통(5)</label><br>
+        <label class="chk"><input type="radio" name="ev6" data-score="2"disabled><span class="box"></span>미흡(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -949,9 +956,9 @@
         미흡(2) : 답변을 거의 하지 못하거나 10분을 초과하여 지각함
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev7" data-score="10"><span class="box"></span>우수(10)</label>
-        <label class="chk"><input type="radio" name="ev7" data-score="5"><span class="box"></span>보통(5)</label><br>
-        <label class="chk"><input type="radio" name="ev7" data-score="2"><span class="box"></span>미흡(2)</label>
+        <label class="chk"><input type="radio" name="ev7" data-score="10"disabled><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev7" data-score="5"disabled><span class="box"></span>보통(5)</label><br>
+        <label class="chk"><input type="radio" name="ev7" data-score="2"disabled><span class="box"></span>미흡(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -963,9 +970,9 @@
         확인필요(2) : 안전관리책임자 확인 필요(개별 상담 대상)
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev8" data-score="10"><span class="box"></span>지장없음(10)</label><br>
-        <label class="chk"><input type="radio" name="ev8" data-score="5"><span class="box"></span>편의지원 필요(5)</label><br>
-        <label class="chk"><input type="radio" name="ev8" data-score="2"><span class="box"></span>확인필요(2)</label>
+        <label class="chk"><input type="radio" name="ev8" data-score="10"disabled><span class="box"></span>지장없음(10)</label><br>
+        <label class="chk"><input type="radio" name="ev8" data-score="5"disabled><span class="box"></span>편의지원 필요(5)</label><br>
+        <label class="chk"><input type="radio" name="ev8" data-score="2"disabled><span class="box"></span>확인필요(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -980,9 +987,9 @@
         (사유를 면접자의견란에 기재)
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev9" data-score="20"><span class="box"></span>우수(20)</label><br>
-        <label class="chk"><input type="radio" name="ev9" data-score="12"><span class="box"></span>보통(12)</label><br>
-        <label class="chk"><input type="radio" name="ev9" data-score="5"><span class="box"></span>미흡(5)</label>
+        <label class="chk"><input type="radio" name="ev9" data-score="20"disabled><span class="box"></span>우수(20)</label><br>
+        <label class="chk"><input type="radio" name="ev9" data-score="12"disabled><span class="box"></span>보통(12)</label><br>
+        <label class="chk"><input type="radio" name="ev9" data-score="5"disabled><span class="box"></span>미흡(5)</label>
       </td>
       <td class="c">20</td>
     </tr>
