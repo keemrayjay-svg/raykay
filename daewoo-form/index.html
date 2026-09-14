@@ -413,12 +413,17 @@
       </td>
     </tr>
     <tr>
-        <td class="lab">직장경력</td>
+       <td class="lab">직장경력</td>
       <td>
-        <label class="chk"><input type="radio" name="직장경력" value="유"><span class="box"></span>유(직무:
-          <span class="line" style="width:70px;"><input type="text" name="직무"></span> / 기간:
-          <span class="line" style="width:34px;"><input type="text" name="경력기간"></span> 개월)</label>
-        <label class="chk"><input type="radio" name="직장경력" value="무"><span class="box"></span>무</label>
+        <!-- 감싸는 label 대신 div나 span을 사용하여 내부 input이 가로채이지 않도록 분리 -->
+        <div style="margin-bottom:4px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
+          <label class="chk" style="margin-right:2px;"><input type="radio" name="직장경력" value="유"><span class="box"></span>유</label>
+          (직무: <span class="line" style="width:70px;"><input type="text" name="직무"></span> / 
+          기간: <span class="line" style="width:34px;"><input type="text" name="경력기간"></span> 개월)
+        </div>
+        <div>
+          <label class="chk"><input type="radio" name="직장경력" value="무"><span class="box"></span>무</label>
+        </div>
       </td>
       <td class="lab">군 관계<br><span style="font-weight:400;font-size:10.5px;">(해당자만)</span></td>
       <td>
