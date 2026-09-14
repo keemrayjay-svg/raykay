@@ -115,10 +115,7 @@
 
   /* 체크박스 */
   label.chk{display:inline-flex;align-items:center;cursor:pointer;margin:1px 8px 1px 0;white-space:nowrap;font-size:12px;}
-  label.chk input[type="radio"],
-  label.chk input[type="checkbox"]{
-  position:absolute;
-  opacity:0;
+  label.chk input{position:absolute;opacity:0;width:0;height:0;}
   label.chk .box{
     width:12px;height:12px;border:1.3px solid #000;background:#fff;
     display:inline-block;margin-right:4px;position:relative;flex:none;
@@ -303,7 +300,7 @@
     <button class="tab active" data-page="0">훈련참여신청서</button>
     <button class="tab" data-page="1">개인정보 동의서 ①②</button>
     <button class="tab" data-page="2">개인정보 동의서 ③~⑥</button>
-    <button class="tab" data-page="3">면접 선발 평가 기준표</button>
+    <button class="tab" data-page="3" id="tabStaff" style="display:none;">면접 선발 평가 기준표</button>
     <span class="spacer"></span>
     <button class="btn btn-print" onclick="window.print()">인쇄</button>
     <button class="btn btn-print" id="pdfBtn" style="background:#1a7f37;">PDF 저장</button>
@@ -321,7 +318,7 @@
     <div class="logo">대우능력개발원</div>
     <div class="right">
       2026.09 제정 · 전 과정 공통양식<br>
-    <span class="num">접수번호 <span class="line" style="width:110px;">&nbsp;</span></span>
+      <span class="num">접수번호 <span class="line" style="width:110px;">&nbsp;</span></span>
     </div>
   </div>
 
@@ -365,7 +362,7 @@
       <td colspan="3"><input type="text" name="주소"></td>
     </tr>
     <tr>
-    <td class="lab">비상연락처</td>
+      <td class="lab">비상연락처</td>
       <td colspan="3">연락처 : <span class="line" style="width:150px;"><input type="text" name="비상연락처"></span>&nbsp;
         관계 : (
         <label class="chk"><input type="radio" name="비상연락처관계" value="부"><span class="box"></span>부</label>
@@ -416,20 +413,23 @@
       </td>
     </tr>
     <tr>
-<td class="lab">직장경력</td>
-<td>
-  <label class="chk"><input type="radio" name="직장경력" value="유"><span class="box"></span>유</label>(직무: 
-  <span class="line" style="width:70px;"><input type="text" name="직무"></span> / 기간: 
-  <span class="line" style="width:34px;"><input type="text" name="경력기간"></span> 개월)
-  <label class="chk"><input type="radio" name="직장경력" value="무"><span class="box"></span>무</label>
-</td>
+      <td class="lab">직장경력</td>
+      <td>
+        <label class="chk"><input type="radio" name="직장경력" value="유"><span class="box"></span>유(직무:
+          <span class="line" style="width:70px;"><input type="text" name="직무"></span> / 기간:
+          <span class="line" style="width:34px;"><input type="text" name="경력기간"></span> 개월)</label>
+        <label class="chk"><input type="radio" name="직장경력" value="무"><span class="box"></span>무</label>
+      </td>
       <td class="lab">군 관계<br><span style="font-weight:400;font-size:10.5px;">(해당자만)</span></td>
       <td>
         <label class="chk"><input type="radio" name="군관계" value="군필"><span class="box"></span>군필</label>
         <label class="chk"><input type="radio" name="군관계" value="면제"><span class="box"></span>면제</label>
         <label class="chk"><input type="radio" name="군관계" value="미필"><span class="box"></span>미필</label>
+        <div id="exemptBox" style="display:none;margin-top:5px;">
+          <input type="text" name="면제사유" placeholder="( 면제 : 십자인대 파열 )"
+            style="font-size:10px;border:1px solid #bbb;border-radius:3px;padding:3px 7px;width:100%;color:#333;background:#fcfcfc;">
+        </div>
       </td>
-    </tr>
     </tr>
   </table>
   <p class="note">※ 학과가 학년·반 또는 기수(1부·2부 등)로 세부 구분되는 경우 함께 기재해 주세요. (예 : IOT전자공학과 2학년 B반)</p>
@@ -464,37 +464,14 @@
       </td>
     </tr>
     <tr>
-<td class="lab">훈련 지원경로</td>
+      <td class="lab">훈련 지원경로</td>
       <td colspan="3" style="font-size:11px;">
-       <label class="chk" style="margin-right:6px;">
-  <input type="radio" name="지원경로" value="지인추천">
-  <span class="box"></span>
-  지인추천(추천인:
-  <input type="text" name="추천인" style="width:75px; border:0; border-bottom:1px solid #000;">
-  )
-</label>
-
-<label class="chk" style="margin-right:6px;">
-  <input type="radio" name="지원경로" value="인터넷검색">
-  <span class="box"></span>
-  인터넷검색(사이트:
-  <input type="text" name="검색사이트" style="width:75px; border:0; border-bottom:1px solid #000;">
-  )
-</label>
-
-<label class="chk" style="margin-right:6px;">
-  <input type="radio" name="지원경로" value="전단지·현수막">
-  <span class="box"></span>
-  전단지·현수막
-</label>
-
-<label class="chk" style="margin-right:6px;">
-  <input type="radio" name="지원경로" value="기타">
-  <span class="box"></span>
-  기타(
-  <input type="text" name="지원경로기타" style="width:150px; border:0; border-bottom:1px solid #000;">
-  )
-</label>
+        <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="고용센터"><span class="box"></span>고용센터</label>
+        <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="재학생·수료생·교원 추천"><span class="box"></span>재학생·수료생·교원 추천</label>
+        <label class="chk" style="margin-right:2px;"><input type="radio" name="지원경로" value="지인추천"><span class="box"></span>지인추천(추천인:</label><span class="line" style="width:75px;"><input type="text" name="추천인"></span>)<br>
+        <label class="chk" style="margin-right:2px;"><input type="radio" name="지원경로" value="인터넷검색"><span class="box"></span>인터넷검색(사이트:</label><span class="line" style="width:75px;"><input type="text" name="검색사이트"></span>)
+        <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="전단지·현수막"><span class="box"></span>전단지·현수막</label>
+        <label class="chk" style="margin-right:2px;"><input type="radio" name="지원경로" value="기타"><span class="box"></span>기타(</label><span class="line" style="width:150px;"><input type="text" name="지원경로기타"></span>)
       </td>
     </tr>
   </table>
@@ -523,7 +500,7 @@
   </p>
   <p class="center mt14" style="font-size:13px;">
     신청인 : <span class="line" style="width:150px;"><input type="text" name="신청인성명"></span> (서명)
-    <span class="sig-wrap">
+    <span class="sig-wrap" id="sigApplicant">
       <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에 서명하세요</span></span>
       <span class="sig-tools">
         <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
@@ -535,44 +512,23 @@
   </p>
 
   <!-- ⑤ 기관 확인란 -->
-<div class="sec"><span class="badge">5</span><span class="sec-title">기관 확인란</span></div>
-<p class="sec-sub">(지원자 작성 아님)</p>
-
-<table class="ft">
-  <colgroup>
-    <col style="width: 12%;"> <!-- 상담자 라벨 -->
-    <col style="width: 20%;"> <!-- 상담자 입력란 -->
-    <col style="width: 36%;"> <!-- (서명) 영역 -->
-    <col style="width: 12%;"> <!-- 접수일 라벨 -->
-    <col style="width: 20%;"> <!-- 접수일 입력란 -->
-  </colgroup>
-  <tbody>
+  <div class="sec"><span class="badge">5</span><span class="sec-title">기관 확인란</span></div>
+  <p class="sec-sub">(지원자 작성 아님)</p>
+  <table class="ft">
+    <colgroup>
+      <col style="width:118px"><col><col style="width:150px"><col><col style="width:88px"><col>
+    </colgroup>
     <tr>
       <td class="lab">상담자</td>
-      <td><input type="text" name="상담자" style="width:100%; box-sizing:border-box;"></td>
-      <td class="c">
-        (서명)
-        <div class="sig-wrap">
-          <div class="sig-box"><canvas class="sig" data-w="120" data-h="50"></canvas></div>
-          <div class="sig-tools">
-            <span class="sig-status">
-              <span class="sig-dot"></span>
-              <span class="sig-status-text">서명을 입력해 주세요</span>
-            </span>
-            <button type="button" class="sig-save">서명 저장</button>
-            <button type="button" class="sig-clear">지우기</button>
-            <span class="sig-preview"><img alt="서명 미리보기"></span>
-          </div>
-        </div>
-      </td>
+      <td>&nbsp;</td>
+      <td class="c">(서명)</td>
       <td class="lab">접수일</td>
-      <td><input type="text" name="접수일" style="width:100%; box-sizing:border-box;"></td>
+      <td>&nbsp;</td>
     </tr>
     <tr>
       <td class="lab">비고</td>
-      <td colspan="4"><input type="text" name="비고" style="width:100%; box-sizing:border-box;"></td>
+      <td colspan="4">&nbsp;</td>
     </tr>
-  </tbody>
   </table>
 
   <div class="doc-footer">
@@ -633,43 +589,21 @@
   <p class="note">법적 근거 : 「국민 평생 직업능력 개발법」 제11조</p>
   <p class="note">※ 위 가~나 항목은 훈련 수강에 필수적인 정보로, 동의를 거부할 권리가 있으나 거부 시 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.</p>
 
-<p class="center mt20" style="display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 12.5px; flex-wrap: nowrap;">
-  <!-- 1. 왼쪽: 동의 문구 ~ 성명 (서명) 영문 일렬 정렬 (줄바꿈 차단) -->
-  <span style="display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;">
-    <span style="white-space: nowrap;">위 가~나 내용에 모두 동의합니다.</span>
-    
-    <label class="chk" style="display: inline-flex; align-items: center; white-space: nowrap;">
-      <input type="radio" name="동의1" value="동의" required><span class="box"></span>동의
-    </label>
-    <label class="chk" style="display: inline-flex; align-items: center; white-space: nowrap;">
-      <input type="radio" name="동의1" value="미동의"><span class="box"></span>미동의
-    </label>
-    
-    <span style="white-space: nowrap; margin-left: 6px;">성명 :</span>
-    <span class="line" style="width:120px; display: inline-block;"><input type="text" name="동의1성명"></span>
-    <span style="white-space: nowrap;">(서명)</span>
-  </span>
-
-  <!-- 2. 오른쪽: 서명 박스 & 하단 일렬 버튼 영역 -->
-  <span class="sig-wrap" style="display: inline-flex; flex-direction: column; align-items: flex-end; gap: 6px;">
-    <!-- 서명 캔버스 박스 -->
-    <span class="sig-box" style="display: inline-block; position: relative; width: 180px; height: 60px; border: 1px solid #777; background-color: #fff;">
-      <canvas class="sig" data-w="180" data-h="60" style="width: 100%; height: 100%;"></canvas>
-      <span class="sig-hint" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #b5b5b5; pointer-events: none; font-size: 13px;">서명</span>
-    </span>
-
-    <!-- 안내 문구 + 서명 저장 + 지우기 버튼을 가로 한 줄로 고정 (flex-wrap: nowrap) -->
-    <span class="sig-tools" style="display: inline-flex; align-items: center; gap: 6px; font-size: 11px; white-space: nowrap; flex-wrap: nowrap;">
-      <span class="sig-status" style="display: inline-flex; align-items: center; gap: 4px; color: #777; white-space: nowrap;">
-        <span class="sig-dot" style="display: inline-block; width: 7px; height: 7px; background-color: #ccc; border-radius: 50%;"></span>
-        <span class="sig-status-text">서명을 입력해 주세요</span>
+  <p class="center mt20" style="font-size:12.5px;">
+    위 가~나 내용에 모두 동의합니다.&nbsp;
+    <label class="chk"><input type="radio" name="동의1" value="동의" required><span class="box"></span>동의</label>
+    <label class="chk"><input type="radio" name="동의1" value="미동의"><span class="box"></span>미동의</label>
+    &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의1성명"></span> (서명)
+    <span class="sig-wrap" id="sigConsent1">
+      <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
       </span>
-      <button type="button" class="sig-save" style="background-color: #0f2b5c; color: #fff; border: none; padding: 4px 10px; border-radius: 3px; font-weight: bold; cursor: pointer; white-space: nowrap;">서명 저장</button>
-      <button type="button" class="sig-clear" style="background-color: #fff; color: #555; border: 1px solid #ccc; padding: 4px 8px; border-radius: 3px; cursor: pointer; white-space: nowrap;">지우기</button>
-      <span class="sig-preview" style="display:none;"><img alt="서명 미리보기"></span>
     </span>
-  </span>
-</p>
+  </p>
 
   <!-- ② 선택 -->
   <div class="sec" style="margin-top:44px;"><span class="badge">2</span><span class="sec-title">취업지원 및 취업정보 제공 동의</span><span class="tag-gray">(선택)</span></div>
@@ -847,7 +781,7 @@
   </p>
   <p class="center mt14" style="font-size:13px;">
     성명 : <span class="line" style="width:150px;"><input type="text" name="안내성명"></span> (서명)
-    <span class="sig-wrap">
+    <span class="sig-wrap" id="sigNotice">
       <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에 서명하세요</span></span>
       <span class="sig-tools">
         <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
@@ -858,6 +792,29 @@
     </span>
   </p>
   <p class="doc-note-right mt20">본 동의서 사본은 요청 시 언제든지 교부해 드립니다.</p>
+
+  <!-- ⑦ 선발 결과 이의제기 포기 서약 -->
+  <div class="sec" style="margin-top:26px;"><span class="badge">7</span><span class="sec-title">선발규정에 따른 선발 결과 이의제기 포기 서약</span></div>
+  <div class="oath">
+    본인은 대우능력개발원의 선발규정에 따라 실시된 면접·선발 절차 및 그 선발 결과에 대하여 이의를 제기하지 않을 것을 서약합니다.
+  </div>
+  <p class="center mt14" style="font-size:12.5px;">
+    20<span class="line" style="width:26px;"><input type="text" maxlength="2" name="선발서약연"></span> 년
+    <span class="line" style="width:26px;"><input type="text" maxlength="2" name="선발서약월"></span> 월
+    <span class="line" style="width:26px;"><input type="text" maxlength="2" name="선발서약일"></span> 일
+  </p>
+  <p class="center mt14" style="font-size:13px;">
+    성명 : <span class="line" style="width:150px;"><input type="text" name="선발서약성명"></span> (서명)
+    <span class="sig-wrap" id="sigPledge">
+      <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에 서명하세요</span></span>
+      <span class="sig-tools">
+        <span class="sig-status"><span class="sig-dot"></span><span class="sig-status-text">서명을 입력해 주세요</span></span>
+        <button type="button" class="sig-save">서명 저장</button>
+        <button type="button" class="sig-clear">지우기</button>
+        <span class="sig-preview"><img alt="서명 미리보기"></span>
+      </span>
+    </span>
+  </p>
 
   <div class="doc-footer">
     <span>대우능력개발원 개인정보 수집·이용 동의서</span>
@@ -895,9 +852,9 @@
         미흡(2) : 지원 과정명 또는 주요 내용을 정확히 답변하지 못함
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev1" data-score="10"disabled><span class="box"></span>우수(10)</label>
-        <label class="chk"><input type="radio" name="ev1" data-score="5"disabled><span class="box"></span>보통(5)</label>
-        <label class="chk"><input type="radio" name="ev1" data-score="2"disabled><span class="box"></span>미흡(2)</label>
+        <label class="chk"><input type="radio" name="ev1" data-score="10"><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev1" data-score="5"><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev1" data-score="2"><span class="box"></span>미흡(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -909,9 +866,9 @@
         미흡(2) : 취업 의사가 불분명하거나 답변을 회피함
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev2" data-score="10"disabled><span class="box"></span>우수(10)</label>
-        <label class="chk"><input type="radio" name="ev2" data-score="5"disabled><span class="box"></span>보통(5)</label>
-        <label class="chk"><input type="radio" name="ev2" data-score="2"disabled><span class="box"></span>미흡(2)</label>
+        <label class="chk"><input type="radio" name="ev2" data-score="10"><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev2" data-score="5"><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev2" data-score="2"><span class="box"></span>미흡(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -923,9 +880,9 @@
         미흡(2) : 자격증 취득 의사가 없거나 응답하지 못함
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev3" data-score="10"disabled><span class="box"></span>우수(10)</label>
-        <label class="chk"><input type="radio" name="ev3" data-score="5"disabled><span class="box"></span>보통(5)</label>
-        <label class="chk"><input type="radio" name="ev3" data-score="2"disabled><span class="box"></span>미흡(2)</label>
+        <label class="chk"><input type="radio" name="ev3" data-score="10"><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev3" data-score="5"><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev3" data-score="2"><span class="box"></span>미흡(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -938,10 +895,10 @@
         기타(2) : 비관련 전공 및 관련 경험 없음
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev4" data-score="10"disabled><span class="box"></span>최우수(10)</label>
-        <label class="chk"><input type="radio" name="ev4" data-score="7"disabled><span class="box"></span>우수(7)</label><br>
-        <label class="chk"><input type="radio" name="ev4" data-score="5"disabled><span class="box"></span>보통(5)</label>
-        <label class="chk"><input type="radio" name="ev4" data-score="2"disabled><span class="box"></span>기타(2)</label>
+        <label class="chk"><input type="radio" name="ev4" data-score="10"><span class="box"></span>최우수(10)</label>
+        <label class="chk"><input type="radio" name="ev4" data-score="7"><span class="box"></span>우수(7)</label><br>
+        <label class="chk"><input type="radio" name="ev4" data-score="5"><span class="box"></span>보통(5)</label>
+        <label class="chk"><input type="radio" name="ev4" data-score="2"><span class="box"></span>기타(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -953,9 +910,9 @@
         경력없음(2) : 근무 경력 없음
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev5" data-score="10"disabled><span class="box"></span>관련직종(10)</label>
-        <label class="chk"><input type="radio" name="ev5" data-score="5"disabled><span class="box"></span>타직종(5)</label><br>
-        <label class="chk"><input type="radio" name="ev5" data-score="2"disabled><span class="box"></span>경력없음(2)</label>
+        <label class="chk"><input type="radio" name="ev5" data-score="10"><span class="box"></span>관련직종(10)</label>
+        <label class="chk"><input type="radio" name="ev5" data-score="5"><span class="box"></span>타직종(5)</label><br>
+        <label class="chk"><input type="radio" name="ev5" data-score="2"><span class="box"></span>경력없음(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -968,9 +925,9 @@
         미흡(2) : 성실성을 뒷받침할 근거를 제시하지 못함
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev6" data-score="10"disabled><span class="box"></span>우수(10)</label>
-        <label class="chk"><input type="radio" name="ev6" data-score="5"disabled><span class="box"></span>보통(5)</label><br>
-        <label class="chk"><input type="radio" name="ev6" data-score="2"disabled><span class="box"></span>미흡(2)</label>
+        <label class="chk"><input type="radio" name="ev6" data-score="10"><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev6" data-score="5"><span class="box"></span>보통(5)</label><br>
+        <label class="chk"><input type="radio" name="ev6" data-score="2"><span class="box"></span>미흡(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -982,9 +939,9 @@
         미흡(2) : 답변을 거의 하지 못하거나 10분을 초과하여 지각함
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev7" data-score="10"disabled><span class="box"></span>우수(10)</label>
-        <label class="chk"><input type="radio" name="ev7" data-score="5"disabled><span class="box"></span>보통(5)</label><br>
-        <label class="chk"><input type="radio" name="ev7" data-score="2"disabled><span class="box"></span>미흡(2)</label>
+        <label class="chk"><input type="radio" name="ev7" data-score="10"><span class="box"></span>우수(10)</label>
+        <label class="chk"><input type="radio" name="ev7" data-score="5"><span class="box"></span>보통(5)</label><br>
+        <label class="chk"><input type="radio" name="ev7" data-score="2"><span class="box"></span>미흡(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -996,9 +953,9 @@
         확인필요(2) : 안전관리책임자 확인 필요(개별 상담 대상)
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev8" data-score="10"disabled><span class="box"></span>지장없음(10)</label><br>
-        <label class="chk"><input type="radio" name="ev8" data-score="5"disabled><span class="box"></span>편의지원 필요(5)</label><br>
-        <label class="chk"><input type="radio" name="ev8" data-score="2"disabled><span class="box"></span>확인필요(2)</label>
+        <label class="chk"><input type="radio" name="ev8" data-score="10"><span class="box"></span>지장없음(10)</label><br>
+        <label class="chk"><input type="radio" name="ev8" data-score="5"><span class="box"></span>편의지원 필요(5)</label><br>
+        <label class="chk"><input type="radio" name="ev8" data-score="2"><span class="box"></span>확인필요(2)</label>
       </td>
       <td class="c">10</td>
     </tr>
@@ -1013,9 +970,9 @@
         (사유를 면접자의견란에 기재)
       </td>
       <td>
-        <label class="chk"><input type="radio" name="ev9" data-score="20"disabled><span class="box"></span>우수(20)</label><br>
-        <label class="chk"><input type="radio" name="ev9" data-score="12"disabled><span class="box"></span>보통(12)</label><br>
-        <label class="chk"><input type="radio" name="ev9" data-score="5"disabled><span class="box"></span>미흡(5)</label>
+        <label class="chk"><input type="radio" name="ev9" data-score="20"><span class="box"></span>우수(20)</label><br>
+        <label class="chk"><input type="radio" name="ev9" data-score="12"><span class="box"></span>보통(12)</label><br>
+        <label class="chk"><input type="radio" name="ev9" data-score="5"><span class="box"></span>미흡(5)</label>
       </td>
       <td class="c">20</td>
     </tr>
@@ -1077,6 +1034,7 @@
 <!-- 페이지 이동 -->
 <div class="pager no-print">
   <button type="button" id="btnPrev">← 이전 페이지</button>
+  <button type="button" id="staffToggle" style="background:none;border:none;color:#9aa0ad;font-size:10.5px;font-weight:400;text-decoration:underline;cursor:pointer;">기관 담당자용 문서</button>
   <button type="button" id="btnNext">다음 페이지 →</button>
 </div>
 
@@ -1094,17 +1052,26 @@
 const papers = document.querySelectorAll('.paper');
 const tabs = document.querySelectorAll('.tab');
 let cur = 0;
+let maxPage = 2;  // 면접 평가표(4페이지)는 기관 담당자만 열람 가능
 function showPage(i){
-  cur = Math.max(0, Math.min(papers.length-1, i));
+  cur = Math.max(0, Math.min(maxPage, i));
   papers.forEach((p,idx)=>p.classList.toggle('active', idx===cur));
   tabs.forEach((t,idx)=>t.classList.toggle('active', idx===cur));
   document.getElementById('btnPrev').disabled = cur===0;
-  document.getElementById('btnNext').disabled = cur===papers.length-1;
+  document.getElementById('btnNext').disabled = cur>=maxPage;
   window.scrollTo({top:0, behavior:'smooth'});
+  // 탭 전환 후 보이게 된 서명 캔버스 크기·좌표계 재설정
+  setTimeout(()=>{ (window.sigPads||[]).forEach(s=>s.resize()); }, 60);
 }
 tabs.forEach((t,idx)=>t.addEventListener('click', ()=>showPage(idx)));
 document.getElementById('btnPrev').addEventListener('click', ()=>showPage(cur-1));
 document.getElementById('btnNext').addEventListener('click', ()=>showPage(cur+1));
+document.getElementById('staffToggle').addEventListener('click', ()=>{
+  maxPage = 3;
+  document.getElementById('tabStaff').style.display = '';
+  document.getElementById('staffToggle').style.display = 'none';
+  showPage(3);
+});
 showPage(0);
 
 /* ---------- 모바일 표 대응: 헤더행 표기 + 각 칸에 data-label 부여 ---------- */
@@ -1123,7 +1090,7 @@ document.querySelectorAll('table.ft').forEach(t=>{
 });
 
 /* ---------- 서명 패드 (터치+마우스 / 상태표시 / 저장·미리보기) ---------- */
-const sigPads = [];
+const sigPads = (window.sigPads = []);
 function initSignaturePads(){
   document.querySelectorAll('.sig-wrap').forEach(wrap=>{
     const canvas = wrap.querySelector('canvas.sig');
@@ -1132,6 +1099,13 @@ function initSignaturePads(){
     if(!ctx) return;
     const w = +canvas.dataset.w || 150, h = +canvas.dataset.h || 48;
     canvas.style.width = w+'px'; canvas.style.height = h+'px';
+    // 숨겨진 페이지에서도 즉시 좌표계 초기화 (탭 전환 전에도 오작동 방지)
+    (function(){
+      var dpr0 = window.devicePixelRatio || 1;
+      canvas.width = Math.round(w * dpr0);
+      canvas.height = Math.round(h * dpr0);
+      ctx.setTransform(dpr0, 0, 0, dpr0, 0, 0);
+    })();
 
     const state = { canvas, ctx, wrap, drawing:false, hasSig:false, sigSaved:false, lastX:0, lastY:0 };
     const dot = wrap.querySelector('.sig-dot');
@@ -1366,9 +1340,9 @@ function restoreInputs(replacements){
   });
 }
 
-// 4개 페이지를 각각 캡처해 하나의 PDF로 생성
+// 신청서 3개 페이지를 각각 캡처해 하나의 PDF로 생성 (면접 평가표는 기관용이라 제외)
 async function generatePDF(output){
-  const papers = Array.from(document.querySelectorAll('.paper'));
+  const papers = Array.from(document.querySelectorAll('.paper')).slice(0, 3);
   const origX = window.scrollX, origY = window.scrollY;
   window.scrollTo(0, 0);
 
@@ -1435,20 +1409,85 @@ async function saveAsPDF(){
 }
 document.getElementById('pdfBtn').addEventListener('click', saveAsPDF);
 
+/* ---------- 군 관계 '면제' 선택 시 사유 입력칸 표시 ---------- */
+document.querySelectorAll('input[name="군관계"]').forEach(r=>{
+  r.addEventListener('change', ()=>{
+    const box = document.getElementById('exemptBox');
+    const checked = document.querySelector('input[name="군관계"]:checked');
+    box.style.display = (checked && checked.value === '면제') ? 'block' : 'none';
+  });
+});
+
+/* ---------- 지원경로 부가 입력칸: 입력 시 해당 항목 자동 선택 ---------- */
+[['추천인','지인추천'], ['검색사이트','인터넷검색'], ['지원경로기타','기타']].forEach(([field, val])=>{
+  const el = document.querySelector(`[name="${field}"]`);
+  if(!el) return;
+  el.addEventListener('input', ()=>{
+    if(el.value.trim()){
+      const r = document.querySelector(`input[name="지원경로"][value="${val}"]`);
+      if(r) r.checked = true;
+    }
+  });
+});
+
+/* ---------- 필수 입력 검증 ---------- */
+function sigSavedAt(selector, last){
+  const wraps = document.querySelectorAll(selector);
+  if(!wraps.length) return false;
+  const w = last ? wraps[wraps.length-1] : wraps[0];
+  const st = sigPads.find(s=>s.wrap===w);
+  return !!(st && st.sigSaved);
+}
+function validateRequired(){
+  const v = n => { const el = document.querySelector(`[name="${n}"]`); return el && el.value.trim() !== ''; };
+  const radio = n => { const el = document.querySelector(`input[name="${n}"]:checked`); return el ? el.value : ''; };
+  const chk = n => { const el = document.querySelector(`input[name="${n}"]`); return el && el.checked; };
+  const rules = [
+    { page:0, ok: v('성명'),            msg:'성명' },
+    { page:0, ok: v('생년월일'),         msg:'생년월일' },
+    { page:0, ok: v('휴대폰'),          msg:'휴대폰' },
+    { page:0, ok: !!radio('성별'),       msg:'성별' },
+    { page:0, ok: v('이메일'),          msg:'이메일' },
+    { page:0, ok: v('주소'),            msg:'주소(실거주지)' },
+    { page:0, ok: v('비상연락처'),       msg:'비상연락처' },
+    { page:0, ok: !!radio('비상연락처관계'), msg:'비상연락처 관계' },
+    { page:0, ok: chk('수신동의_SMS') && chk('수신동의_이메일'), msg:'수신동의 (SMS·전화 / 이메일 필수 2개)' },
+    { page:0, ok: !!radio('학력'),       msg:'학력사항' },
+    { page:0, ok: !!radio('직장경력'),   msg:'직장경력 (유/무 선택)' },
+    { page:0, ok: radio('직장경력') !== '유' || (v('직무') && v('경력기간')), msg:'직장경력 - 직무 / 기간' },
+    { page:0, ok: radio('군관계') !== '면제' || v('면제사유'), msg:'군 관계 - 면제 사유' },
+    { page:0, ok: v('신청훈련과정'),     msg:'신청 훈련과정' },
+    { page:0, ok: v('시작연') && v('시작월') && v('시작일') && v('종료연') && v('종료월') && v('종료일'), msg:'훈련기간(예정)' },
+    { page:0, ok: !!radio('과정유형'),   msg:'과정 유형' },
+    { page:0, ok: !!radio('지원경로'),   msg:'훈련 지원경로' },
+    { page:0, ok: radio('지원경로') !== '지인추천' || v('추천인'), msg:'훈련 지원경로 - 추천인' },
+    { page:0, ok: radio('지원경로') !== '인터넷검색' || v('검색사이트'), msg:'훈련 지원경로 - 검색 사이트' },
+    { page:0, ok: radio('지원경로') !== '기타' || v('지원경로기타'), msg:'훈련 지원경로 - 기타 내용' },
+    { page:0, ok: v('서약연') && v('서약월') && v('서약일'), msg:'훈련 참여 서약 - 날짜' },
+    { page:0, ok: v('신청인성명'),       msg:'훈련 참여 서약 - 신청인 성명' },
+    { page:0, ok: sigSavedAt('#sigApplicant'), msg:'훈련 참여 서약 - 신청인 서명 ([서명 저장] 필요)' },
+    { page:1, ok: radio('동의1') === '동의', msg:'개인정보 수집·이용 (필수) - 동의 선택' },
+    { page:1, ok: v('동의1성명'),        msg:'개인정보 수집·이용 (필수) - 성명' },
+    { page:1, ok: sigSavedAt('#sigConsent1'), msg:'개인정보 수집·이용 (필수) - 서명 ([서명 저장] 필요)' },
+    { page:2, ok: v('안내연') && v('안내월') && v('안내일'), msg:'정보주체의 권리 안내 (⑥) - 날짜' },
+    { page:2, ok: v('안내성명'),         msg:'정보주체의 권리 안내 (⑥) - 성명' },
+    { page:2, ok: sigSavedAt('#sigNotice'), msg:'정보주체의 권리 안내 (⑥) - 서명 ([서명 저장] 필요)' },
+    { page:2, ok: v('선발서약연') && v('선발서약월') && v('선발서약일'), msg:'선발 결과 이의제기 포기 서약 - 날짜' },
+    { page:2, ok: v('선발서약성명'),     msg:'선발 결과 이의제기 포기 서약 - 성명' },
+    { page:2, ok: sigSavedAt('#sigPledge'), msg:'선발 결과 이의제기 포기 서약 - 서명 ([서명 저장] 필요)' },
+  ];
+  return rules.filter(r => !r.ok);
+}
+
 /* ---------- 제출 (이메일 전송, 서버 미연결 시 PDF 저장으로 대체) ---------- */
 async function handleSubmit(){
+  const missing = validateRequired();
+  if(missing.length){
+    alert('다음 필수 항목을 입력해 주세요.\n\n' + missing.map(m=>'• ' + m.msg).join('\n'));
+    showPage(missing[0].page);
+    return;
+  }
   const name = document.getElementById('fName').value.trim();
-  if(!name){ alert('성명을 입력해 주세요.'); showPage(0); document.getElementById('fName').focus(); return; }
-  const agree1 = document.querySelector('input[name="동의1"]:checked');
-  if(!agree1){ alert('개인정보 수집·이용(필수) 항목의 동의 여부를 선택해 주세요.'); showPage(1); return; }
-  if(agree1.value !== '동의'){
-    alert('필수 개인정보 동의 항목을 확인해주세요.\n(필수 항목에 동의하지 않으면 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.)');
-    showPage(1); return;
-  }
-  if(!sigPads.length || !sigPads[0].sigSaved){
-    alert('신청인 전자서명을 입력하고 [서명 저장] 버튼을 눌러주세요.');
-    showPage(0); return;
-  }
 
   const submitBtn = document.getElementById('btnSubmit');
   const originalText = submitBtn.textContent;
