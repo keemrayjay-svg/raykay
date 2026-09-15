@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+  
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -844,12 +845,6 @@ setTimeout(()=>{ sigPads.forEach(s=>s.resize()); }, 60);
 tabs.forEach((t,idx)=>t.addEventListener('click', ()=>showPage(idx)));
 document.getElementById('btnPrev').addEventListener('click', ()=>showPage(cur-1));
 document.getElementById('btnNext').addEventListener('click', ()=>showPage(cur+1));
-document.getElementById('staffToggle').addEventListener('click', ()=>{
-  maxPage = 3;
-  document.getElementById('tabStaff').style.display = '';
-  document.getElementById('staffToggle').style.display = 'none';
-  showPage(3);
-});
 showPage(0);
 
 /* ---------- 모바일 표 대응: 헤더행 표기 + 각 칸에 data-label 부여 ---------- */
