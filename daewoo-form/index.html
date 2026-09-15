@@ -138,7 +138,13 @@
     display:inline-block;vertical-align:middle;position:relative;
     cursor:crosshair;touch-action:none;
   }
-  canvas.sig{display:block;cursor:crosshair;touch-action:none;}
+ canvas.sig{
+  display:block;
+  cursor:crosshair;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
   .sig-clear{
     display:block;margin:2px 0 0 auto;
     font-family:inherit;font-size:10px;color:#666;
@@ -930,15 +936,15 @@ if(rect.width === 0 || rect.height === 0){
       else { dot.className = 'sig-dot'; txt.textContent = '서명을 입력해 주세요'; }
     }
     state.updateStatus = updateStatus;
+function getPos(e){
+  var r = canvas.getBoundingClientRect();
 
-    function getPos(e){
-      var r = canvas.getBoundingClientRect();
-      var clientX, clientY;
-      if(e.touches && e.touches.length > 0){ clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; }
-      else if(e.changedTouches && e.changedTouches.length > 0){ clientX = e.changedTouches[0].clientX; clientY = e.changedTouches[0].clientY; }
-      else { clientX = e.clientX; clientY = e.clientY; }
-      return { x: clientX - r.left, y: clientY - r.top };
-    }
+  return {
+    x: e.clientX - r.left,
+    y: e.clientY - r.top
+  };
+}
+   
 
    function startDraw(e){
   if(e.cancelable) e.preventDefault();
