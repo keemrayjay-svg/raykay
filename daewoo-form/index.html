@@ -901,8 +901,10 @@ function initSignaturePads(){
 
     function resizeCanvas(){
       var dpr = window.devicePixelRatio || 1;
-      var rect = canvas.getBoundingClientRect();
-      if(rect.width === 0){ return; }
+     var rect = canvas.getBoundingClientRect();
+if(rect.width === 0 || rect.height === 0){
+  return;
+}
       var prev = null;
       if(state.hasSig && canvas.width > 0 && canvas.height > 0){
         prev = document.createElement('canvas');
@@ -938,21 +940,30 @@ function initSignaturePads(){
       return { x: clientX - r.left, y: clientY - r.top };
     }
 
-    function startDraw(e){
-      if(e.cancelable) e.preventDefault();
-      state.drawing = true;
-      state.sigSaved = false;
-      var p = getPos(e);
-      state.lastX = p.x; state.lastY = p.y;
-      // 점 찍기
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
-      ctx.fill();
-      state.hasSig = true;
-      if(hint) hint.style.display = 'none';
-      if(preview) preview.style.display = 'none';
-      updateStatus(false);
-    }
+   function startDraw(e){
+  if(e.cancelable) e.preventDefault();
+
+  canvas.setPointerCapture(e.pointerId);
+
+  state.drawing = true;
+  state.sigSaved = false;
+
+  var p = getPos(e);
+
+  state.lastX = p.x;
+  state.lastY = p.y;
+
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  state.hasSig = true;
+
+  if(hint) hint.style.display = 'none';
+  if(preview) preview.style.display = 'none';
+
+  updateStatus(false);
+}
 
     function moveDraw(e){
       if(!state.drawing) return;
@@ -966,19 +977,19 @@ function initSignaturePads(){
       state.hasSig = true;
     }
 
-    function endDraw(){ state.drawing = false; }
+   function endDraw(e){
+  state.drawing = false;
 
-    canvas.addEventListener('touchstart', startDraw, { passive:false });
-    canvas.addEventListener('touchmove', moveDraw, { passive:false });
-    canvas.addEventListener('touchend', endDraw, { passive:false });
-    canvas.addEventListener('touchcancel', endDraw, { passive:false });
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', moveDraw);
-    canvas.addEventListener('mouseup', endDraw);
-    canvas.addEventListener('mouseleave', endDraw);
-    canvas.addEventListener('gesturestart', function(e){ e.preventDefault(); });
-    canvas.addEventListener('gesturechange', function(e){ e.preventDefault(); });
-    canvas.addEventListener('gestureend', function(e){ e.preventDefault(); });
+  if(e && canvas.hasPointerCapture(e.pointerId)){
+    canvas.releasePointerCapture(e.pointerId);
+  }
+}
+
+   canvas.addEventListener('pointerdown', startDraw);
+canvas.addEventListener('pointermove', moveDraw);
+canvas.addEventListener('pointerup', endDraw);
+canvas.addEventListener('pointercancel', endDraw);
+canvas.addEventListener('pointerleave', endDraw);
 
     wrap.querySelector('.sig-clear').addEventListener('click', ()=>{
       ctx.save();
