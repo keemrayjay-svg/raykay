@@ -838,7 +838,7 @@ function showPage(i){
   document.getElementById('btnNext').disabled = cur>=maxPage;
   window.scrollTo({top:0, behavior:'smooth'});
   // 탭 전환 후 보이게 된 서명 캔버스 크기·좌표계 재설정
-  setTimeout(()=>{ (window.sigPads||[]).forEach(s=>s.resize()); }, 60);
+setTimeout(()=>{ sigPads.forEach(s=>s.resize()); }, 60);
 }
 tabs.forEach((t,idx)=>t.addEventListener('click', ()=>showPage(idx)));
 document.getElementById('btnPrev').addEventListener('click', ()=>showPage(cur-1));
