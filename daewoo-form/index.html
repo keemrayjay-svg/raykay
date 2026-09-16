@@ -1242,9 +1242,6 @@ function validateRequired(){
     { page:2, ok: v('안내연') && v('안내월') && v('안내일'), msg:'정보주체의 권리 안내 (⑥) - 날짜' },
     { page:2, ok: v('안내성명'),         msg:'정보주체의 권리 안내 (⑥) - 성명' },
     { page:2, ok: sigSavedAt('#sigNotice'), msg:'정보주체의 권리 안내 (⑥) - 서명 ([서명 저장] 필요)' },
-    { page:2, ok: v('선발서약연') && v('선발서약월') && v('선발서약일'), msg:'선발 결과 이의제기 포기 서약 - 날짜' },
-    { page:2, ok: v('선발서약성명'),     msg:'선발 결과 이의제기 포기 서약 - 성명' },
-    { page:2, ok: sigSavedAt('#sigPledge'), msg:'선발 결과 이의제기 포기 서약 - 서명 ([서명 저장] 필요)' },
   ];
   return rules.filter(r => !r.ok);
 }
