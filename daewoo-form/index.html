@@ -1183,6 +1183,7 @@ document.getElementById('pdfBtn').addEventListener('click', saveAsPDF);
 document.querySelectorAll('input[name="군관계"]').forEach(r=>{
   r.addEventListener('change', ()=>{
     const box = document.getElementById('exemptBox');
+    if(!box) return;
     const checked = document.querySelector('input[name="군관계"]:checked');
     box.style.display = (checked && checked.value === '면제') ? 'block' : 'none';
   });
