@@ -550,12 +550,6 @@
   }
   body.last-page:not(.pdf-mode) .topbar .btn-submit{animation:submitPulse 1.4s ease-in-out infinite;}
 }
-  // 마지막(3/3) 페이지 하단 안내 → 맨 위로 이동 + 상단 [제출하기] 강조
-document.getElementById('btnGoSubmit').addEventListener('click', ()=>{
-  window.scrollTo({top:0, behavior:'smooth'});
-  const b = document.getElementById('btnSubmit');
-  b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse');
-});
 </style>
 </head>
 <body>
@@ -923,7 +917,7 @@ document.getElementById('btnGoSubmit').addEventListener('click', ()=>{
 
   <div class="doc-footer">
     <span>대우능력개발원 개인정보 수집·이용 동의서</span>
-    <span>2 / 4</span>
+    <span><span class="pg-pc">2 / 4</span><span class="pg-m">2 / 3</span></span>
   </div>
 </section>
 
@@ -1074,7 +1068,7 @@ document.getElementById('btnGoSubmit').addEventListener('click', ()=>{
   </p>
   <div class="doc-footer">
     <span>대우능력개발원 개인정보 수집·이용 동의서</span>
-    <span>3 / 4</span>
+    <span><span class="pg-pc">3 / 4</span><span class="pg-m">3 / 3</span></span>
   </div>
 </section>
 
@@ -1082,6 +1076,7 @@ document.getElementById('btnGoSubmit').addEventListener('click', ()=>{
 <!-- 페이지 이동 -->
 <div class="pager no-print">
   <button type="button" id="btnPrev">← 이전 페이지</button>
+  <button type="button" id="btnNext">다음 페이지 →</button>
   <button type="button" id="btnGoSubmit" class="go-submit">↑ 맨 위 [제출하기] 버튼을 눌러 제출해 주세요</button>
 </div>
 
@@ -1571,6 +1566,13 @@ async function handleSubmit(){
   }
 }
 document.getElementById('btnSubmit').addEventListener('click', handleSubmit);
+
+// 마지막(3/3) 페이지 하단 안내 → 맨 위로 이동 + 상단 [제출하기] 강조
+document.getElementById('btnGoSubmit').addEventListener('click', ()=>{
+  window.scrollTo({top:0, behavior:'smooth'});
+  const b = document.getElementById('btnSubmit');
+  b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse');
+});
 
 /* ---------- 모바일 입력 편의 ---------- */
 // 날짜(2자리) 칸은 숫자 키패드
