@@ -3,8 +3,10 @@
   
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#16325C">
 <title>대우능력개발원 훈련참여신청서 (온라인 작성)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -20,7 +22,7 @@
   html{-webkit-text-size-adjust:100%;}
   body{
     background:#e9e9ee;
-    font-family:'Noto Sans KR','Malgun Gothic','맑은 고딕',sans-serif;
+    font-family:'Pretendard Variable','Pretendard','Noto Sans KR','Malgun Gothic','맑은 고딕',sans-serif;
     color:var(--ink);
     font-size:13px;
     line-height:1.45;
@@ -115,7 +117,7 @@
   textarea.ta{border:none;resize:vertical;width:100%;min-height:56px;font-size:12px;line-height:1.5;}
 
   /* 체크박스 */
-  label.chk{display:inline-flex;align-items:center;cursor:pointer;margin:1px 8px 1px 0;white-space:nowrap;font-size:12px;}
+  label.chk{display:inline-flex;align-items:center;cursor:pointer;margin:1px 8px 1px 0;white-space:nowrap;font-size:12px;position:relative;}
   label.chk input{position:absolute;opacity:0;width:0;height:0;}
   label.chk .box{
     width:12px;height:12px;border:1.3px solid #000;background:#fff;
@@ -248,7 +250,7 @@
     label.chk{white-space:normal;align-items:flex-start;margin-bottom:3px;}
     label.chk .box{margin-top:2px;}
     td.flexline{display:flex !important;flex-wrap:wrap;gap:4px 6px;align-items:baseline;justify-content:center;}
-    td.flexline .line{flex:1 1 30px;min-width:26px;width:auto !important;}
+    body:not(.pdf-mode) td.flexline .line{flex:1 1 30px;min-width:26px;width:auto !important;}
 
     /* 서명 */
     .sig-wrap{display:block;margin:8px auto 0;max-width:100%;}
@@ -290,6 +292,243 @@
     body{background:#fff;}
     .topbar,.pager,.overlay,.sig-clear,.sig-tools,.no-print{display:none !important;}
     .paper{display:block !important;box-shadow:none;margin:0;page-break-after:always;width:100%;}
+    .paper input,.paper textarea{background:transparent !important;border:none !important;box-shadow:none !important;}
+    .photo-box{border:none !important;background:transparent !important;}
+    .no-pdf{display:none !important;}
+  }
+
+  /* =================================================================
+     화면 전용 리디자인  (PDF 캡처·인쇄 시에는 원래 A4 양식 그대로)
+  ================================================================= */
+  :root{
+    --navy-50:#eef3fb;
+    --navy-100:#dbe5f5;
+    --line-c:#d6dde9;
+    --muted:#5b6b88;
+    --field:#f4f7fc;
+  }
+  body{background:linear-gradient(180deg,#eef1f6 0%,#e4e8f0 100%) fixed;-webkit-font-smoothing:antialiased;}
+  body.pdf-mode .no-pdf{display:none !important;}
+  body.pdf-mode .paper{border-radius:0 !important;}
+
+  /* ---------- 상단 바 ---------- */
+  .topbar{background:rgba(22,50,92,.97);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);box-shadow:0 8px 24px rgba(10,25,50,.18);}
+  .topbar-inner{max-width:1120px;gap:14px;padding:10px 20px;flex-wrap:nowrap;}
+  .topbar .brand{display:flex;align-items:center;gap:9px;white-space:nowrap;margin-right:4px;font-size:14.5px;letter-spacing:0;}
+  .brand-mark{width:30px;height:30px;border-radius:9px;background:#fff;color:var(--navy);font-size:11.5px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;flex:none;}
+  .brand small{font-weight:500;color:#aebbd6;font-size:12px;}
+  .tabs{display:flex;gap:4px;background:rgba(255,255,255,.08);padding:4px;border-radius:11px;}
+  .tab{border:none;border-radius:8px;padding:7px 13px;color:#c9d3e8;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;transition:background .15s,color .15s;}
+  .tab .n{width:19px;height:19px;border-radius:50%;background:rgba(255,255,255,.16);font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none;}
+  .tab.active{background:#fff;color:var(--navy);}
+  .tab.active .n{background:var(--navy);color:#fff;}
+  .tab:hover:not(.active){background:rgba(255,255,255,.1);}
+  .actions{display:flex;gap:6px;margin-left:auto;}
+  .btn{border-radius:9px;padding:8px 14px;font-size:12.5px;transition:filter .15s,transform .05s;}
+  .btn:active{transform:translateY(1px);}
+  .btn-ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.22);}
+  .btn-ghost:hover{background:rgba(255,255,255,.18);filter:none;}
+  .btn-submit{background:#d4452e;box-shadow:0 2px 8px rgba(212,69,46,.35);}
+  .btn:disabled{opacity:.6;cursor:default;}
+
+  /* ---------- 용지 ---------- */
+  .paper{border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 14px 40px rgba(20,35,70,.13);}
+
+  /* ---------- 입력칸: 화면에서 '입력하는 곳'이 보이도록 ---------- */
+  body:not(.pdf-mode) .paper input:is([type=text],[type=tel],[type=email],[type=number]),
+  body:not(.pdf-mode) .paper textarea{
+    background:var(--field);border:1px solid transparent;border-radius:4px;padding:4px 7px;
+    transition:border-color .15s,box-shadow .15s,background .15s;
+  }
+  body:not(.pdf-mode) .paper .line input{padding:2px 3px;border-radius:3px 3px 0 0;}
+  body:not(.pdf-mode) .paper input:hover,body:not(.pdf-mode) .paper textarea:hover{border-color:var(--line-c);}
+  body:not(.pdf-mode) .paper input:focus,body:not(.pdf-mode) .paper textarea:focus{
+    background:#fff;border-color:var(--navy);box-shadow:0 0 0 3px rgba(22,50,92,.14);
+  }
+  body:not(.pdf-mode) .paper input::placeholder{color:#a3adbf;}
+  body:not(.pdf-mode) .paper .line input::placeholder{color:transparent;}   /* 데스크톱 좁은 밑줄칸은 힌트 숨김 */
+  .m-only{display:none;}
+  .today-btn{
+    font-family:inherit;font-size:10.5px;font-weight:700;color:var(--navy);
+    background:var(--navy-50);border:1px solid var(--navy-100);border-radius:999px;
+    padding:2px 9px;margin-left:6px;cursor:pointer;vertical-align:middle;
+  }
+  .today-btn:hover{background:var(--navy-100);}
+
+  /* 증명사진 · 서명칸 */
+  body:not(.pdf-mode) .photo-box{border:1.5px dashed #b6c2d8;border-radius:6px;background:#fafbfd;transition:border-color .15s,background .15s;}
+  body:not(.pdf-mode) .photo-box:hover{outline:none;border-color:var(--navy);background:var(--navy-50);}
+  .photo-cta{display:block;margin-top:8px;color:var(--navy);font-weight:700;font-size:11px;}
+  body:not(.pdf-mode) .sig-box{border:1.5px dashed #b6c2d8;border-radius:6px;background:#fbfcfe;}
+  body:not(.pdf-mode) .sig-save,body:not(.pdf-mode) .sig-clear{border-radius:5px;padding:3px 9px;}
+
+  body:not(.pdf-mode) .staff-only table.ft{background:#fafafa;}
+
+  /* ---------- 페이지 이동 ---------- */
+  .pager{gap:10px;}
+  .pager button{border-radius:10px;padding:10px 24px;font-size:13px;transition:background .15s,color .15s;}
+  .pager .pager-submit{background:#d4452e;border-color:#d4452e;color:#fff;margin-left:auto;}
+  .pager .pager-submit:not(:disabled):hover{background:#b9371f;border-color:#b9371f;}
+  .pager #btnNext{margin-left:auto;}
+  .pager [hidden]{display:none !important;}
+
+  /* ---------- 완료 창 ---------- */
+  .overlay{backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:20px;}
+  .overlay .card{border-radius:18px;padding:34px 32px 28px;width:100%;}
+  .done-icon{width:56px;height:56px;border-radius:50%;background:#e7f4ec;color:#1a7f37;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;}
+  .overlay .btn{width:100%;padding:12px;font-size:14px;border-radius:11px;}
+
+  /* =================================================================
+     모바일 (860px 이하) — 앱 스타일 입력 폼
+  ================================================================= */
+  @media (max-width:860px){
+    body:not(.pdf-mode){background:#f2f4f8;padding-bottom:calc(84px + env(safe-area-inset-bottom));}
+
+    /* 상단 바: 1줄 브랜드+버튼 / 2줄 단계 탭 */
+    .topbar-inner{flex-wrap:wrap;padding:10px 14px 10px;gap:9px;}
+    .topbar .brand{font-size:14px;}
+    .brand small{display:none;}
+    .actions .btn-print-only{display:none;}
+    .actions .btn{padding:7px 11px;font-size:12px;}
+    .tabs{order:3;width:100%;display:grid;grid-template-columns:repeat(3,1fr);}
+    .tab{flex-direction:column;gap:3px;padding:7px 4px;font-size:11.5px;line-height:1.25;text-align:center;word-break:keep-all;}
+
+    /* 용지 → 투명 배경 위 카드들 */
+    body:not(.pdf-mode) .paper{background:transparent;box-shadow:none;border-radius:0;padding:20px 14px 24px;margin:0 auto;min-height:0;max-width:560px;}
+    body:not(.pdf-mode) .doc-header{flex-direction:row;align-items:center;justify-content:space-between;}
+    body:not(.pdf-mode) .doc-header .right{text-align:right;font-size:10.5px;color:var(--muted);}
+    body:not(.pdf-mode) .logo{font-size:15px;}
+    body:not(.pdf-mode) h1.doc-title,body:not(.pdf-mode) h1.doc-title.small{font-size:23px;letter-spacing:2px;text-indent:2px;margin:18px 0 8px;}
+    body:not(.pdf-mode) .doc-sub{font-size:12.5px;color:var(--muted);line-height:1.6;padding:0 6px;}
+    body:not(.pdf-mode) .doc-note-right{text-align:center;font-size:12px;}
+    body:not(.pdf-mode) .sec{margin:30px 2px 10px;gap:9px;flex-wrap:nowrap;align-items:flex-start;}
+    body:not(.pdf-mode) .sec .badge{margin-top:-1px;}
+    body:not(.pdf-mode) .sec .tag-red,body:not(.pdf-mode) .sec .tag-gray{flex:none;margin-top:2px;}
+    body:not(.pdf-mode) .sec .badge{width:24px;height:24px;border-radius:50%;font-size:12px;}
+    body:not(.pdf-mode) .sec .sec-title{font-size:16px;line-height:1.35;}
+    body:not(.pdf-mode) .sec-sub{margin:-4px 2px 8px;font-size:12px;color:var(--muted);}
+
+    /* 표 → 카드 */
+    body:not(.pdf-mode) table.ft{background:#fff;border:1px solid #e3e8f0;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,30,60,.04);}
+    body:not(.pdf-mode) table.ft tr{border-top:1px solid #edf0f5;}
+    body:not(.pdf-mode) table.ft tr:first-child{border-top:none;}
+    body:not(.pdf-mode) table.ft th,body:not(.pdf-mode) table.ft td{border:0 !important;padding:8px 16px 16px;font-size:14px !important;line-height:1.55;text-align:left;}
+    body:not(.pdf-mode) table.ft td.lab{background:transparent;color:#2b3a55;font-size:13px !important;font-weight:700;padding:16px 16px 0;}
+    body:not(.pdf-mode) table.ft td.lab:not(:first-child){border-top:1px solid #edf0f5 !important;}
+    body:not(.pdf-mode) table.ft td.lab span{color:#97a3ba !important;font-size:12px !important;}
+    body:not(.pdf-mode) table.ft td.lab br{display:none;}
+    body:not(.pdf-mode) table.ft td[data-label]{padding-top:14px;padding-bottom:4px;}
+    body:not(.pdf-mode) table.ft td[data-label]:last-child{padding-bottom:16px;}
+    body:not(.pdf-mode) table.ft td[data-label]::before{color:var(--muted);font-size:12px;margin-bottom:4px;}
+    body:not(.pdf-mode) table.ft td:has(label.chk) br{display:none;}
+    body:not(.pdf-mode) table.ft td.c{text-align:center;}
+    body:not(.pdf-mode) table.ft td > b{display:block;font-size:12.5px;color:var(--muted);font-weight:600;margin-bottom:6px;}
+    body:not(.pdf-mode) table.ft td > b ~ b{margin-top:12px;}
+    body:not(.pdf-mode) table.ft td > input{width:100% !important;}
+    body:not(.pdf-mode) table.ft td:has(> b){font-size:0 !important;}
+    body:not(.pdf-mode) table.ft td:not(.flexline) .line:not(.short) input,
+    body:not(.pdf-mode) .sign-row:not(.date-row) .line input{text-align:left;padding:0 14px;}
+    body:not(.pdf-mode) .date-grp{display:flex;align-items:center;gap:6px;width:100%;}
+    body:not(.pdf-mode) .date-grp + .date-grp{margin-top:10px;}
+    body:not(.pdf-mode) .date-grp .line{flex:1 1 0;min-width:0;}
+    body:not(.pdf-mode) .m-only{display:inline-block;width:48px;flex:none;font-size:12.5px;font-weight:600;color:var(--muted);}
+    body:not(.pdf-mode) .note{font-size:12px;color:var(--muted);line-height:1.6;margin:8px 4px 0;}
+
+    /* 입력칸: 큰 박스형 (16px → iOS 자동확대 방지) */
+    body:not(.pdf-mode) .paper input:is([type=text],[type=tel],[type=email],[type=number]){
+      font-size:16px;height:48px;padding:0 14px;background:#fbfcfe;border:1px solid var(--line-c);border-radius:10px;
+    }
+    body:not(.pdf-mode) .paper .line{display:inline-block;border-bottom:none;vertical-align:middle;min-width:60px;}
+    body:not(.pdf-mode) .paper .line input{height:46px;padding:0 6px;border-radius:10px;}
+    body:not(.pdf-mode) table.ft td:not(.flexline) .line:not(.short),
+    body:not(.pdf-mode) .sign-row .line:not(.short){display:block;width:100% !important;margin:2px 0 4px;}
+    body:not(.pdf-mode) .line.short{width:96px !important;}
+    body:not(.pdf-mode) td.flexline{justify-content:flex-start;align-items:center;gap:8px 6px;font-size:14px;}
+    body:not(.pdf-mode) td.flexline .line{flex:1 1 60px;min-width:56px;}
+    body:not(.pdf-mode) .pp{display:none;}
+    body:not(.pdf-mode) .inl-lab{display:block;width:100%;font-size:12.5px;color:var(--muted);font-weight:600;margin:10px 0 6px;}
+    body:not(.pdf-mode) .inl-lab:first-child{margin-top:0;}
+
+    /* 체크·라디오 → 터치하기 쉬운 선택 버튼 */
+    body:not(.pdf-mode) label.chk{
+      display:inline-flex;align-items:center;gap:9px;white-space:normal;
+      min-height:46px;padding:10px 14px;margin:0 6px 8px 0;
+      border:1px solid var(--line-c);border-radius:11px;background:#fff;
+      font-size:14.5px;line-height:1.3;color:#1d2a40;
+      transition:border-color .15s,background .15s;-webkit-tap-highlight-color:transparent;
+    }
+    body:not(.pdf-mode) label.chk:has(input:checked){border-color:var(--navy);background:var(--navy-50);color:var(--navy);font-weight:600;box-shadow:inset 0 0 0 1px var(--navy);}
+    body:not(.pdf-mode) label.chk .box{width:19px;height:19px;margin:0;border:1.6px solid #9aa6bc;border-radius:6px;transition:background .15s,border-color .15s;}
+    body:not(.pdf-mode) label.chk input[type=radio] + .box{border-radius:50%;}
+    body:not(.pdf-mode) label.chk input:checked + .box{background:var(--navy);border-color:var(--navy);}
+    body:not(.pdf-mode) label.chk input[type=checkbox]:checked + .box::after{
+      content:'';left:5.5px;top:2px;width:4px;height:9px;border:solid #fff;border-width:0 2.2px 2.2px 0;transform:rotate(45deg);font-size:0;
+    }
+    body:not(.pdf-mode) label.chk input[type=radio]:checked + .box::after{
+      content:'';left:50%;top:50%;width:7px;height:7px;background:#fff;border-radius:50%;transform:translate(-50%,-50%);font-size:0;
+    }
+    body:not(.pdf-mode) label.chk:has(input[type=checkbox]){display:flex;width:100%;margin-right:0;}
+    body:not(.pdf-mode) .opts{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+    body:not(.pdf-mode) .opts.opts-3{grid-template-columns:repeat(3,minmax(0,1fr));}
+    body:not(.pdf-mode) .opts label.chk{margin:0 !important;}
+    body:not(.pdf-mode) .opts .line.sub{grid-column:1 / -1;}
+
+    /* '기타·추천인·검색사이트' 칸은 해당 항목을 골랐을 때만 표시 */
+    body:not(.pdf-mode) .line.sub{display:block !important;width:100% !important;margin:-2px 0 10px;}
+    body:not(.pdf-mode) label.chk:not(:has(input:checked)) + .line.sub{display:none !important;}
+
+    /* 직장경력: 유/무 먼저, '유' 선택 시 직무·기간 표시 */
+    body:not(.pdf-mode) .career{display:flex;flex-wrap:wrap;gap:8px;}
+    body:not(.pdf-mode) .career > div{display:contents !important;}
+    body:not(.pdf-mode) .career label.chk{margin:0;flex:1 1 0;}
+    body:not(.pdf-mode) .career-detail{order:3;width:100%;display:block;}
+    body:not(.pdf-mode) .career:not(:has(input[value="유"]:checked)) .career-detail{display:none;}
+
+    /* 서약문 */
+    body:not(.pdf-mode) .oath{background:#fff;border:1px solid #e3e8f0;border-radius:14px;padding:18px;font-size:13.5px;line-height:1.85;color:#2b3a55;}
+
+    /* 날짜·서명 줄 → 카드 */
+    body:not(.pdf-mode) .sign-row{
+      background:#fff;border:1px solid #e3e8f0;border-radius:14px;padding:16px;margin-top:12px;
+      text-align:left;font-size:14px !important;
+    }
+    body:not(.pdf-mode) .sign-row.date-row{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;}
+    body:not(.pdf-mode) .sign-row.date-row .line{flex:1 1 0;min-width:0;}
+    body:not(.pdf-mode) .paper .line input::placeholder{color:#a3adbf;}
+    body:not(.pdf-mode) .today-btn{flex:none;height:46px;padding:0 14px;font-size:13px;border-radius:10px;margin-left:4px;}
+    body:not(.pdf-mode) .agree-q{display:block;font-weight:700;color:#1d2a40;margin-bottom:10px;}
+    body:not(.pdf-mode) .sign-row:not(.date-row){display:flex;flex-wrap:wrap;gap:0 8px;}
+    body:not(.pdf-mode) .sign-row:not(.date-row) > *{flex:1 1 100%;}
+    body:not(.pdf-mode) .sign-row > label.chk{flex:1 1 0;margin:0 0 4px;}
+    body:not(.pdf-mode) .sign-row > .sig-wrap{margin-top:8px;}
+
+    /* 서명 패드: 카드 폭 가득 */
+    body:not(.pdf-mode) .sig-wrap{display:block;margin:10px 0 0;max-width:none;}
+    body:not(.pdf-mode) .sig-box{display:block;width:100%;max-width:none;border-radius:12px;border-width:1.6px;}
+    body:not(.pdf-mode) canvas.sig{width:100% !important;height:auto !important;}
+    body:not(.pdf-mode) .sig-hint{font-size:13.5px;color:#a3adbf;}
+    body:not(.pdf-mode) .sig-tools{margin-top:10px;gap:8px;justify-content:space-between;}
+    body:not(.pdf-mode) .sig-status{font-size:12px;white-space:normal;flex:1 1 140px;}
+    body:not(.pdf-mode) .sig-dot{width:9px;height:9px;}
+    body:not(.pdf-mode) .sig-save,body:not(.pdf-mode) .sig-clear{font-size:13px;padding:9px 14px;border-radius:9px;margin:0;}
+    body:not(.pdf-mode) .sig-clear{background:#fff;border:1px solid var(--line-c);color:#3b4a66;}
+    body:not(.pdf-mode) .sig-preview{display:none !important;}
+
+    /* 증명사진 */
+    body:not(.pdf-mode) .photo-box{width:120px;height:160px;margin:4px auto;border-radius:12px;}
+
+    body:not(.pdf-mode) .doc-footer{position:static;margin-top:28px;justify-content:center;gap:8px;color:#9aa5b8;font-size:11px;}
+
+    /* 하단 고정 이동 바 */
+    body:not(.pdf-mode) .pager{
+      position:fixed;left:0;right:0;bottom:0;z-index:45;margin:0;max-width:none;
+      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+      background:rgba(255,255,255,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+      border-top:1px solid #e3e8f0;box-shadow:0 -6px 20px rgba(16,30,60,.06);
+    }
+    body:not(.pdf-mode) .pager button{flex:1 1 0;height:50px;padding:0 10px;font-size:15px;border-radius:12px;margin:0;}
+    body:not(.pdf-mode) .pager #btnPrev{flex:0 0 34%;background:#fff;color:#3b4a66;border-color:var(--line-c);}
+    body:not(.pdf-mode) .pager #btnNext{background:var(--navy);color:#fff;}
   }
 </style>
 </head>
@@ -299,14 +538,17 @@
 <div class="topbar no-print">
   <div class="topbar-inner">
     <span class="brand">대우능력개발원 온라인 신청</span>
-    <button class="tab active" data-page="0">훈련참여신청서</button>
-    <button class="tab" data-page="1">개인정보 동의서 ①②</button>
-    <button class="tab" data-page="2">개인정보 동의서 ③~⑥</button>
-    <button class="tab" data-page="3" id="tabStaff" style="display:none;">면접 선발 평가 기준표</button>
-    <span class="spacer"></span>
-    <button class="btn btn-print" onclick="window.print()">인쇄</button>
-    <button class="btn btn-print" id="pdfBtn" style="background:#1a7f37;">PDF 저장</button>
-    <button class="btn btn-submit" id="btnSubmit">제출하기</button>
+    <nav class="tabs">
+      <button type="button" class="tab active" data-page="0">훈련참여신청서</button>
+      <button type="button" class="tab" data-page="1">개인정보 동의서 ①②</button>
+      <button type="button" class="tab" data-page="2">개인정보 동의서 ③~⑥</button>
+      <button type="button" class="tab" data-page="3" id="tabStaff" style="display:none;">면접 선발 평가 기준표</button>
+    </nav>
+    <div class="actions">
+      <button type="button" class="btn btn-ghost btn-print-only" onclick="window.print()">인쇄</button>
+      <button type="button" class="btn btn-ghost" id="pdfBtn">PDF 저장</button>
+      <button type="button" class="btn btn-submit" id="btnSubmit">제출하기</button>
+    </div>
   </div>
 </div>
 
@@ -342,37 +584,38 @@
         <input type="file" id="photoFile" accept="image/*" hidden>
       </td>
       <td class="lab">성 명</td>
-      <td><input type="text" name="성명" id="fName"></td>
+      <td><input type="text" name="성명" id="fName" autocomplete="name"></td>
       <td class="lab">생년월일</td>
-      <td><input type="text" name="생년월일" placeholder="예) 2000.01.01"></td>
+      <td><input type="text" name="생년월일" placeholder="예) 2000.01.01" inputmode="numeric"></td>
     </tr>
     <tr>
       <td class="lab">휴대폰</td>
-      <td><input type="tel" name="휴대폰" placeholder="010-0000-0000"></td>
+      <td><input type="tel" name="휴대폰" placeholder="010-0000-0000" autocomplete="tel"></td>
       <td class="lab">성별</td>
-      <td>
+      <td class="opts">
         <label class="chk"><input type="radio" name="성별" value="남"><span class="box"></span>남</label>
         <label class="chk"><input type="radio" name="성별" value="여"><span class="box"></span>여</label>
       </td>
     </tr>
     <tr>
       <td class="lab">이메일</td>
-      <td colspan="3"><input type="email" name="이메일"></td>
+      <td colspan="3"><input type="email" name="이메일" autocomplete="email"></td>
     </tr>
     <tr>
       <td class="lab">주소(실거주지)</td>
-      <td colspan="3"><input type="text" name="주소"></td>
+      <td colspan="3"><input type="text" name="주소" autocomplete="street-address"></td>
     </tr>
     <tr>
       <td class="lab">비상연락처</td>
-      <td colspan="3">연락처 : <span class="line" style="width:150px;"><input type="text" name="비상연락처"></span>&nbsp;
-        관계 : (
+      <td colspan="3"><span class="inl-lab">연락처<span class="pp"> :</span></span> <span class="line" style="width:150px;"><input type="tel" name="비상연락처"></span>
+        <span class="inl-lab"><span class="pp">&nbsp;</span>관계<span class="pp"> : (</span></span>
+        <span class="opts opts-3 rel-opts">
         <label class="chk"><input type="radio" name="비상연락처관계" value="부"><span class="box"></span>부</label>
         <label class="chk"><input type="radio" name="비상연락처관계" value="모"><span class="box"></span>모</label>
         <label class="chk"><input type="radio" name="비상연락처관계" value="조부"><span class="box"></span>조부</label>
         <label class="chk"><input type="radio" name="비상연락처관계" value="조모"><span class="box"></span>조모</label>
-        <label class="chk"><input type="radio" name="비상연락처관계" value="기타"><span class="box"></span>기타(</label><span class="line" style="width:150px;"><input type="text" name="기타"></span>)
-        )</td>
+        <label class="chk"><input type="radio" name="비상연락처관계" value="기타"><span class="box"></span>기타<span class="pp">(</span></label><span class="line sub" style="width:150px;"><input type="text" name="기타"></span><span class="pp">)</span>
+        </span><span class="pp">)</span></td>
     </tr>
     <tr>
       <td class="lab">수신동의</td>
@@ -392,7 +635,7 @@
     </colgroup>
     <tr>
       <td class="lab">학력사항</td>
-      <td style="font-size:11.5px;">
+      <td class="opts" style="font-size:11.5px;">
         <label class="chk"><input type="radio" name="학력" value="고등학교 재학"><span class="box"></span>고등학교 재학</label>
         <label class="chk"><input type="radio" name="학력" value="고등학교 졸업"><span class="box"></span>고등학교 졸업</label><br>
         <label class="chk"><input type="radio" name="학력" value="전문대학 재학(2~3년제)"><span class="box"></span>전문대학 재학(2~3년제)</label>
@@ -416,19 +659,19 @@
     </tr>
     <tr>
        <td class="lab">직장경력</td>
-      <td>
+      <td class="career">
         <!-- 감싸는 label 대신 div나 span을 사용하여 내부 input이 가로채이지 않도록 분리 -->
         <div style="margin-bottom:4px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
           <label class="chk" style="margin-right:2px;"><input type="radio" name="직장경력" value="유"><span class="box"></span>유</label>
-          (직무: <span class="line" style="width:70px;"><input type="text" name="직무"></span> / 
-          기간: <span class="line" style="width:34px;"><input type="text" name="경력기간"></span> 개월)
+          <span class="career-detail"><span class="pp">(</span><span class="inl-lab">직무<span class="pp">:</span></span> <span class="line" style="width:70px;"><input type="text" name="직무"></span> <span class="pp">/ </span>
+          <span class="inl-lab">기간<span class="pp">:</span></span> <span class="line short" style="width:34px;"><input type="text" name="경력기간" inputmode="numeric"></span> 개월<span class="pp">)</span></span>
         </div>
         <div>
           <label class="chk"><input type="radio" name="직장경력" value="무"><span class="box"></span>무</label>
         </div>
       </td>
       <td class="lab">군 관계<br><span style="font-weight:400;font-size:10.5px;">(해당자만)</span></td>
-      <td>
+      <td class="opts opts-3">
         <label class="chk"><input type="radio" name="군관계" value="군필"><span class="box"></span>군필</label>
         <label class="chk"><input type="radio" name="군관계" value="면제"><span class="box"></span>면제</label>
         <label class="chk"><input type="radio" name="군관계" value="미필"><span class="box"></span>미필</label>
@@ -451,15 +694,15 @@
     <tr>
       <td class="lab">훈련기간(예정)</td>
       <td class="c flexline" style="font-size:11.5px;">
-        20<span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작연"></span> .
+        <span class="date-grp">20<span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작연"></span> .
         <span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작월"></span> .
-        <span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작일"></span>
-        ~ 20<span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료연"></span> .
+        <span class="line" style="width:22px;"><input type="text" maxlength="2" name="시작일"></span></span>
+        <span class="pp">~ </span><span class="date-grp">20<span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료연"></span> .
         <span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료월"></span> .
-        <span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료일"></span>
+        <span class="line" style="width:22px;"><input type="text" maxlength="2" name="종료일"></span></span>
       </td>
       <td class="lab">과정 유형</td>
-      <td style="font-size:11px;">
+      <td class="opts" style="font-size:11px;">
         <label class="chk"><input type="radio" name="과정유형" value="K-디지털 트레이닝"><span class="box"></span>K-디지털 트레이닝</label>
         <label class="chk"><input type="radio" name="과정유형" value="과정평가형"><span class="box"></span>과정평가형</label><br>
         <label class="chk"><input type="radio" name="과정유형" value="산업구조변화 대응 특화훈련"><span class="box"></span>산업구조변화 대응 특화훈련</label><br>
@@ -469,13 +712,13 @@
     </tr>
     <tr>
       <td class="lab">훈련 지원경로</td>
-      <td colspan="3" style="font-size:11px;">
+      <td colspan="3" class="opts" style="font-size:11px;">
         <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="고용센터"><span class="box"></span>고용센터</label>
         <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="재학생·수료생·교원 추천"><span class="box"></span>재학생·수료생·교원 추천</label>
-        <label class="chk" style="margin-right:2px;"><input type="radio" name="지원경로" value="지인추천"><span class="box"></span>지인추천(추천인:</label><span class="line" style="width:75px;"><input type="text" name="추천인"></span>)<br>
-        <label class="chk" style="margin-right:2px;"><input type="radio" name="지원경로" value="인터넷검색"><span class="box"></span>인터넷검색(사이트:</label><span class="line" style="width:75px;"><input type="text" name="검색사이트"></span>)
+        <label class="chk" style="margin-right:2px;"><input type="radio" name="지원경로" value="지인추천"><span class="box"></span>지인추천<span class="pp">(추천인:</span></label><span class="line sub" style="width:75px;"><input type="text" name="추천인"></span><span class="pp">)</span><br>
+        <label class="chk" style="margin-right:2px;"><input type="radio" name="지원경로" value="인터넷검색"><span class="box"></span>인터넷검색<span class="pp">(사이트:</span></label><span class="line sub" style="width:75px;"><input type="text" name="검색사이트"></span><span class="pp">)</span>
         <label class="chk" style="margin-right:6px;"><input type="radio" name="지원경로" value="전단지·현수막"><span class="box"></span>전단지·현수막</label>
-        <label class="chk" style="margin-right:2px;"><input type="radio" name="지원경로" value="기타"><span class="box"></span>기타(</label><span class="line" style="width:150px;"><input type="text" name="지원경로기타"></span>)
+        <label class="chk" style="margin-right:2px;"><input type="radio" name="지원경로" value="기타"><span class="box"></span>기타<span class="pp">(</span></label><span class="line sub" style="width:150px;"><input type="text" name="지원경로기타"></span><span class="pp">)</span>
       </td>
     </tr>
   </table>
@@ -497,13 +740,13 @@
   <div class="oath">
     본인은 고용노동부가 주관하는 국민내일배움카드 제도에 따라 대우능력개발원이 위탁받아 실시하는 훈련과정(K-디지털 트레이닝, 국가기간·전략산업훈련, 산업구조변화 대응 특화훈련 등)에 참여함에 있어, 「국민 평생 직업능력 개발법」및 「국민내일배움카드 운영규정」, 본 원의 제반 학칙을 철저히 준수하며 본 훈련에 적극 참여할 것을 서약합니다. 아울러 면접 선발 절차 및 그 결과에 대하여 이의를 제기하지 않습니다. (자기부담금·훈련장려금 등 구체적인 지원 조건은 담당 상담원에게 확인하시기 바랍니다.)
   </div>
-  <p class="center mt14" style="font-size:12.5px;">
+  <p class="center mt14 sign-row date-row" style="font-size:12.5px;">
     20<span class="line" style="width:26px;"><input type="text" maxlength="2" name="서약연"></span> 년
     <span class="line" style="width:26px;"><input type="text" maxlength="2" name="서약월"></span> 월
     <span class="line" style="width:26px;"><input type="text" maxlength="2" name="서약일"></span> 일
   </p>
-  <p class="center mt14" style="font-size:13px;">
-    신청인 : <span class="line" style="width:150px;"><input type="text" name="신청인성명"></span> (서명)
+  <p class="center mt14 sign-row" style="font-size:13px;">
+    <span class="inl-lab">신청인<span class="pp"> :</span></span> <span class="line" style="width:150px;"><input type="text" name="신청인성명"></span> <span class="pp">(서명)</span>
     <span class="sig-wrap" id="sigApplicant">
       <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에 서명하세요</span></span>
       <span class="sig-tools">
@@ -516,6 +759,7 @@
   </p>
 
   <!-- ⑤ div -->
+<div class="staff-only">
 <div class="sec"><span class="badge">5</span><span class="sec-title">기관 확인란</span></div>
 <p class="sec-sub">(지원자 작성 아님)</p>
 <table class="ft" style="width: 100%;">
@@ -540,6 +784,7 @@
     </tr>
   </tbody>
 </table>
+</div>
 
   <div class="doc-footer">
     <span>대우능력개발원 훈련참여 신청서 (전 과정 공통양식)</span>
@@ -599,11 +844,11 @@
   <p class="note">법적 근거 : 「국민 평생 직업능력 개발법」 제11조</p>
   <p class="note">※ 위 가~나 항목은 훈련 수강에 필수적인 정보로, 동의를 거부할 권리가 있으나 거부 시 훈련 수강 및 훈련비 지원을 받지 못할 수 있습니다.</p>
 
-  <p class="center mt20" style="font-size:12.5px;">
-    위 가~나 내용에 모두 동의합니다.&nbsp;
+  <p class="center mt20 sign-row" style="font-size:12.5px;">
+    <span class="agree-q">위 가~나 내용에 모두 동의합니다.</span><span class="pp">&nbsp;</span>
     <label class="chk"><input type="radio" name="동의1" value="동의" required><span class="box"></span>동의</label>
     <label class="chk"><input type="radio" name="동의1" value="미동의"><span class="box"></span>미동의</label>
-    &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의1성명"></span> (서명)
+    <span class="pp">&nbsp;&nbsp;</span><span class="inl-lab">성명<span class="pp"> :</span></span> <span class="line" style="width:120px;"><input type="text" name="동의1성명"></span> <span class="pp">(서명)</span>
     <span class="sig-wrap" id="sigConsent1">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
       <span class="sig-tools">
@@ -634,11 +879,11 @@
   </table>
   <p class="note">법적 근거 : 「개인정보보호법」 제15조 &nbsp; ※ 거부 시 취업지원 서비스만 제공되지 않을 뿐, 훈련 수강에는 영향이 없습니다.</p>
 
-  <p class="center mt20" style="font-size:12.5px;">
-    위 내용에 동의합니다.&nbsp;
+  <p class="center mt20 sign-row" style="font-size:12.5px;">
+    <span class="agree-q">위 내용에 동의합니다.</span><span class="pp">&nbsp;</span>
     <label class="chk"><input type="radio" name="동의2" value="동의"><span class="box"></span>동의</label>
     <label class="chk"><input type="radio" name="동의2" value="미동의"><span class="box"></span>미동의</label>
-    &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의2성명"></span> (서명)
+    <span class="pp">&nbsp;&nbsp;</span><span class="inl-lab">성명<span class="pp"> :</span></span> <span class="line" style="width:120px;"><input type="text" name="동의2성명"></span> <span class="pp">(서명)</span>
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
       <span class="sig-tools">
@@ -685,11 +930,11 @@
   <p class="note">법적 근거 : 「개인정보보호법」 제17조(제3자 제공) · 보유기간 : 제공 목적 달성 시까지</p>
   <p class="note">※ 동의를 거부할 권리가 있으며, 거부 시 취업 연계기관을 통한 알선 서비스만 제공되지 않을 뿐, 훈련 수강에는 영향이 없습니다.</p>
 
-  <p class="center mt14" style="font-size:12.5px;">
-    위 내용에 동의합니다.&nbsp;
+  <p class="center mt14 sign-row" style="font-size:12.5px;">
+    <span class="agree-q">위 내용에 동의합니다.</span><span class="pp">&nbsp;</span>
     <label class="chk"><input type="radio" name="동의3" value="동의"><span class="box"></span>동의</label>
     <label class="chk"><input type="radio" name="동의3" value="미동의"><span class="box"></span>미동의</label>
-    &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의3성명"></span> (서명)
+    <span class="pp">&nbsp;&nbsp;</span><span class="inl-lab">성명<span class="pp"> :</span></span> <span class="line" style="width:120px;"><input type="text" name="동의3성명"></span> <span class="pp">(서명)</span>
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
       <span class="sig-tools">
@@ -721,11 +966,11 @@
   <p class="note">법적 근거 : 「개인정보보호법」 제23조(민감정보의 처리)</p>
   <p class="note">※ 본 항목은 안전사고 예방 및 편의지원 검토 목적에 한하며, 미기재·미동의를 이유로 합격 여부를 자동으로 결정하지 않습니다. 질환·장애 자체를 이유로 한 응시 제한은 하지 않으며, 훈련 참여를 위한 안전조치·편의지원 필요 여부만을 개별적으로 확인합니다.</p>
 
-  <p class="center mt14" style="font-size:12.5px;">
-    위 내용에 동의합니다.&nbsp;
+  <p class="center mt14 sign-row" style="font-size:12.5px;">
+    <span class="agree-q">위 내용에 동의합니다.</span><span class="pp">&nbsp;</span>
     <label class="chk"><input type="radio" name="동의4" value="동의"><span class="box"></span>동의</label>
     <label class="chk"><input type="radio" name="동의4" value="미동의"><span class="box"></span>미동의</label>
-    &nbsp;&nbsp;성명 : <span class="line" style="width:120px;"><input type="text" name="동의4성명"></span> (서명)
+    <span class="pp">&nbsp;&nbsp;</span><span class="inl-lab">성명<span class="pp"> :</span></span> <span class="line" style="width:120px;"><input type="text" name="동의4성명"></span> <span class="pp">(서명)</span>
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
       <span class="sig-tools">
@@ -744,9 +989,9 @@
       <td style="padding:9px 10px;">본인은 위 1~4항의 동의 내용에 대하여 미성년자(지원자)의 법정대리인으로서 이를 숙지하고 동의합니다.</td>
     </tr>
   </table>
-  <p class="center mt14" style="font-size:12.5px;">
-    법정대리인 성명 : <span class="line" style="width:120px;"><input type="text" name="법정대리인성명"></span>&nbsp;&nbsp;
-    지원자와의 관계 : <span class="line" style="width:80px;"><input type="text" name="법정대리인관계"></span>&nbsp; (서명)
+  <p class="center mt14 sign-row" style="font-size:12.5px;">
+    <span class="inl-lab">법정대리인 성명<span class="pp"> :</span></span> <span class="line" style="width:120px;"><input type="text" name="법정대리인성명"></span><span class="pp">&nbsp;&nbsp;</span>
+    <span class="inl-lab">지원자와의 관계<span class="pp"> :</span></span> <span class="line" style="width:80px;"><input type="text" name="법정대리인관계"></span><span class="pp">&nbsp; (서명)</span>
     <span class="sig-wrap">
       <span class="sig-box"><canvas class="sig" data-w="150" data-h="48"></canvas><span class="sig-hint">서명</span></span>
       <span class="sig-tools">
@@ -784,13 +1029,13 @@
   <p class="note">본인의 개인정보 열람·정정·삭제·처리정지 요구 및 동의 철회 등 권리 행사는 아래 보유기간 및 대우능력개발원 개인정보 처리방침에 따릅니다.</p>
   <p class="note">(근거 : 「개인정보보호법」 제35조~제39조)</p>
 
-  <p class="center mt20" style="font-size:12.5px;">
+  <p class="center mt20 sign-row date-row" style="font-size:12.5px;">
     20<span class="line" style="width:26px;"><input type="text" maxlength="2" name="안내연"></span> 년
     <span class="line" style="width:26px;"><input type="text" maxlength="2" name="안내월"></span> 월
     <span class="line" style="width:26px;"><input type="text" maxlength="2" name="안내일"></span> 일
   </p>
-  <p class="center mt14" style="font-size:13px;">
-    성명 : <span class="line" style="width:150px;"><input type="text" name="안내성명"></span> (서명)
+  <p class="center mt14 sign-row" style="font-size:13px;">
+    <span class="inl-lab">성명<span class="pp"> :</span></span> <span class="line" style="width:150px;"><input type="text" name="안내성명"></span> <span class="pp">(서명)</span>
     <span class="sig-wrap" id="sigNotice">
       <span class="sig-box"><canvas class="sig" data-w="170" data-h="56"></canvas><span class="sig-hint">여기에 서명하세요</span></span>
       <span class="sig-tools">
@@ -869,6 +1114,7 @@ function initSignaturePads(){
     if(!ctx) return;
     const w = +canvas.dataset.w || 150, h = +canvas.dataset.h || 48;
     canvas.style.width = w+'px'; canvas.style.height = h+'px';
+    canvas.style.aspectRatio = w + ' / ' + h;   // 모바일에서 폭을 늘려도 비율 유지 (PDF 서명 왜곡 방지)
     // 숨겨진 페이지에서도 즉시 좌표계 초기화 (탭 전환 전에도 오작동 방지)
     (function(){
       var dpr0 = window.devicePixelRatio || 1;
@@ -1081,11 +1327,11 @@ function replaceInputsForCapture(root){
       display: inline-block;
       width: 100%;
       min-height: ${el.tagName === 'TEXTAREA' ? '56px' : '14px'};
-      font-size: ${cs.fontSize};
+      font-size: ${el.closest('.line') ? '12.5px' : (el.tagName === 'TEXTAREA' ? '12px' : '12.5px')};
       font-family: ${cs.fontFamily};
       font-weight: ${cs.fontWeight};
       color: #111;
-      text-align: ${cs.textAlign === 'center' ? 'center' : 'left'};
+      text-align: ${el.closest('.line') ? 'center' : 'left'};
       background: transparent;
       white-space: ${el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'nowrap'};
       line-height: 1.3;
@@ -1298,6 +1544,10 @@ async function handleSubmit(){
   }
 }
 document.getElementById('btnSubmit').addEventListener('click', handleSubmit);
+
+/* ---------- 모바일 입력 편의 ---------- */
+// 날짜(2자리) 칸은 숫자 키패드
+document.querySelectorAll('input[maxlength="2"]').forEach(i=>{ i.setAttribute('inputmode','numeric'); });
 </script>
 </body>
 </html>
