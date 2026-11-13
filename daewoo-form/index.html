@@ -530,6 +530,32 @@
     body:not(.pdf-mode) .pager #btnPrev{flex:0 0 34%;background:#fff;color:#3b4a66;border-color:var(--line-c);}
     body:not(.pdf-mode) .pager #btnNext{background:var(--navy);color:#fff;}
   }
+ /* 기본: 모바일용 요소 숨김 */
+.pg-m,.go-submit{display:none;}
+@keyframes submitPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(212,69,46,.7);transform:scale(1);}
+  50%{box-shadow:0 0 0 8px rgba(212,69,46,0);transform:scale(1.08);}
+}
+.btn-submit.pulse{animation:submitPulse .7s ease-in-out 3;}
+
+@media (max-width:860px){
+  /* 모바일은 1/3 ~ 3/3 표기 */
+  body:not(.pdf-mode) .pg-pc{display:none;}
+  body:not(.pdf-mode) .pg-m{display:inline;}
+  /* 마지막 페이지: '다음' 대신 제출 안내 + 상단 제출 버튼 깜빡임 */
+  body.last-page:not(.pdf-mode) .pager #btnNext{display:none;}
+  body.last-page:not(.pdf-mode) .pager .go-submit{
+    display:block;flex:1 1 0;background:#fff4f1;color:#b9371f;border:1.5px solid #f0b8ab;
+    font-size:13.5px;line-height:1.3;word-break:keep-all;
+  }
+  body.last-page:not(.pdf-mode) .topbar .btn-submit{animation:submitPulse 1.4s ease-in-out infinite;}
+}
+  // 마지막(3/3) 페이지 하단 안내 → 맨 위로 이동 + 상단 [제출하기] 강조
+document.getElementById('btnGoSubmit').addEventListener('click', ()=>{
+  window.scrollTo({top:0, behavior:'smooth'});
+  const b = document.getElementById('btnSubmit');
+  b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse');
+});
 </style>
 </head>
 <body>
@@ -788,7 +814,7 @@
 
   <div class="doc-footer">
     <span>대우능력개발원 훈련참여 신청서 (전 과정 공통양식)</span>
-    <span>1 / 4</span>
+    <span><span class="pg-pc">1 / 4</span><span class="pg-m">1 / 3</span></span>
   </div>
 </section>
 
@@ -1056,7 +1082,7 @@
 <!-- 페이지 이동 -->
 <div class="pager no-print">
   <button type="button" id="btnPrev">← 이전 페이지</button>
-  <button type="button" id="btnNext">다음 페이지 →</button>
+  <button type="button" id="btnGoSubmit" class="go-submit">↑ 맨 위 [제출하기] 버튼을 눌러 제출해 주세요</button>
 </div>
 
 <!-- 제출 완료 -->
@@ -1080,9 +1106,10 @@ function showPage(i){
   tabs.forEach((t,idx)=>t.classList.toggle('active', idx===cur));
   document.getElementById('btnPrev').disabled = cur===0;
   document.getElementById('btnNext').disabled = cur>=maxPage;
+  document.body.classList.toggle('last-page', cur>=maxPage);
   window.scrollTo({top:0, behavior:'smooth'});
   // 탭 전환 후 보이게 된 서명 캔버스 크기·좌표계 재설정
-setTimeout(()=>{ sigPads.forEach(s=>s.resize()); }, 60);
+  setTimeout(()=>{ sigPads.forEach(s=>s.resize()); }, 60);
 }
 tabs.forEach((t,idx)=>t.addEventListener('click', ()=>showPage(idx)));
 document.getElementById('btnPrev').addEventListener('click', ()=>showPage(cur-1));
